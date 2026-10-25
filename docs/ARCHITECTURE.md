@@ -73,8 +73,8 @@ Les fonctions de relais exigeront un consentement distinct. Elles ne seront auto
 
 ## Décisions encore ouvertes
 
-- Version de Go, préparation de l'outillage et packaging de chaque application.
-- Détails des modèles de base et de la commande locale `coopace status`, avec premiers essais sous Linux et cible Windows.
+- Installation effective de Go 1.27.3, validation des premiers modèles et packaging de chaque application.
+- Détails de la commande locale `coopace status`, avec premiers essais sous Linux et cible Windows.
 - Réutilisation du noyau Go dans l'application Android Kotlin.
 - Contrats des adaptations système et séparation des privilèges.
 - Découverte, authentification des membres et stockage local.

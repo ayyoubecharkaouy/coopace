@@ -66,15 +66,15 @@ Le mécanisme de réutilisation du noyau sur Android reste ouvert jusqu'à cette
 
 ## Organisation et versions des outils
 
-Le premier code Go utilisera un seul module, avec un `go.mod` à la racine du dépôt, en conservant les dossiers existants. Plusieurs répertoires métier ne nécessitent pas plusieurs modules Go. Le chemin du module sera aligné sur le dépôt distant lors de sa création. Voir le [guide officiel d'organisation d'un module](https://go.dev/doc/modules/layout).
+Le code Go utilise un seul module, avec un `go.mod` à la racine du dépôt, en conservant les dossiers existants. Plusieurs répertoires métier ne nécessitent pas plusieurs modules Go. Le chemin `github.com/ayyoubecharkaouy/coopace` est aligné sur le dépôt distant. Voir le [guide officiel d'organisation d'un module](https://go.dev/doc/modules/layout).
 
-La version stable de Go sera choisie et enregistrée lors de la préparation du premier code, avec les commandes de compilation et de vérification correspondantes. Aucun numéro de version ne doit être présenté comme testé avant cette préparation.
+À l'étape 2.2, Go 1.27.3 est retenu d'après le [catalogue officiel](https://go.dev/dl/?mode=json) et enregistré dans `.go-version` et `go.mod`. Les commandes de compilation et de vérification sont décrites dans [DEVELOPMENT.md](DEVELOPMENT.md). Cette version n'est pas encore testée dans l'environnement de travail.
 
-Lors de l'inventaire de cette étape, la commande `go` n'est pas disponible dans le `PATH` de l'environnement de travail. Son installation et la création du module font partie de l'étape suivante. La [documentation d'installation Go](https://go.dev/doc/install) couvre Linux et Windows.
+La commande `go` n'est pas disponible dans le `PATH` de l'environnement de travail et le téléchargement est bloqué par l'accès réseau restreint. Un script d'installation locale est fourni ; la préparation du SDK et les vérifications restent à terminer. La [documentation d'installation Go](https://go.dev/doc/install) couvre Linux et Windows.
 
 ## Suite immédiate
 
-L'étape 2.2 préparera l'outillage Go et les modèles de base dans `packages/core`. L'étape 2.3 ajoutera la commande locale `coopace status`. La validation du démarrage et des cibles de compilation complétera l'étape 2.
+L'étape 2.2 doit terminer la préparation de Go et valider les modèles de base dans `packages/core`. L'étape 2.3 ajoutera la commande locale `coopace status`. La validation du démarrage et des cibles de compilation complétera l'étape 2.
 
 Les choix du transport réseau, du stockage, du framework web, d'un tunnel et du ML restent réservés aux étapes qui les nécessitent.
 

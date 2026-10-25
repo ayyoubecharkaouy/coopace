@@ -6,7 +6,7 @@ Le produit est organisé dans un dépôt Git unique, dans le dossier `coopace`.
 
 ## État du projet
 
-**Étape 2.1 terminée : choix techniques documentés.** Go est retenu pour le noyau et les agents Linux/Windows ; Kotlin pour l'intégration Android. Aucun composant exécutable n'est encore implémenté.
+**Étape 2.2 en cours : module Go et modèles de base écrits.** L'installation de Go et l'exécution des tests restent à valider dans l'environnement de travail. Aucun composant exécutable n'est encore implémenté.
 
 Les [choix techniques](docs/TECH_STACK.md) détaillent les raisons, les limites et les décisions différées.
 
@@ -25,9 +25,11 @@ coopace/
 │   ├── linux/            # Intégrations Linux et, selon compatibilité, OpenWrt
 │   ├── windows/          # Intégrations Windows
 │   └── android/          # Intégrations Android pour l'agent
+├── scripts/              # Installation locale de Go et commandes de développement
 ├── ml/                   # Futur module ML : recherche, entraînement et évaluation
 └── docs/
     ├── ARCHITECTURE.md
+    ├── DEVELOPMENT.md
     ├── ROADMAP.md
     └── TECH_STACK.md
 ```
@@ -51,6 +53,13 @@ Voir l'[architecture](docs/ARCHITECTURE.md) et la [progression prévue](docs/ROA
 
 ## Développement
 
-Il n'y a actuellement aucune commande de lancement, de compilation ou de test. La prochaine étape prépare l'outillage Go et les modèles de base ; la commande `coopace status` viendra ensuite.
+Sous Linux x86_64, préparer le SDK local puis lancer les vérifications du noyau :
+
+```sh
+sh scripts/setup-go.sh
+sh scripts/go.sh test ./...
+```
+
+Les [instructions de développement](docs/DEVELOPMENT.md) détaillent l'installation, les vérifications et les commandes Windows. Les premiers essais Go sont en attente : le téléchargement est bloqué dans l'environnement de travail. La commande utilisateur `coopace status` sera ajoutée à l'étape 2.3.
 
 Le dépôt Git est propre à ce dossier et utilise la branche `main`. La commande `git remote -v` permet de consulter les dépôts distants configurés dans chaque copie locale.
