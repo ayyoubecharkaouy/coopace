@@ -1,8 +1,8 @@
-# CoopPace
+# Coopace
 
-CoopPace vise à améliorer la latence sous charge et le partage de la connexion Internet d'un foyer, grâce à une passerelle et à des agents coopératifs facultatifs.
+Coopace vise à améliorer la latence sous charge et le partage de la connexion Internet d'un foyer, grâce à une passerelle et à des agents coopératifs facultatifs.
 
-Le produit est organisé dans un dépôt Git unique. Le dossier du dépôt s'appelle `coopace` ; le nom du produit est **CoopPace**.
+Le produit est organisé dans un dépôt Git unique, dans le dossier `coopace`.
 
 ## État du projet
 

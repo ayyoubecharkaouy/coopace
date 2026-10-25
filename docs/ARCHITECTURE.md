@@ -2,9 +2,9 @@
 
 ## Périmètre
 
-Cette organisation traduit l'architecture « Edge & Peers » du rapport `RAPPORT_COOPPACE_V5.md` fourni avec l'étude du projet. Elle définit les responsabilités du futur logiciel ; aucune capacité réseau n'est encore implémentée.
+Cette organisation traduit l'architecture « Edge & Peers » du rapport historique `RAPPORT_COOPPACE_V5.md`, rédigé sous l'ancien nom du projet et fourni avec l'étude. Elle définit les responsabilités du futur logiciel ; aucune capacité réseau n'est encore implémentée.
 
-CoopPace est un produit composé de plusieurs applications et bibliothèques. Une installation peut réunir plusieurs rôles, par exemple passerelle et agent sur un même PC.
+Coopace est un produit composé de plusieurs applications et bibliothèques. Une installation peut réunir plusieurs rôles, par exemple passerelle et agent sur un même PC.
 
 ## Applications
 
@@ -54,7 +54,7 @@ Les futurs services privilégiés et clients mobiles pourront nécessiter leurs 
 - La passerelle Linux/OpenWrt est la voie proposée dans le rapport pour réutiliser CAKE/SQM.
 - Une passerelle Windows est envisageable, avec un moteur adapté à Windows. Sa faisabilité détaillée et ses performances restent à valider ; elle ne doit pas être présentée comme équivalente à CAKE sur la seule base de WFP ou des politiques QoS.
 - Une passerelle Android ne fait pas partie du périmètre initial.
-- Une installation sans passerelle CoopPace ne peut pas promettre une gestion globale des files du foyer.
+- Une installation sans passerelle Coopace ne peut pas promettre une gestion globale des files du foyer.
 - Même avec des agents sur chaque appareil, le trafic doit traverser le point d'application pour être géré par celui-ci.
 
 ## Contraintes des futures interventions
