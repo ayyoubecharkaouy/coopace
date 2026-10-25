@@ -57,7 +57,7 @@ La compilation et l'analyse statique ciblant Windows réussissent. Le format PE3
 
 ## Étape 3 — Groupe et observations
 
-État : en cours ; première observation locale des compteurs implémentée et validée sous Linux à l'étape 3.1. Mesures de latence, groupe et échanges restent à développer.
+État : en cours ; compteurs Linux et première mesure TCP avec référence documentée livrés aux étapes 3.1 et 3.2. Identité, groupe et échanges restent à développer.
 
 Commencer par définir et instrumenter les mesures locales utiles, avec leurs limites et une référence avant intervention. Spécifier ensuite les messages, l'identité et l'adhésion autorisée au groupe. Établir un échange minimal entre deux instances et une première vue des observations. L'élargissement à toutes les plateformes et la coordination avancée attendront la validation du prototype de passerelle.
 
@@ -73,9 +73,11 @@ Les tests, l'analyse statique et la compilation passent sous Linux, ainsi que la
 
 ### 3.2 — Latence et référence avant intervention
 
-État : à faire.
+État : terminée pour la mesure d'établissement TCP, l'export local et le protocole de référence. Connexion locale réelle validée sous Linux ; mesure WAN et exécution native Windows non validées.
 
 Définir les cibles et la méthode de mesure de latence, les limites de l'observation, les scénarios au repos/sous charge et les conditions d'une référence reproductible. Définir les formats de conservation nécessaires avant d'implémenter l'export. L'observation des compteurs seule ne permet pas de conclure à une congestion.
+
+Livrés : commande `coopace latency` avec cible IP:port obligatoire, essais bornés et annulables, percentiles des seules connexions réussies et rapport JSON local v1. Les échecs ne sont assimilés ni à des durées nulles ni à des pertes de paquets. Le [protocole de référence](LATENCY.md) définit les conditions déclarées au repos/sous charge, les unités et les limites de comparaison. Les tests déterministes et le test TCP en boucle locale passent sous Linux ; ce dernier a été exécuté depuis le terminal utilisateur, les sockets étant interdites dans l'environnement isolé de l'agent de développement.
 
 ### 3.3 — Identité et contrats du groupe
 

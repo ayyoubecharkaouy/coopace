@@ -54,6 +54,8 @@ Les futurs services privilégiés et clients mobiles pourront nécessiter leurs 
 
 La première observation suit ce découpage : compteurs lus par l'adaptation Linux, différences calculées dans le noyau sans accès système, puis orchestration et affichage par l'agent. Les modèles et horodatages locaux ne définissent pas encore les messages du groupe. Voir [OBSERVATIONS.md](OBSERVATIONS.md).
 
+La mesure TCP de l'étape 3.2 utilise la bibliothèque réseau portable de Go dans l'agent, vers une cible explicite. Les statistiques restent pures dans le noyau. Son JSON versionné est un format local de conservation, distinct du protocole du groupe encore à spécifier. Voir [LATENCY.md](LATENCY.md).
+
 ## Module ML facultatif
 
 Le dossier [`ml/`](../ml/README.md) est réservé aux futures expériences, à l'entraînement et à l'évaluation des modèles. Le noyau, les agents et la passerelle doivent fonctionner sans ce module et sans dépendance aux outils d'entraînement.

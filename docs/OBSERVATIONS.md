@@ -67,4 +67,4 @@ Les modèles métier n'ont pas de format JSON de communication. Les messages ver
 
 L'observation des compteurs est implémentée pour Linux. Sous Windows, la commande est compilable mais renvoie une erreur d'indisponibilité avec le code `1` ; elle n'affiche pas de faux compteurs à zéro. Le lancement natif Windows reste à vérifier. Aucune application Android n'est produite.
 
-L'étape 3.2 devra définir les mesures de latence et le protocole de référence avant toute intervention. La collecte Windows, l'export de mesures et l'échange entre appareils restent à spécifier et à valider séparément.
+L'étape 3.2 ajoute une mesure d'établissement TCP et son export local, avec un [protocole de référence](LATENCY.md). Cela ne transforme pas les compteurs d'interfaces en mesure WAN ou en diagnostic de congestion. La collecte Windows et l'export des compteurs d'interfaces, ainsi que l'échange entre appareils, restent à développer séparément.

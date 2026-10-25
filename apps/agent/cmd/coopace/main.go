@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"os"
+	"os/signal"
 
 	"github.com/ayyoubecharkaouy/coopace/apps/agent/internal/cli"
 )
@@ -9,5 +11,12 @@ import (
 var version = "dev"
 
 func main() {
-	os.Exit(cli.Run(os.Args[1:], version, os.Stdout, os.Stderr))
+	ctx := context.Background()
+	stop := func() {}
+	if len(os.Args) > 1 && os.Args[1] == "latency" {
+		ctx, stop = signal.NotifyContext(ctx, os.Interrupt)
+	}
+	code := cli.RunContext(ctx, os.Args[1:], version, os.Stdout, os.Stderr)
+	stop()
+	os.Exit(code)
 }

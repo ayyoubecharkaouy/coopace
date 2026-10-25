@@ -1,8 +1,10 @@
 # Noyau métier
 
-État : modèles d'appareils et premières observations de trafic validés sous Linux x86_64 avec Go 1.27.3 jusqu'à l'étape 3.1. Le formatage, les tests, l'analyse statique et la compilation passent. L'exécution sur les autres systèmes reste à vérifier.
+État : modèles d'appareils, observations de trafic et statistiques de durée TCP validés sous Linux x86_64 avec Go 1.27.3 jusqu'à l'étape 3.2. Le formatage, les tests, l'analyse statique et la compilation passent. L'exécution sur les autres systèmes reste à vérifier.
 
 Ce module accueille les modèles et règles communs : appareils, rôles, capacités et premières différences de compteurs de trafic. Les consentements, les autres mesures et les décisions seront ajoutés progressivement.
+
+Les modèles `LatencySample`, `LatencySummary` et `LatencyDistribution` ajoutent les statistiques des durées d'établissement TCP. Le calcul des percentiles reste indépendant du mécanisme de mesure et ne déduit aucun diagnostic de congestion.
 
 Il est développé en Go et reste indépendant des API réseau propres aux systèmes et du tableau de bord. Les applications Linux et Windows partageront cette bibliothèque. Sa réutilisation sur Android nécessite une validation séparée, décrite dans les [choix techniques](../../docs/TECH_STACK.md).
 
@@ -43,3 +45,9 @@ Voir les [instructions de préparation et de vérification](../../docs/DEVELOPME
 Les différences sont calculées avant conversion en taux d'octets par seconde. Les interfaces apparues, disparues et les compteurs en baisse sont explicitement indisponibles. Une activité réellement nulle conserve une mesure à zéro. Les doublons, noms invalides et durées non positives sont rejetés.
 
 Cette fonction ne réalise aucune lecture système et n'additionne pas les interfaces. La collecte, les horodatages et les limites d'interprétation sont décrits dans [OBSERVATIONS.md](../../docs/OBSERVATIONS.md).
+
+## Statistiques de latence
+
+`SummarizeLatency()` calcule min, p50, p95, p99 et max par rang supérieur sur les seuls essais réussis. Les échecs restent comptés séparément et une série sans réussite n'a pas de distribution. Les durées négatives, catégories inconnues et échecs portant une fausse durée sont rejetés. Les données originales ne sont pas modifiées.
+
+Le noyau ne fait aucune connexion et ne définit aucun format JSON. La mesure TCP et l'export local sont orchestrés dans l'agent ; voir [LATENCY.md](../../docs/LATENCY.md).

@@ -83,6 +83,15 @@ Le résultat attendu est un message indiquant que l'observation du trafic n'est 
 
 ## Consigner le résultat natif
 
+Depuis l'étape 3.2, le binaire comprend aussi `latency`. L'aide ne nécessite aucune connexion :
+
+```powershell
+.\coopace-windows-amd64.exe latency --help
+$LASTEXITCODE
+```
+
+Le code attendu est `0`. Le lancement sans cible (`latency` seul) doit retourner `2` et ne provoquer aucun essai réseau. Pour tester une véritable connexion, choisir ensuite une IP:port de service TCP accessible et suivre [LATENCY.md](LATENCY.md). Cette mesure est compilée pour Windows mais reste non validée à l'exécution sur cette plateforme.
+
 État actuel : **non effectué**.
 
 Pour chaque PC testé, noter la version de Windows, l'architecture, l'empreinte du binaire et les résultats des commandes avec leurs codes de sortie. Si le SDK Go et les sources sont disponibles sur ce PC, `go test ./...` et `go vet ./...` peuvent compléter ce contrôle ; leur résultat doit être distingué du simple lancement de l'exécutable.
