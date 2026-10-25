@@ -1,6 +1,6 @@
 # Application agent
 
-État : première commande locale implémentée et validée sous Linux à l'étape 2.3. L'adhésion au groupe et les fonctions réseau restent à développer.
+État : première commande locale implémentée et validée sous Linux à l'étape 2.3. Compilation et analyse statique Windows amd64 validées à l'étape 2.4 ; exécution native Windows non vérifiée. L'adhésion au groupe et les fonctions réseau restent à développer.
 
 L'agent permettra à un appareil volontaire de rejoindre le groupe, d'annoncer ses capacités et de partager les mesures locales autorisées. Les plateformes visées sont Linux, Windows et Android, avec des fonctions dépendant de leurs possibilités réelles.
 
@@ -31,7 +31,7 @@ La version affichée est `dev`. Le statut décrit l'exécution locale, avec le r
 
 Le binaire accepte `status`, `help`, `--help` et `-h`. Sans argument, il affiche l'aide. Les codes de sortie du binaire sont : `0` pour une réussite, `1` pour une erreur d'exécution ou d'affichage, `2` pour des arguments invalides.
 
-La compilation et les instructions détaillées sont dans [DEVELOPMENT.md](../../docs/DEVELOPMENT.md). Le lancement réel sous Windows reste à vérifier.
+La compilation et les instructions détaillées sont dans [DEVELOPMENT.md](../../docs/DEVELOPMENT.md). Le binaire Windows x64 et les essais natifs restant à effectuer sont décrits dans [WINDOWS_VALIDATION.md](../../docs/WINDOWS_VALIDATION.md).
 
 L'intégration Android utilisera Kotlin. Ses points d'entrée et le packaging mobile ou bureau restent à préciser selon les [choix techniques](../../docs/TECH_STACK.md).
 

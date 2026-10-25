@@ -17,7 +17,7 @@ Validation : fichiers suivis par Git, différences sans erreurs d'espacement et 
 
 ## Étape 2 — Premier programme minimal
 
-État : en cours ; choix techniques, modèles de base et premier agent local validés sous Linux. La validation de la cible Windows reste à effectuer à l'étape 2.4.
+État : terminée pour le socle, le lancement Linux et la compilation Windows amd64. L'exécution native Windows reste à consigner avant de déclarer cette cible testée à l'exécution.
 
 Choisir et documenter la pile technique et la première plateforme. Définir les premiers modèles d'appareil, de rôle et de capacité, puis créer un point d'entrée minimal capable d'afficher son état local. Cette étape ne modifiera pas le routage ni les politiques du système.
 
@@ -49,9 +49,11 @@ Livrés : point d'entrée de l'agent, collecte de l'état local, commandes `stat
 
 ### 2.4 — Validation du premier programme
 
-État : à faire pour la cible Windows ; le lancement Linux est déjà vérifié à l'étape 2.3.
+État : terminée pour la compilation Windows amd64 et le lancement Linux ; vérification native Windows non effectuée.
 
 Documenter et vérifier le lancement sous Linux ainsi que la compilation pour Windows. Distinguer la réussite de compilation d'une validation réelle sur un appareil Windows.
+
+La compilation et l'analyse statique ciblant Windows réussissent. Le format PE32+ x86-64 et les métadonnées de compilation ont été contrôlés. Un exécutable de développement et son empreinte SHA-256 sont disponibles dans `.local/bin/`. La [procédure de validation Windows](WINDOWS_VALIDATION.md) décrit les commandes à exécuter sur un PC x64 et les résultats à consigner.
 
 ## Étape 3 — Groupe et observations
 

@@ -8,7 +8,7 @@ Le [périmètre produit](docs/PRODUCT.md) décrit le résultat visé, l'état r�
 
 ## État du projet
 
-**Étape 2.3 terminée : premier agent local exécutable sous Linux.** La commande `coopace status` affiche la version de développement, le système, l'architecture, le rôle et l'état local hors groupe. Le formatage, les tests, l'analyse statique et la compilation passent avec Go 1.27.3.
+**Étape 2.4 terminée pour la compilation Windows amd64 et le lancement Linux.** La commande `coopace status` affiche la version de développement, le système, l'architecture, le rôle et l'état local hors groupe. Les tests passent sous Linux ; la compilation et l'analyse statique Windows réussissent avec Go 1.27.3. L'exécution native sous Windows reste à vérifier.
 
 Les [choix techniques](docs/TECH_STACK.md) détaillent les raisons, les limites et les décisions différées.
 
@@ -34,7 +34,8 @@ coopace/
     ├── DEVELOPMENT.md
     ├── PRODUCT.md
     ├── ROADMAP.md
-    └── TECH_STACK.md
+    ├── TECH_STACK.md
+    └── WINDOWS_VALIDATION.md
 ```
 
 Chaque répertoire de module contient un README qui définit sa responsabilité et son état.
@@ -64,6 +65,6 @@ sh scripts/go.sh run ./apps/agent/cmd/coopace status
 sh scripts/go.sh test ./...
 ```
 
-Les [instructions de développement](docs/DEVELOPMENT.md) détaillent l'installation, la compilation du binaire, l'aide et les vérifications. Le noyau et la commande locale sont validés sous Linux ; la validation de la cible Windows appartient à l'étape 2.4. L'application Android reste à développer.
+Les [instructions de développement](docs/DEVELOPMENT.md) détaillent l'installation, la compilation du binaire, l'aide et les vérifications. La [procédure Windows](docs/WINDOWS_VALIDATION.md) décrit la compilation et les essais natifs encore à effectuer. L'application Android reste à développer.
 
 Le dépôt Git est propre à ce dossier et utilise la branche `main`. La commande `git remote -v` permet de consulter les dépôts distants configurés dans chaque copie locale.

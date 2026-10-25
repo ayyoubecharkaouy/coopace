@@ -29,7 +29,7 @@ Un PC Linux n'est pas obligatoire parmi les membres du groupe. Les capacités de
 | --- | --- |
 | Modèles appareil, rôle et capacités | Implémentés et testés sous Linux. |
 | Agent local Linux | Commandes `status` et d'aide implémentées et testées ; aucune mesure réseau. |
-| Agent local Windows | Cible prévue dans le code ; compilation et exécution restent à vérifier à l'étape 2.4. |
+| Agent local Windows | Compilation Windows amd64 et analyse statique validées à l'étape 2.4 ; exécution native non vérifiée. |
 | Application Android | Prévue ; aucun APK ni intégration native disponible. |
 | Groupe coopératif | Prévu ; identité, adhésion, authentification et échanges restent à développer. |
 | Passerelle Linux/OpenWrt | Prévue ; aucune gestion de trafic implémentée dans ce dépôt. |
@@ -37,7 +37,7 @@ Un PC Linux n'est pas obligatoire parmi les membres du groupe. Les capacités de
 | Tableau de bord et relais | Prévus ; aucune implémentation. |
 | ML | Périmètre documenté ; aucun dataset ni modèle entraîné dans ce dépôt. |
 
-La présence d'un modèle Android ou Windows dans les tests ne valide pas l'application correspondante. La compilation ou l'exécution future de `coopace status` sous Windows ne prouvera pas la faisabilité d'une passerelle Windows.
+La présence d'un modèle Android ou Windows dans les tests ne valide pas l'application correspondante. La compilation validée et l'exécution future de `coopace status` sous Windows ne prouvent pas la faisabilité d'une passerelle Windows. Les résultats et essais natifs à effectuer sont décrits dans [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md).
 
 À chaque jalon, mettre à jour cette table et les états du README et de la feuille de route en distinguant ce qui est prévu, compilé, testé et mesuré.
 
