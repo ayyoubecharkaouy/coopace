@@ -41,7 +41,7 @@ func TestHelp(t *testing.T) {
 }
 
 func TestInvalidArguments(t *testing.T) {
-	for _, args := range [][]string{{"unknown"}, {"status", "extra"}, {"status", "--unknown"}, {"help", "extra"}} {
+	for _, args := range [][]string{{"unknown"}, {"status", "extra"}, {"status", "--unknown"}, {"observe", "extra"}, {"help", "extra"}} {
 		var stdout, stderr bytes.Buffer
 		code := Run(args, "dev", &stdout, &stderr)
 		if code != 2 || stdout.Len() != 0 || !strings.Contains(stderr.String(), "non reconnus") {

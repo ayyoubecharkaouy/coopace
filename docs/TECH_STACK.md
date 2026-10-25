@@ -74,7 +74,7 @@ Le script `scripts/go.sh` utilise le SDK local sans modifier le `PATH` du termin
 
 ## Suite immédiate
 
-Les étapes 2.2 et 2.3 sont terminées sous Linux. L'étape 2.4 valide la compilation et l'analyse statique Windows amd64 ; l'exécution native reste à consigner selon [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md). La suite du développement porte sur l'instrumentation locale de l'étape 3.
+Les étapes 2.2 et 2.3 sont terminées sous Linux. L'étape 2.4 valide la compilation et l'analyse statique Windows amd64 ; l'exécution native reste à consigner selon [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md). L'étape 3.1 ajoute une première observation des compteurs Linux avec calculs indépendants du système. La collecte Windows reste à implémenter ; l'étape 3.2 portera sur la latence et la référence avant intervention.
 
 Les choix du transport réseau, du stockage, du framework web, d'un tunnel et du ML restent réservés aux étapes qui les nécessitent.
 

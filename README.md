@@ -8,7 +8,7 @@ Le [périmètre produit](docs/PRODUCT.md) décrit le résultat visé, l'état r�
 
 ## État du projet
 
-**Étape 2.4 terminée pour la compilation Windows amd64 et le lancement Linux.** La commande `coopace status` affiche la version de développement, le système, l'architecture, le rôle et l'état local hors groupe. Les tests passent sous Linux ; la compilation et l'analyse statique Windows réussissent avec Go 1.27.3. L'exécution native sous Windows reste à vérifier.
+**Étape 3.1 terminée sous Linux : premières observations locales en lecture seule.** `coopace status` affiche l'état local et `coopace observe` mesure le trafic reçu/envoyé par interface pendant environ une seconde. Ces compteurs ne mesurent pas la capacité Internet. Les tests passent sous Linux et le programme compile pour Windows ; l'observation des compteurs Windows n'est pas encore implémentée et l'exécution native Windows reste à vérifier.
 
 Les [choix techniques](docs/TECH_STACK.md) détaillent les raisons, les limites et les décisions différées.
 
@@ -32,6 +32,7 @@ coopace/
 └── docs/
     ├── ARCHITECTURE.md
     ├── DEVELOPMENT.md
+    ├── OBSERVATIONS.md
     ├── PRODUCT.md
     ├── ROADMAP.md
     ├── TECH_STACK.md
@@ -62,9 +63,10 @@ Sous Linux x86_64, préparer le SDK local puis lancer l'agent et les tests :
 ```sh
 sh scripts/setup-go.sh
 sh scripts/go.sh run ./apps/agent/cmd/coopace status
+sh scripts/go.sh run ./apps/agent/cmd/coopace observe
 sh scripts/go.sh test ./...
 ```
 
-Les [instructions de développement](docs/DEVELOPMENT.md) détaillent l'installation, la compilation du binaire, l'aide et les vérifications. La [procédure Windows](docs/WINDOWS_VALIDATION.md) décrit la compilation et les essais natifs encore à effectuer. L'application Android reste à développer.
+Les [instructions de développement](docs/DEVELOPMENT.md) détaillent l'installation, la compilation du binaire, l'aide et les vérifications. Les [observations locales](docs/OBSERVATIONS.md) précisent les sources, les unités et les limites. La [procédure Windows](docs/WINDOWS_VALIDATION.md) décrit la compilation et les essais natifs encore à effectuer. L'application Android reste à développer.
 
 Le dépôt Git est propre à ce dossier et utilise la branche `main`. La commande `git remote -v` permet de consulter les dépôts distants configurés dans chaque copie locale.

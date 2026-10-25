@@ -57,11 +57,37 @@ La compilation et l'analyse statique ciblant Windows réussissent. Le format PE3
 
 ## Étape 3 — Groupe et observations
 
-État : à faire.
+État : en cours ; première observation locale des compteurs implémentée et validée sous Linux à l'étape 3.1. Mesures de latence, groupe et échanges restent à développer.
 
 Commencer par définir et instrumenter les mesures locales utiles, avec leurs limites et une référence avant intervention. Spécifier ensuite les messages, l'identité et l'adhésion autorisée au groupe. Établir un échange minimal entre deux instances et une première vue des observations. L'élargissement à toutes les plateformes et la coordination avancée attendront la validation du prototype de passerelle.
 
 Validation : provenance et limites des mesures connues, adhésion explicite, échanges authentifiés, traitement des messages invalides et déconnexion propre. Un groupe complet n'est pas requis pour commencer l'étude du moteur de passerelle.
+
+### 3.1 — Compteurs locaux en lecture seule
+
+État : terminée sous Linux ; collecte Windows non implémentée.
+
+Livrés : commande `coopace observe`, lecture des octets RX/TX par interface, calcul sur deux lectures et durée effectivement mesurée. Les interfaces apparues, disparues et les compteurs en baisse rendent les taux indisponibles au lieu de produire des zéros trompeurs.
+
+Les tests, l'analyse statique et la compilation passent sous Linux, ainsi que la compilation Windows avec une collecte explicitement indisponible sur cette cible. Le lancement réel a été vérifié dans un espace réseau où seule `lo` était visible. Voir la [provenance, les unités et les limites](OBSERVATIONS.md).
+
+### 3.2 — Latence et référence avant intervention
+
+État : à faire.
+
+Définir les cibles et la méthode de mesure de latence, les limites de l'observation, les scénarios au repos/sous charge et les conditions d'une référence reproductible. Définir les formats de conservation nécessaires avant d'implémenter l'export. L'observation des compteurs seule ne permet pas de conclure à une congestion.
+
+### 3.3 — Identité et contrats du groupe
+
+État : à faire.
+
+Définir l'identité persistante, le consentement d'adhésion, les messages versionnés et l'authentification des échanges. Étudier l'adaptation des mesures aux autres plateformes selon leurs capacités réelles.
+
+### 3.4 — Premier échange entre deux instances
+
+État : à faire.
+
+Échanger uniquement les observations autorisées dans un groupe minimal authentifié, avec refus des messages invalides et déconnexion propre. Garder l'évaluation du moteur de passerelle indépendante d'une coordination avancée.
 
 ## Étape 4 — Prototype de passerelle
 

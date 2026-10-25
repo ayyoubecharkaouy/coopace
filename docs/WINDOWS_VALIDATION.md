@@ -72,6 +72,15 @@ $LASTEXITCODE
 
 Chaque commande doit afficher une erreur et retourner `2`.
 
+Depuis l'étape 3.1, la commande d'observation est réservée à Linux. Avec le binaire reconstruit à cette étape, vérifier également :
+
+```powershell
+.\coopace-windows-amd64.exe observe
+$LASTEXITCODE
+```
+
+Le résultat attendu est un message indiquant que l'observation du trafic n'est pas disponible sur Windows et le code `1`, sans mesures de remplacement. Ce comportement reste à confirmer sur Windows ; sa compilation est vérifiée depuis Linux.
+
 ## Consigner le résultat natif
 
 État actuel : **non effectué**.

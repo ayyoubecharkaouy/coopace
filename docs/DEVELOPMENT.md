@@ -1,10 +1,12 @@
 # Préparation du développement Go
 
-## État des étapes 2.2 à 2.4
+## État des étapes 2.2 à 3.1
 
 L'étape 2.2 est validée sous Linux x86_64 avec Go 1.27.3, installé localement à partir de l'archive officielle vérifiée. Le module Go et les premiers modèles métier sont présents, avec leurs tests.
 
 L'étape 2.3 ajoute le premier agent local. Les commandes de formatage, de test et d'analyse statique réussissent, ainsi que la compilation du binaire et son lancement sous Linux. À l'étape 2.4, la compilation et l'analyse statique pour Windows amd64 sont également validées. L'exécution native Windows reste à effectuer selon [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md) ; l'application Android sera développée ultérieurement.
+
+L'étape 3.1 ajoute `coopace observe` et les premiers taux de trafic par interface sous Linux. Les [observations locales](OBSERVATIONS.md) décrivent les sources, les unités, les tests et la portée limitée de l'essai réel. La collecte des compteurs Windows reste non implémentée.
 
 ## Version et module
 
@@ -57,6 +59,7 @@ Depuis la racine du dépôt, sous Linux :
 
 ```sh
 sh scripts/go.sh run ./apps/agent/cmd/coopace status
+sh scripts/go.sh run ./apps/agent/cmd/coopace observe
 sh scripts/go.sh run ./apps/agent/cmd/coopace --help
 ```
 
@@ -96,7 +99,7 @@ git diff --check
 
 Les tests vérifient les descriptions valides Linux, Windows et Android, les rôles combinés, les identifiants et noms Unicode, le rejet des encodages UTF-8 invalides et des données incohérentes, ainsi que l'absence de modification des données par la validation. La présence d'une description Android dans un test ne valide pas une application Android.
 
-Les tests de l'agent vérifient la détection des plateformes ciblées, l'affichage du statut, l'aide, les arguments invalides et les erreurs d'affichage. `go build ./...` vérifie les paquets ; la commande avec `-o` ci-dessus produit le binaire utilisateur. Les tests s'exécutent localement, sans accès au routeur et sans modifier le réseau.
+Les tests de l'agent vérifient la détection des plateformes ciblées, l'affichage du statut, l'aide, les arguments invalides, la collecte des compteurs sur des données contrôlées et les erreurs de lecture ou d'affichage. Les tests du noyau vérifient aussi les taux, grands compteurs, interfaces apparues/disparues et compteurs en baisse. `go build ./...` vérifie les paquets ; la commande avec `-o` ci-dessus produit le binaire utilisateur. Les tests s'exécutent localement, sans accès au routeur et sans modifier le réseau.
 
 Les tests de régression du script d'installation fonctionnent sans Go et sans réseau, avec Python 3 et de petites archives de test :
 
@@ -132,3 +135,5 @@ Une validation réelle sous Windows devra être consignée séparément. Elle ne
 Les fichiers de `packages/core` décrivent l'appareil, le système, les rôles et les capacités. Leurs règles et limites sont précisées dans le [README du noyau](../packages/core/README.md). Les messages JSON, la découverte et l'authentification seront développés dans les étapes suivantes.
 
 Le point d'entrée de l'agent se trouve dans `apps/agent/cmd/coopace`, avec les commandes dans `apps/agent/internal/cli` et l'état local dans `apps/agent/internal/status`. Voir le [README de l'agent](../apps/agent/README.md).
+
+La collecte des compteurs est orchestrée dans `apps/agent/internal/observe`, avec une source Linux dans `platforms/linux` et des calculs indépendants du système dans `packages/core/traffic.go`. Sous Windows, cette commande renvoie une erreur d'indisponibilité ; voir [OBSERVATIONS.md](OBSERVATIONS.md).

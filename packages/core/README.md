@@ -1,8 +1,8 @@
 # Noyau métier
 
-État : premiers modèles validés à l'étape 2.2 sous Linux x86_64 avec Go 1.27.3. Le formatage, les tests, l'analyse statique et la compilation passent. L'exécution sur les autres systèmes reste à vérifier.
+État : modèles d'appareils et premières observations de trafic validés sous Linux x86_64 avec Go 1.27.3 jusqu'à l'étape 3.1. Le formatage, les tests, l'analyse statique et la compilation passent. L'exécution sur les autres systèmes reste à vérifier.
 
-Ce module accueille les modèles et règles communs. Le premier périmètre comprend les appareils, les rôles et les capacités. Les consentements, mesures et décisions seront ajoutés progressivement.
+Ce module accueille les modèles et règles communs : appareils, rôles, capacités et premières différences de compteurs de trafic. Les consentements, les autres mesures et les décisions seront ajoutés progressivement.
 
 Il est développé en Go et reste indépendant des API réseau propres aux systèmes et du tableau de bord. Les applications Linux et Windows partageront cette bibliothèque. Sa réutilisation sur Android nécessite une validation séparée, décrite dans les [choix techniques](../../docs/TECH_STACK.md).
 
@@ -35,3 +35,11 @@ La validation ne modifie pas la description et ne réalise aucune opération ré
 Les champs métier ne définissent pas le futur format JSON : les contrats des messages et leur conversion resteront séparés dans `packages/protocol` et les applications.
 
 Voir les [instructions de préparation et de vérification](../../docs/DEVELOPMENT.md).
+
+## Observations de trafic
+
+`InterfaceCounters` contient des compteurs cumulés d'octets reçus et envoyés par nom d'interface. `MeasureTraffic()` compare deux lectures sur une durée positive et retourne des `InterfaceObservation`, avec un `InterfaceTraffic` uniquement lorsque les taux sont calculables.
+
+Les différences sont calculées avant conversion en taux d'octets par seconde. Les interfaces apparues, disparues et les compteurs en baisse sont explicitement indisponibles. Une activité réellement nulle conserve une mesure à zéro. Les doublons, noms invalides et durées non positives sont rejetés.
+
+Cette fonction ne réalise aucune lecture système et n'additionne pas les interfaces. La collecte, les horodatages et les limites d'interprétation sont décrits dans [OBSERVATIONS.md](../../docs/OBSERVATIONS.md).

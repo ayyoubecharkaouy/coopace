@@ -28,8 +28,8 @@ Un PC Linux n'est pas obligatoire parmi les membres du groupe. Les capacités de
 | Fonction ou cible | État actuel |
 | --- | --- |
 | Modèles appareil, rôle et capacités | Implémentés et testés sous Linux. |
-| Agent local Linux | Commandes `status` et d'aide implémentées et testées ; aucune mesure réseau. |
-| Agent local Windows | Compilation Windows amd64 et analyse statique validées à l'étape 2.4 ; exécution native non vérifiée. |
+| Agent local Linux | Commandes `status`, `observe` et d'aide implémentées et testées ; premières mesures de compteurs par interface. |
+| Agent local Windows | Compilation Windows amd64 validée ; exécution native non vérifiée et collecte des compteurs non implémentée. |
 | Application Android | Prévue ; aucun APK ni intégration native disponible. |
 | Groupe coopératif | Prévu ; identité, adhésion, authentification et échanges restent à développer. |
 | Passerelle Linux/OpenWrt | Prévue ; aucune gestion de trafic implémentée dans ce dépôt. |
@@ -38,6 +38,8 @@ Un PC Linux n'est pas obligatoire parmi les membres du groupe. Les capacités de
 | ML | Périmètre documenté ; aucun dataset ni modèle entraîné dans ce dépôt. |
 
 La présence d'un modèle Android ou Windows dans les tests ne valide pas l'application correspondante. La compilation validée et l'exécution future de `coopace status` sous Windows ne prouvent pas la faisabilité d'une passerelle Windows. Les résultats et essais natifs à effectuer sont décrits dans [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md).
+
+Les observations de l'étape 3.1 portent sur les interfaces visibles par le processus. Elles ne prouvent ni une couverture Internet du foyer, ni une mesure de capacité WAN, ni une amélioration réseau. Voir leurs [limites précises](OBSERVATIONS.md).
 
 À chaque jalon, mettre à jour cette table et les états du README et de la feuille de route en distinguant ce qui est prévu, compilé, testé et mesuré.
 

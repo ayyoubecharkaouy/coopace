@@ -2,7 +2,7 @@
 
 ## Périmètre
 
-Cette organisation traduit l'architecture « Edge & Peers » du rapport historique `RAPPORT_COOPPACE_V5.md`, rédigé sous l'ancien nom du projet et fourni avec l'étude. Elle définit les responsabilités du futur logiciel ; aucune capacité réseau n'est encore implémentée.
+Cette organisation traduit l'architecture « Edge & Peers » du rapport historique `RAPPORT_COOPPACE_V5.md`, rédigé sous l'ancien nom du projet et fourni avec l'étude. Elle définit les responsabilités et limites du logiciel ; l'état réellement implémenté est recensé dans [PRODUCT.md](PRODUCT.md).
 
 Coopace est un produit composé de plusieurs applications et bibliothèques. Une installation peut réunir plusieurs rôles, par exemple passerelle et agent sur un même PC.
 
@@ -51,6 +51,8 @@ La structure est organisée par responsabilité, puis par système : une règle 
 Les tests propres à un module seront placés avec ce module, selon les conventions de la pile choisie. Un répertoire de tests entre plusieurs composants ne sera ajouté que lorsqu'un scénario d'intégration le nécessitera.
 
 Les futurs services privilégiés et clients mobiles pourront nécessiter leurs propres points d'entrée ou paquets. Leur découpage sera décidé avec le packaging ; les dossiers actuels décrivent les responsabilités, pas un nombre imposé de processus ou d'installateurs.
+
+La première observation suit ce découpage : compteurs lus par l'adaptation Linux, différences calculées dans le noyau sans accès système, puis orchestration et affichage par l'agent. Les modèles et horodatages locaux ne définissent pas encore les messages du groupe. Voir [OBSERVATIONS.md](OBSERVATIONS.md).
 
 ## Module ML facultatif
 
