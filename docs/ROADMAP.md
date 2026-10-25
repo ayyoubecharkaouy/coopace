@@ -15,7 +15,7 @@ Validation : fichiers suivis par Git, différences sans erreurs d'espacement et 
 
 ## Étape 2 — Premier programme minimal
 
-État : en cours, choix techniques terminés et premiers modèles écrits ; validation Go en attente.
+État : en cours ; choix techniques et modèles de base validés. La commande locale de l'agent reste à implémenter.
 
 Choisir et documenter la pile technique et la première plateforme. Définir les premiers modèles d'appareil, de rôle et de capacité, puis créer un point d'entrée minimal capable d'afficher son état local. Cette étape ne modifiera pas le routage ni les politiques du système.
 
@@ -31,11 +31,11 @@ Livrable : [décision technique documentée et sourcée](TECH_STACK.md). Aucun c
 
 ### 2.2 — Outillage et modèles de base
 
-État : en cours ; fichiers livrés, installation et validation Go en attente.
+État : terminée, validée sous Linux x86_64 avec Go 1.27.3.
 
 Préparer une version stable de Go, créer un module unique à la racine et définir les modèles d'appareil, de rôle et de capacité dans `packages/core`. Vérifier leurs contraintes utiles avant de les intégrer à l'agent.
 
-Livrés : `.go-version`, `go.mod`, scripts d'installation locale et de lancement de Go, modèles avec validation et tests du noyau. Les [instructions de développement](DEVELOPMENT.md) consignent le blocage du téléchargement et les commandes à exécuter pour terminer la validation.
+Livrés : `.go-version`, `go.mod`, scripts d'installation locale et de lancement de Go, modèles avec validation et tests du noyau. L'installation du SDK est confirmée ; le formatage, les tests, l'analyse statique et la compilation réussissent. Les [instructions de développement](DEVELOPMENT.md) décrivent les commandes reproductibles et la portée de cette validation.
 
 ### 2.3 — Commande locale de l'agent
 

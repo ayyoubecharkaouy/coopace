@@ -68,13 +68,13 @@ Le mécanisme de réutilisation du noyau sur Android reste ouvert jusqu'à cette
 
 Le code Go utilise un seul module, avec un `go.mod` à la racine du dépôt, en conservant les dossiers existants. Plusieurs répertoires métier ne nécessitent pas plusieurs modules Go. Le chemin `github.com/ayyoubecharkaouy/coopace` est aligné sur le dépôt distant. Voir le [guide officiel d'organisation d'un module](https://go.dev/doc/modules/layout).
 
-À l'étape 2.2, Go 1.27.3 est retenu d'après le [catalogue officiel](https://go.dev/dl/?mode=json) et enregistré dans `.go-version` et `go.mod`. Les commandes de compilation et de vérification sont décrites dans [DEVELOPMENT.md](DEVELOPMENT.md). Cette version n'est pas encore testée dans l'environnement de travail.
+À l'étape 2.2, Go 1.27.3 est retenu d'après le [catalogue officiel](https://go.dev/dl/?mode=json) et enregistré dans `.go-version` et `go.mod`. Cette version est installée localement et validée sous Linux x86_64 : formatage, tests, analyse statique et compilation du noyau réussissent. Les commandes sont décrites dans [DEVELOPMENT.md](DEVELOPMENT.md).
 
-La commande `go` n'est pas disponible dans le `PATH` de l'environnement de travail et le téléchargement est bloqué par l'accès réseau restreint. Un script d'installation locale est fourni ; la préparation du SDK et les vérifications restent à terminer. La [documentation d'installation Go](https://go.dev/doc/install) couvre Linux et Windows.
+Le script `scripts/go.sh` utilise le SDK local sans modifier le `PATH` du terminal. Le script d'installation conserve les téléchargements interrompus pour permettre leur reprise. La [documentation d'installation Go](https://go.dev/doc/install) couvre également l'installation système sous Linux et Windows.
 
 ## Suite immédiate
 
-L'étape 2.2 doit terminer la préparation de Go et valider les modèles de base dans `packages/core`. L'étape 2.3 ajoutera la commande locale `coopace status`. La validation du démarrage et des cibles de compilation complétera l'étape 2.
+L'étape 2.2 est terminée. L'étape 2.3 ajoutera la commande locale `coopace status`. La validation du démarrage et des cibles de compilation complétera l'étape 2.
 
 Les choix du transport réseau, du stockage, du framework web, d'un tunnel et du ML restent réservés aux étapes qui les nécessitent.
 

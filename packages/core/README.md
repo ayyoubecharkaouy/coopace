@@ -1,6 +1,6 @@
 # Noyau métier
 
-État : premiers modèles et tests écrits à l'étape 2.2. Compilation et exécution des tests en attente de disponibilité de Go dans l'environnement de travail.
+État : premiers modèles validés à l'étape 2.2 sous Linux x86_64 avec Go 1.27.3. Le formatage, les tests, l'analyse statique et la compilation passent. L'exécution sur les autres systèmes reste à vérifier.
 
 Ce module accueille les modèles et règles communs. Le premier périmètre comprend les appareils, les rôles et les capacités. Les consentements, mesures et décisions seront ajoutés progressivement.
 

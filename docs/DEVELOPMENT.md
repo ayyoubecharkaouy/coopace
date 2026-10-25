@@ -2,9 +2,9 @@
 
 ## État de l'étape 2.2
 
-Le module Go et les premiers modèles métier sont présents, avec leurs tests. L'installation du SDK et l'exécution des vérifications restent à valider : l'environnement de travail ne dispose pas de Go et ne peut pas résoudre `go.dev` pour télécharger l'archive.
+L'étape 2.2 est validée sous Linux x86_64 avec Go 1.27.3, installé localement à partir de l'archive officielle vérifiée. Le module Go et les premiers modèles métier sont présents, avec leurs tests.
 
-La syntaxe des scripts shell et les différences Git ont été vérifiées. Cela ne remplace pas une compilation ni une exécution des tests Go. Aucun programme agent n'est encore disponible ; `coopace status` appartient à l'étape 2.3.
+Les commandes `go fmt ./...`, `go test ./...`, `go vet ./...` et `go build ./...`, exécutées via `scripts/go.sh`, réussissent. Aucun programme agent n'est encore disponible ; `coopace status` appartient à l'étape 2.3. L'exécution native sous Windows et Android reste à vérifier.
 
 ## Version et module
 

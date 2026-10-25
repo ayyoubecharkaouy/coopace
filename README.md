@@ -6,7 +6,7 @@ Le produit est organisé dans un dépôt Git unique, dans le dossier `coopace`.
 
 ## État du projet
 
-**Étape 2.2 en cours : module Go et modèles de base écrits.** L'installation de Go et l'exécution des tests restent à valider dans l'environnement de travail. Aucun composant exécutable n'est encore implémenté.
+**Étape 2.2 terminée : module Go et modèles de base validés sous Linux.** Go 1.27.3 est installé localement ; le formatage, les tests, l'analyse statique et la compilation du noyau passent. Aucun composant exécutable n'est encore implémenté.
 
 Les [choix techniques](docs/TECH_STACK.md) détaillent les raisons, les limites et les décisions différées.
 
@@ -60,6 +60,6 @@ sh scripts/setup-go.sh
 sh scripts/go.sh test ./...
 ```
 
-Les [instructions de développement](docs/DEVELOPMENT.md) détaillent l'installation, les vérifications et les commandes Windows. Les premiers essais Go sont en attente : le téléchargement est bloqué dans l'environnement de travail. La commande utilisateur `coopace status` sera ajoutée à l'étape 2.3.
+Les [instructions de développement](docs/DEVELOPMENT.md) détaillent l'installation, les vérifications et les commandes Windows. Le noyau est validé sous Linux ; les essais réels sous Windows et Android restent à réaliser. La commande utilisateur `coopace status` sera ajoutée à l'étape 2.3.
 
 Le dépôt Git est propre à ce dossier et utilise la branche `main`. La commande `git remote -v` permet de consulter les dépôts distants configurés dans chaque copie locale.
