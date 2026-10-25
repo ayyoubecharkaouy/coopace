@@ -63,7 +63,7 @@ sh scripts/go.sh build ./...
 git diff --check
 ```
 
-Les tests vérifient les descriptions valides Linux, Windows et Android, les rôles combinés, le rejet des données incohérentes et l'absence de modification des données par la validation. La présence d'une description Android dans un test ne valide pas une application Android.
+Les tests vérifient les descriptions valides Linux, Windows et Android, les rôles combinés, les identifiants et noms Unicode, le rejet des encodages UTF-8 invalides et des données incohérentes, ainsi que l'absence de modification des données par la validation. La présence d'une description Android dans un test ne valide pas une application Android.
 
 `go build ./...` vérifie actuellement une bibliothèque ; il ne produit pas d'application utilisateur. Les tests s'exécutent localement, sans accès au routeur et sans modifier le réseau.
 

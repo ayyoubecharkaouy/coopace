@@ -5,6 +5,7 @@ import (
 	"slices"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 )
 
 // DeviceID is an opaque local identifier, not a hostname or a network identity.
@@ -39,13 +40,13 @@ type Device struct {
 // Validate checks the description's consistency without changing it or doing I/O.
 // Callers must validate a description again after modifying its exported fields.
 func (d Device) Validate() error {
-	if d.ID == "" || strings.ContainsFunc(string(d.ID), func(r rune) bool {
+	if d.ID == "" || !utf8.ValidString(string(d.ID)) || strings.ContainsFunc(string(d.ID), func(r rune) bool {
 		return unicode.IsSpace(r) || unicode.IsControl(r)
 	}) {
-		return fmt.Errorf("device ID must be non-empty and contain no whitespace or control characters")
+		return fmt.Errorf("device ID must be non-empty valid UTF-8 and contain no whitespace or control characters")
 	}
-	if strings.TrimSpace(d.Name) == "" || strings.ContainsFunc(d.Name, unicode.IsControl) {
-		return fmt.Errorf("device name must be non-blank and contain no control characters")
+	if !utf8.ValidString(d.Name) || strings.TrimSpace(d.Name) == "" || strings.ContainsFunc(d.Name, unicode.IsControl) {
+		return fmt.Errorf("device name must be non-blank valid UTF-8 and contain no control characters")
 	}
 	if !d.OS.valid() {
 		return fmt.Errorf("unsupported operating system: %q", d.OS)

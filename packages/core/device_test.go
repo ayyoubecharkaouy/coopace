@@ -27,6 +27,7 @@ func TestDeviceValidateAcceptedDescriptions(t *testing.T) {
 	}{
 		{"linux agent before capability assessment", func(d *core.Device) {}},
 		{"windows agent", func(d *core.Device) { d.OS = core.OSWindows }},
+		{"Unicode identifier", func(d *core.Device) { d.ID = "appareil-été-01" }},
 		{"android observer", func(d *core.Device) {
 			d.OS = core.OSAndroid
 			d.Capabilities = []core.Capability{core.CapabilityObserveLocalTraffic}
@@ -62,10 +63,12 @@ func TestDeviceValidateRejectsInconsistentDescriptions(t *testing.T) {
 		want   string
 	}{
 		{"missing ID", func(d *core.Device) { d.ID = "" }, "device ID"},
+		{"ID with invalid UTF-8", func(d *core.Device) { d.ID = "device-\xff" }, "device ID"},
 		{"ID with whitespace", func(d *core.Device) { d.ID = "device 01" }, "device ID"},
 		{"ID with Unicode whitespace", func(d *core.Device) { d.ID = "device\u00a001" }, "device ID"},
 		{"ID with control character", func(d *core.Device) { d.ID = "device\x0001" }, "device ID"},
 		{"blank name", func(d *core.Device) { d.Name = " \t" }, "device name"},
+		{"name with invalid UTF-8", func(d *core.Device) { d.Name = "Bureau \xff" }, "device name"},
 		{"name with newline", func(d *core.Device) { d.Name = "desktop\nother" }, "device name"},
 		{"missing OS", func(d *core.Device) { d.OS = "" }, "operating system"},
 		{"unknown OS", func(d *core.Device) { d.OS = "unsupported" }, "operating system"},

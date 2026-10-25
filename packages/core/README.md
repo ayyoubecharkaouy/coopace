@@ -22,8 +22,8 @@ Le tableau de bord est une interface, pas un rôle de membre du groupe. Le relai
 
 `Device.Validate()` vérifie :
 
-- un identifiant non vide, sans espace ni caractère de contrôle ;
-- un nom non blanc et sans caractère de contrôle, avec prise en charge des noms Unicode ;
+- un identifiant en UTF-8 valide, non vide, sans espace ni caractère de contrôle ;
+- un nom en UTF-8 valide, non blanc et sans caractère de contrôle, avec prise en charge des noms Unicode ;
 - un système connu et au moins un rôle connu ;
 - l'absence de doublons dans les rôles et capacités, et l'absence de capacités inconnues ;
 - la présence du rôle `gateway` lorsque la gestion du trafic de passerelle est déclarée.
