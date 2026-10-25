@@ -74,7 +74,6 @@ Les fonctions de relais exigeront un consentement distinct. Elles ne seront auto
 ## Décisions encore ouvertes
 
 - Packaging de chaque application et validation effective sur les systèmes cibles.
-- Détails de la commande locale `coopace status`, avec premiers essais sous Linux et cible Windows.
 - Réutilisation du noyau Go dans l'application Android Kotlin.
 - Contrats des adaptations système et séparation des privilèges.
 - Découverte, authentification des membres et stockage local.

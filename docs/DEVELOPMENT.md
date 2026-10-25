@@ -1,10 +1,10 @@
 # Préparation du développement Go
 
-## État de l'étape 2.2
+## État des étapes 2.2 et 2.3
 
 L'étape 2.2 est validée sous Linux x86_64 avec Go 1.27.3, installé localement à partir de l'archive officielle vérifiée. Le module Go et les premiers modèles métier sont présents, avec leurs tests.
 
-Les commandes `go fmt ./...`, `go test ./...`, `go vet ./...` et `go build ./...`, exécutées via `scripts/go.sh`, réussissent. Aucun programme agent n'est encore disponible ; `coopace status` appartient à l'étape 2.3. L'exécution native sous Windows et Android reste à vérifier.
+L'étape 2.3 ajoute le premier agent local. Les commandes de formatage, de test et d'analyse statique réussissent, ainsi que la compilation du binaire et son lancement sous Linux. La validation de la cible Windows reste prévue à l'étape 2.4 ; l'application Android sera développée ultérieurement.
 
 ## Version et module
 
@@ -51,7 +51,38 @@ rm -f .cache/downloads/go1.27.3.linux-amd64.tar.gz
 sh scripts/setup-go.sh
 ```
 
-## Vérifications du noyau
+## Lancer le premier agent
+
+Depuis la racine du dépôt, sous Linux :
+
+```sh
+sh scripts/go.sh run ./apps/agent/cmd/coopace status
+sh scripts/go.sh run ./apps/agent/cmd/coopace --help
+```
+
+Exemple de résultat sous Linux x86_64 :
+
+```text
+Coopace dev
+Système : linux
+Architecture : amd64
+Rôle : agent
+État : local (hors groupe)
+```
+
+`dev` est la version de développement de Coopace, distincte de la version du SDK Go. Le système et l'architecture correspondent à la plateforme de l'exécutable. Ce statut décrit cette exécution locale ; il ne recherche pas un service en arrière-plan, ne crée pas d'identité persistante et ne teste pas l'accès Internet.
+
+Pour compiler un binaire réutilisable :
+
+```sh
+mkdir -p .local/bin
+sh scripts/go.sh build -o .local/bin/coopace ./apps/agent/cmd/coopace
+./.local/bin/coopace status
+```
+
+Le binaire est placé dans un dossier exclu de Git. Ses codes de sortie sont `0` pour une réussite, `1` pour une erreur d'exécution ou d'affichage et `2` pour des arguments invalides. Sans argument, il affiche l'aide. `go run` peut présenter une erreur du programme avec son propre code de sortie ; utiliser le binaire pour vérifier les codes exacts.
+
+## Vérifications du noyau et de l'agent
 
 Une fois Go disponible :
 
@@ -65,7 +96,7 @@ git diff --check
 
 Les tests vérifient les descriptions valides Linux, Windows et Android, les rôles combinés, les identifiants et noms Unicode, le rejet des encodages UTF-8 invalides et des données incohérentes, ainsi que l'absence de modification des données par la validation. La présence d'une description Android dans un test ne valide pas une application Android.
 
-`go build ./...` vérifie actuellement une bibliothèque ; il ne produit pas d'application utilisateur. Les tests s'exécutent localement, sans accès au routeur et sans modifier le réseau.
+Les tests de l'agent vérifient la détection des plateformes ciblées, l'affichage du statut, l'aide, les arguments invalides et les erreurs d'affichage. `go build ./...` vérifie les paquets ; la commande avec `-o` ci-dessus produit le binaire utilisateur. Les tests s'exécutent localement, sans accès au routeur et sans modifier le réseau.
 
 Les tests de régression du script d'installation fonctionnent sans Go et sans réseau, avec Python 3 et de petites archives de test :
 
@@ -85,6 +116,7 @@ go fmt ./...
 go test ./...
 go vet ./...
 go build ./...
+go run ./apps/agent/cmd/coopace status
 ```
 
 Ces commandes utilisent les emplacements de cache par défaut de l'installation Windows. Les scripts `.sh` ne sont pas nécessaires sur cette plateforme.
@@ -94,3 +126,5 @@ Une validation réelle sous Windows devra être consignée séparément. Elle ne
 ## Organisation du code actuel
 
 Les fichiers de `packages/core` décrivent l'appareil, le système, les rôles et les capacités. Leurs règles et limites sont précisées dans le [README du noyau](../packages/core/README.md). Les messages JSON, la découverte et l'authentification seront développés dans les étapes suivantes.
+
+Le point d'entrée de l'agent se trouve dans `apps/agent/cmd/coopace`, avec les commandes dans `apps/agent/internal/cli` et l'état local dans `apps/agent/internal/status`. Voir le [README de l'agent](../apps/agent/README.md).

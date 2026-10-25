@@ -6,7 +6,7 @@ Le produit est organisé dans un dépôt Git unique, dans le dossier `coopace`.
 
 ## État du projet
 
-**Étape 2.2 terminée : module Go et modèles de base validés sous Linux.** Go 1.27.3 est installé localement ; le formatage, les tests, l'analyse statique et la compilation du noyau passent. Aucun composant exécutable n'est encore implémenté.
+**Étape 2.3 terminée : premier agent local exécutable sous Linux.** La commande `coopace status` affiche la version de développement, le système, l'architecture, le rôle et l'état local hors groupe. Le formatage, les tests, l'analyse statique et la compilation passent avec Go 1.27.3.
 
 Les [choix techniques](docs/TECH_STACK.md) détaillent les raisons, les limites et les décisions différées.
 
@@ -53,13 +53,14 @@ Voir l'[architecture](docs/ARCHITECTURE.md) et la [progression prévue](docs/ROA
 
 ## Développement
 
-Sous Linux x86_64, préparer le SDK local puis lancer les vérifications du noyau :
+Sous Linux x86_64, préparer le SDK local puis lancer l'agent et les tests :
 
 ```sh
 sh scripts/setup-go.sh
+sh scripts/go.sh run ./apps/agent/cmd/coopace status
 sh scripts/go.sh test ./...
 ```
 
-Les [instructions de développement](docs/DEVELOPMENT.md) détaillent l'installation, les vérifications et les commandes Windows. Le noyau est validé sous Linux ; les essais réels sous Windows et Android restent à réaliser. La commande utilisateur `coopace status` sera ajoutée à l'étape 2.3.
+Les [instructions de développement](docs/DEVELOPMENT.md) détaillent l'installation, la compilation du binaire, l'aide et les vérifications. Le noyau et la commande locale sont validés sous Linux ; la validation de la cible Windows appartient à l'étape 2.4. L'application Android reste à développer.
 
 Le dépôt Git est propre à ce dossier et utilise la branche `main`. La commande `git remote -v` permet de consulter les dépôts distants configurés dans chaque copie locale.

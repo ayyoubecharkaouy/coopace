@@ -17,7 +17,7 @@ Date : 25 octobre 2026.
 | Partie | Choix | Portée |
 | --- | --- | --- |
 | `packages/core` | Go | Modèles et règles métier partagés entre les applications de bureau. |
-| `apps/agent` | Go pour Linux et Windows | Premier point d'entrée en ligne de commande ; intégration comme service plus tard. |
+| `apps/agent` | Go pour Linux et Windows | Commande locale `coopace status` ; intégration comme service plus tard. |
 | `apps/gateway` | Go pour l'orchestration | Pilotage des adaptations du système, avec validation séparée de chaque moteur réseau. |
 | `platforms/linux`, `platforms/windows` | Adaptateurs Go en espace utilisateur | Appels système et intégrations à préciser par fonction. |
 | `packages/protocol` | Contrats JSON versionnés, indépendants du langage | Encodage Go avec la bibliothèque standard ; contrats mobiles à valider avec Kotlin. |
@@ -33,7 +33,7 @@ Go compile en code natif et inclut son support d'exécution dans le programme. C
 
 Pour ce projet, nous retenons Go comme compromis entre développement progressif, code commun Linux/Windows et outils intégrés de compilation, formatage et test. La [commande officielle `go`](https://pkg.go.dev/cmd/go) fournit ces outils. Ce choix ne démontre aucun gain de performance réseau.
 
-Le premier agent utilisera uniquement la bibliothèque standard. Une dépendance externe sera ajoutée lorsqu'une fonction concrète la justifiera.
+Le premier agent utilise uniquement la bibliothèque standard et le noyau du projet. Une dépendance externe sera ajoutée lorsqu'une fonction concrète la justifiera.
 
 | Autre option envisagée | Motif du choix pour Coopace |
 | --- | --- |
@@ -74,7 +74,7 @@ Le script `scripts/go.sh` utilise le SDK local sans modifier le `PATH` du termin
 
 ## Suite immédiate
 
-L'étape 2.2 est terminée. L'étape 2.3 ajoutera la commande locale `coopace status`. La validation du démarrage et des cibles de compilation complétera l'étape 2.
+Les étapes 2.2 et 2.3 sont terminées sous Linux. L'étape 2.4 complétera la validation du premier programme avec la cible Windows, en distinguant compilation et exécution réelle sur Windows.
 
 Les choix du transport réseau, du stockage, du framework web, d'un tunnel et du ML restent réservés aux étapes qui les nécessitent.
 

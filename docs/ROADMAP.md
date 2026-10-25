@@ -15,7 +15,7 @@ Validation : fichiers suivis par Git, différences sans erreurs d'espacement et 
 
 ## Étape 2 — Premier programme minimal
 
-État : en cours ; choix techniques et modèles de base validés. La commande locale de l'agent reste à implémenter.
+État : en cours ; choix techniques, modèles de base et premier agent local validés sous Linux. La validation de la cible Windows reste à effectuer à l'étape 2.4.
 
 Choisir et documenter la pile technique et la première plateforme. Définir les premiers modèles d'appareil, de rôle et de capacité, puis créer un point d'entrée minimal capable d'afficher son état local. Cette étape ne modifiera pas le routage ni les politiques du système.
 
@@ -39,13 +39,15 @@ Livrés : `.go-version`, `go.mod`, scripts d'installation locale et de lancement
 
 ### 2.3 — Commande locale de l'agent
 
-État : à faire.
+État : terminée, validée sous Linux x86_64 avec Go 1.27.3.
 
 Créer `coopace status` avec affichage de la version, du système détecté et de l'état local. Cette commande ne rejoindra aucun groupe et ne modifiera pas la configuration réseau.
 
+Livrés : point d'entrée de l'agent, collecte de l'état local, commandes `status` et d'aide, gestion des erreurs et tests. Le lancement via Go et celui du binaire compilé ont été vérifiés, ainsi que les codes de sortie pour l'aide et les arguments invalides.
+
 ### 2.4 — Validation du premier programme
 
-État : à faire.
+État : à faire pour la cible Windows ; le lancement Linux est déjà vérifié à l'étape 2.3.
 
 Documenter et vérifier le lancement sous Linux ainsi que la compilation pour Windows. Distinguer la réussite de compilation d'une validation réelle sur un appareil Windows.
 
