@@ -74,3 +74,5 @@ Introduire des décisions déterministes bornées, l'évaluation collective, l'a
 État : recherche, à réévaluer selon les résultats.
 
 Tester d'abord un tunnel manuel sur un véritable chemin alternatif. Étudier ensuite sa sélection automatique. Le ML ne sera envisagé qu'avec des données autorisées et un bénéfice reproductible face aux solutions existantes.
+
+Le dossier [`ml/`](../ml/README.md) réserve ce module et décrit son périmètre ainsi que ses conditions d'intégration. Son développement reste différé.

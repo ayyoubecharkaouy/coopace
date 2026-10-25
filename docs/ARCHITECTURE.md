@@ -50,6 +50,12 @@ Les tests propres à un module seront placés avec ce module, selon les conventi
 
 Les futurs services privilégiés et clients mobiles pourront nécessiter leurs propres points d'entrée ou paquets. Leur découpage sera décidé avec le packaging ; les dossiers actuels décrivent les responsabilités, pas un nombre imposé de processus ou d'installateurs.
 
+## Module ML facultatif
+
+Le dossier [`ml/`](../ml/README.md) est réservé aux futures expériences, à l'entraînement et à l'évaluation des modèles. Le noyau, les agents et la passerelle doivent fonctionner sans ce module et sans dépendance aux outils d'entraînement.
+
+Les prédictions seront des entrées facultatives pour la décision applicative. Les garde-fous déterministes conserveront le contrôle des interventions. L'export des modèles et l'intégration de l'inférence restent à spécifier après validation scientifique.
+
 ## Couverture et plateformes
 
 - Les agents Windows, Linux et Android sont des cibles du produit. Aucun PC Linux n'est requis pour appartenir au groupe.

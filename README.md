@@ -25,6 +25,7 @@ coopace/
 │   ├── linux/            # Intégrations Linux et, selon compatibilité, OpenWrt
 │   ├── windows/          # Intégrations Windows
 │   └── android/          # Intégrations Android pour l'agent
+├── ml/                   # Futur module ML : recherche, entraînement et évaluation
 └── docs/
     ├── ARCHITECTURE.md
     ├── ROADMAP.md
@@ -32,6 +33,8 @@ coopace/
 ```
 
 Chaque répertoire de module contient un README qui définit sa responsabilité et son état.
+
+Le [module ML](ml/README.md) est réservé pour un développement ultérieur. Il reste facultatif et indépendant du fonctionnement de base.
 
 Les applications assemblent les composants ; le noyau métier reste indépendant des systèmes. Les [règles de dépendance](docs/ARCHITECTURE.md#règles-de-dépendance-et-de-rangement) précisent où placer les prochaines fonctionnalités.
 

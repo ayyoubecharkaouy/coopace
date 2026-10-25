@@ -23,6 +23,7 @@ Date : 25 octobre 2026.
 | `packages/protocol` | Contrats JSON versionnés, indépendants du langage | Encodage Go avec la bibliothèque standard ; contrats mobiles à valider avec Kotlin. |
 | Intégration Android | Kotlin et outils Android natifs | Permissions, cycle de vie et services ; aucun projet Android créé à cette étape. |
 | `apps/dashboard` | Interface web locale ; framework différé | Le choix du framework attend les premiers besoins d'interface. |
+| `ml/` | Python envisagé ; bibliothèques différées | Recherche, entraînement hors ligne et évaluation ; export et inférence à déterminer après validation. |
 
 JSON désigne ici le format retenu pour les futurs contrats. Aucun schéma de message, transport, mécanisme d'authentification ou service réseau n'est encore défini.
 
@@ -76,3 +77,5 @@ Lors de l'inventaire de cette étape, la commande `go` n'est pas disponible dans
 L'étape 2.2 préparera l'outillage Go et les modèles de base dans `packages/core`. L'étape 2.3 ajoutera la commande locale `coopace status`. La validation du démarrage et des cibles de compilation complétera l'étape 2.
 
 Les choix du transport réseau, du stockage, du framework web, d'un tunnel et du ML restent réservés aux étapes qui les nécessitent.
+
+Le périmètre du futur module ML est documenté dans [`ml/README.md`](../ml/README.md).
