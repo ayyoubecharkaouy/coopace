@@ -30,6 +30,24 @@ Les applications utiliseront les contrats partagés et les adaptations correspon
 
 Les modules partagés peuvent contenir des spécifications, schémas ou bibliothèques ; leur forme dépendra de la pile technique retenue. Cette arborescence ne suppose pas un langage unique sur toutes les plateformes.
 
+## Règles de dépendance et de rangement
+
+| Emplacement | Dépendances et limites |
+| --- | --- |
+| `packages/core` | Ne dépend ni des applications, ni du protocole réseau, ni des adaptations système. |
+| `packages/protocol` | Définit les messages échangés. Ne dépend ni des applications ni des adaptations système. |
+| `platforms/<système>` | Implémente les opérations du système derrière les contrats définis côté noyau. Ne dépend ni des applications ni des adaptations d'un autre système. |
+| `apps/agent`, `apps/gateway` | Assemblent le noyau, le protocole et les adaptations compatibles avec le système courant. |
+| `apps/dashboard` | Utilise le contrat de l'API exposée par les applications. Ne charge pas les adaptations réseau privilégiées. |
+
+Un message réseau et un modèle métier ont des responsabilités distinctes. Leur conversion se fait à la frontière applicative ; elle ne doit pas introduire une dépendance circulaire entre `core` et `protocol`.
+
+La structure est organisée par responsabilité, puis par système : une règle d'évaluation commune va dans `packages/core`, une mesure propre à Windows dans `platforms/windows`, et leur orchestration dans l'application concernée. La logique commune ne doit pas être dupliquée dans chaque adaptation.
+
+Les tests propres à un module seront placés avec ce module, selon les conventions de la pile choisie. Un répertoire de tests entre plusieurs composants ne sera ajouté que lorsqu'un scénario d'intégration le nécessitera.
+
+Les futurs services privilégiés et clients mobiles pourront nécessiter leurs propres points d'entrée ou paquets. Leur découpage sera décidé avec le packaging ; les dossiers actuels décrivent les responsabilités, pas un nombre imposé de processus ou d'installateurs.
+
 ## Couverture et plateformes
 
 - Les agents Windows, Linux et Android sont des cibles du produit. Aucun PC Linux n'est requis pour appartenir au groupe.

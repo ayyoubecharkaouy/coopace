@@ -30,6 +30,8 @@ coopace/
 
 Chaque répertoire de module contient un README qui définit sa responsabilité et son état.
 
+Les applications assemblent les composants ; le noyau métier reste indépendant des systèmes. Les [règles de dépendance](docs/ARCHITECTURE.md#règles-de-dépendance-et-de-rangement) précisent où placer les prochaines fonctionnalités.
+
 ## Principes
 
 - Une passerelle ne gère que le trafic qui passe effectivement par elle.
@@ -45,4 +47,4 @@ Voir l'[architecture](docs/ARCHITECTURE.md) et la [progression prévue](docs/ROA
 
 Il n'y a actuellement aucune commande de lancement, de compilation ou de test. La prochaine étape doit définir la pile technique et un premier programme minimal vérifiable.
 
-Git est local à ce dossier. Aucun dépôt distant n'est configuré lors de cette étape.
+Le dépôt Git est propre à ce dossier et utilise la branche `main`. La commande `git remote -v` permet de consulter les dépôts distants configurés dans chaque copie locale.

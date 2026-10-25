@@ -1,0 +1,6 @@
+# Fins de ligne cohérentes entre Linux, Windows et Android.
+* text=auto eol=lf
+
+# Scripts exécutés par l'interpréteur de commandes Windows.
+*.bat text eol=crlf
+*.cmd text eol=crlf
