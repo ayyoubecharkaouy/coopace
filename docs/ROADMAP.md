@@ -2,6 +2,8 @@
 
 Chaque étape doit produire un résultat vérifiable avant d'étendre le périmètre. Ce document décrit une progression ; il n'autorise pas à implémenter toutes les étapes d'un seul coup.
 
+Les [objectifs produit et critères de réussite](PRODUCT.md) fixent la direction. Les étapes 1 et 2 préparent le socle logiciel ; elles ne démontrent aucun gain réseau. Après ce socle, l'instrumentation et un premier moteur de passerelle mesurable priment sur l'élargissement du groupe, une interface complète ou le ML.
+
 ## Étape 1 — Organisation du dépôt
 
 État : réalisée lors de l'initialisation.
@@ -55,9 +57,9 @@ Documenter et vérifier le lancement sous Linux ainsi que la compilation pour Wi
 
 État : à faire.
 
-Spécifier les messages, l'identité et l'adhésion autorisée au groupe. Établir un échange de mesures minimales entre deux instances, puis élargir aux plateformes retenues. Ajouter une première vue de contrôle.
+Commencer par définir et instrumenter les mesures locales utiles, avec leurs limites et une référence avant intervention. Spécifier ensuite les messages, l'identité et l'adhésion autorisée au groupe. Établir un échange minimal entre deux instances et une première vue des observations. L'élargissement à toutes les plateformes et la coordination avancée attendront la validation du prototype de passerelle.
 
-Validation : adhésion explicite, traitement des messages invalides et déconnexion propre.
+Validation : provenance et limites des mesures connues, adhésion explicite, échanges authentifiés, traitement des messages invalides et déconnexion propre. Un groupe complet n'est pas requis pour commencer l'étude du moteur de passerelle.
 
 ## Étape 4 — Prototype de passerelle
 
@@ -65,13 +67,19 @@ Validation : adhésion explicite, traitement des messages invalides et déconnex
 
 Valider sur la plateforme choisie la couverture du trafic, les permissions, les mesures de référence et la restauration. Intégrer un moteur de gestion des files adapté à ce système, puis comparer son résultat à une référence connue.
 
-Validation : couverture mesurée et comparaison avant/après, y compris en cas de panne.
+Commencer par une étude courte du point d'application et des opérations réalisables. La cible Windows doit faire l'objet de cette validation spécifique : une CLI Windows fonctionnelle ne valide pas le moteur de passerelle. La référence Linux/OpenWrt avec CAKE/SQM du rapport reste distincte de cette cible.
+
+Le premier essai utilisera une activation manuelle et bornée. Comparer la configuration initiale, le moteur configuré manuellement et le pilotage Coopace sans ML, selon les [mesures prévues](PRODUCT.md#références-et-mesures-indispensables). Fixer les seuils d'acceptation avant l'expérience.
+
+Validation : couverture mesurée, latence sous charge, débit utile, équité et ressources consommées ; restauration et compatibilité IPv4/IPv6/DNS vérifiées, y compris en cas de panne. Documenter également les scénarios sans bénéfice.
 
 ## Étape 5 — Décisions coopératives
 
 État : à faire.
 
 Introduire des décisions déterministes bornées, l'évaluation collective, l'abstention et le retour arrière. Compléter les intégrations des plateformes selon leurs capacités réelles.
+
+Cette automatisation dépend de la validation des mesures et de la restauration à l'étape 4. Si la surcouche n'apporte pas de bénéfice par rapport au moteur existant, conserver l'intégration simple et réévaluer l'automatisation.
 
 ## Étapes ultérieures — Relais et ML facultatifs
 

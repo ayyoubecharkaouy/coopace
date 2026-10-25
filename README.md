@@ -4,6 +4,8 @@ Coopace vise à améliorer la latence sous charge et le partage de la connexion 
 
 Le produit est organisé dans un dépôt Git unique, dans le dossier `coopace`.
 
+Le [périmètre produit](docs/PRODUCT.md) décrit le résultat visé, l'état réel de chaque composant et les critères nécessaires pour démontrer un bénéfice réseau.
+
 ## État du projet
 
 **Étape 2.3 terminée : premier agent local exécutable sous Linux.** La commande `coopace status` affiche la version de développement, le système, l'architecture, le rôle et l'état local hors groupe. Le formatage, les tests, l'analyse statique et la compilation passent avec Go 1.27.3.
@@ -30,6 +32,7 @@ coopace/
 └── docs/
     ├── ARCHITECTURE.md
     ├── DEVELOPMENT.md
+    ├── PRODUCT.md
     ├── ROADMAP.md
     └── TECH_STACK.md
 ```

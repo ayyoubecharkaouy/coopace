@@ -6,6 +6,8 @@ Cette organisation traduit l'architecture « Edge & Peers » du rapport historiq
 
 Coopace est un produit composé de plusieurs applications et bibliothèques. Une installation peut réunir plusieurs rôles, par exemple passerelle et agent sur un même PC.
 
+Le [périmètre produit et ses critères de réussite](PRODUCT.md) servent de référence pour les priorités. Les applications et capacités décrites ci-dessous sont des responsabilités cibles ; leur présence dans l'arborescence ne signifie pas qu'elles sont implémentées.
+
 Les [choix techniques de l'étape 2.1](TECH_STACK.md) retiennent Go pour le noyau et les applications Linux/Windows, et Kotlin pour l'intégration Android. La réutilisation du noyau Go sur Android reste à valider.
 
 ## Applications
@@ -68,6 +70,8 @@ Les prédictions seront des entrées facultatives pour la décision applicative.
 ## Contraintes des futures interventions
 
 Toute modification réseau devra annoncer ses permissions, vérifier les capacités locales et disposer d'une restauration adaptée au risque. Les données collectées seront minimales, locales par défaut, sans interception TLS ni journalisation des contenus.
+
+Avant toute automatisation, la restauration devra pouvoir fonctionner même si le processus de pilotage est interrompu. Le comportement en cas de panne devra être explicite : maintien du passage du trafic ou blocage selon la politique choisie, avec vérification d'IPv6 et du DNS.
 
 Les fonctions de relais exigeront un consentement distinct. Elles ne seront automatisées qu'après comparaison avec un chemin manuel et vérification du bénéfice collectif.
 
