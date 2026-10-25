@@ -30,6 +30,27 @@ Le premier script télécharge l'archive officielle en HTTPS, vérifie son SHA-2
 
 Le script d'installation prend actuellement en charge Linux x86_64 uniquement. Pour une autre architecture, utiliser la [distribution officielle adaptée](https://go.dev/doc/install).
 
+### Connexion lente ou téléchargement interrompu
+
+Le téléchargement n'a plus de limite totale de cinq minutes. Il s'interrompt si la connexion ne peut pas être établie en 30 secondes ou si le transfert reste sous un octet par seconde pendant deux minutes.
+
+L'archive partielle est conservée dans `.cache/downloads/`. Après une coupure ou une interruption, relancer simplement :
+
+```sh
+sh scripts/setup-go.sh
+```
+
+Le script demande la reprise au dernier octet reçu avec `curl --continue-at -`. Une archive déjà complète et vérifiée est réutilisée sans téléchargement. Voir la [documentation officielle curl](https://curl.se/docs/manpage.html#-C).
+
+La première version du script supprimait le fichier temporaire après un échec : les données reçues avec cette ancienne version ne peuvent donc pas être reprises. Les nouvelles tentatives conserveront leur progression.
+
+Si le serveur refuse la reprise ou si la somme de contrôle est incorrecte, supprimer uniquement l'archive du cache puis relancer le script pour un téléchargement complet :
+
+```sh
+rm -f .cache/downloads/go1.27.3.linux-amd64.tar.gz
+sh scripts/setup-go.sh
+```
+
 ## Vérifications du noyau
 
 Une fois Go disponible :
@@ -45,6 +66,14 @@ git diff --check
 Les tests vérifient les descriptions valides Linux, Windows et Android, les rôles combinés, le rejet des données incohérentes et l'absence de modification des données par la validation. La présence d'une description Android dans un test ne valide pas une application Android.
 
 `go build ./...` vérifie actuellement une bibliothèque ; il ne produit pas d'application utilisateur. Les tests s'exécutent localement, sans accès au routeur et sans modifier le réseau.
+
+Les tests de régression du script d'installation fonctionnent sans Go et sans réseau, avec Python 3 et de petites archives de test :
+
+```sh
+python3 -B -m unittest discover -s scripts/tests -p 'test_*.py' -v
+```
+
+Ils vérifient la conservation et la reprise d'un téléchargement interrompu, la réutilisation d'une archive vérifiée et le refus d'une archive corrompue. Ils ne valident pas le téléchargement réel du SDK ni le noyau Go.
 
 ## Sous Windows
 
