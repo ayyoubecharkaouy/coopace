@@ -15,11 +15,37 @@ Validation : fichiers suivis par Git, différences sans erreurs d'espacement et 
 
 ## Étape 2 — Premier programme minimal
 
-État : à faire.
+État : en cours, choix techniques terminés ; implémentation à faire.
 
 Choisir et documenter la pile technique et la première plateforme. Définir les premiers modèles d'appareil, de rôle et de capacité, puis créer un point d'entrée minimal capable d'afficher son état local. Cette étape ne modifiera pas le routage ni les politiques du système.
 
 Validation : démarrage reproductible et vérification des modèles effectivement utilisés.
+
+### 2.1 — Choix techniques
+
+État : terminée.
+
+Go pour le noyau et les agents Linux/Windows, Kotlin pour l'intégration Android, contrats JSON versionnés pour le futur protocole. Premiers essais sous Linux, avec cible Windows. Le framework web et la réutilisation du noyau sur Android restent à valider au moment concerné.
+
+Livrable : [décision technique documentée et sourcée](TECH_STACK.md). Aucun code ni outillage installé à cette sous-étape.
+
+### 2.2 — Outillage et modèles de base
+
+État : à faire.
+
+Préparer une version stable de Go, créer un module unique à la racine et définir les modèles d'appareil, de rôle et de capacité dans `packages/core`. Vérifier leurs contraintes utiles avant de les intégrer à l'agent.
+
+### 2.3 — Commande locale de l'agent
+
+État : à faire.
+
+Créer `coopace status` avec affichage de la version, du système détecté et de l'état local. Cette commande ne rejoindra aucun groupe et ne modifiera pas la configuration réseau.
+
+### 2.4 — Validation du premier programme
+
+État : à faire.
+
+Documenter et vérifier le lancement sous Linux ainsi que la compilation pour Windows. Distinguer la réussite de compilation d'une validation réelle sur un appareil Windows.
 
 ## Étape 3 — Groupe et observations
 

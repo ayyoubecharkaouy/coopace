@@ -1,0 +1,78 @@
+# Choix techniques — étape 2.1
+
+Date : 25 octobre 2026.
+
+État : choix retenus pour le premier prototype. Aucun outil, paquet ou programme n'est installé ou implémenté par cette décision.
+
+## Besoins qui guident le choix
+
+- Développer progressivement un agent Linux et Windows avec un noyau commun.
+- Préparer la coordination réseau et les adaptations propres aux systèmes.
+- Distribuer à terme des exécutables adaptés au système de l'utilisateur.
+- Conserver une intégration Android native pour les permissions et services mobiles.
+- Réutiliser les moteurs réseau existants ; le noyau applicatif ne remplace pas le gestionnaire de files du système.
+
+## Décisions
+
+| Partie | Choix | Portée |
+| --- | --- | --- |
+| `packages/core` | Go | Modèles et règles métier partagés entre les applications de bureau. |
+| `apps/agent` | Go pour Linux et Windows | Premier point d'entrée en ligne de commande ; intégration comme service plus tard. |
+| `apps/gateway` | Go pour l'orchestration | Pilotage des adaptations du système, avec validation séparée de chaque moteur réseau. |
+| `platforms/linux`, `platforms/windows` | Adaptateurs Go en espace utilisateur | Appels système et intégrations à préciser par fonction. |
+| `packages/protocol` | Contrats JSON versionnés, indépendants du langage | Encodage Go avec la bibliothèque standard ; contrats mobiles à valider avec Kotlin. |
+| Intégration Android | Kotlin et outils Android natifs | Permissions, cycle de vie et services ; aucun projet Android créé à cette étape. |
+| `apps/dashboard` | Interface web locale ; framework différé | Le choix du framework attend les premiers besoins d'interface. |
+
+JSON désigne ici le format retenu pour les futurs contrats. Aucun schéma de message, transport, mécanisme d'authentification ou service réseau n'est encore défini.
+
+## Pourquoi Go pour le premier agent
+
+Go compile en code natif et inclut son support d'exécution dans le programme. Cela convient à notre objectif de distribuer un exécutable de bureau sans demander l'installation d'une machine virtuelle dédiée. Les dépendances natives éventuelles devront néanmoins être vérifiées au packaging. Voir la [FAQ officielle Go](https://go.dev/doc/faq#runtime).
+
+Pour ce projet, nous retenons Go comme compromis entre développement progressif, code commun Linux/Windows et outils intégrés de compilation, formatage et test. La [commande officielle `go`](https://pkg.go.dev/cmd/go) fournit ces outils. Ce choix ne démontre aucun gain de performance réseau.
+
+Le premier agent utilisera uniquement la bibliothèque standard. Une dépendance externe sera ajoutée lorsqu'une fonction concrète la justifiera.
+
+| Autre option envisagée | Motif du choix pour Coopace |
+| --- | --- |
+| Rust | Reste une option pour un composant spécialisé. Nous privilégions Go pour limiter la complexité initiale du service applicatif. |
+| Python | Convient aux scripts et aux futures expériences de recherche. Nous privilégions une chaîne Go pour le noyau et la distribution des agents de bureau. |
+
+Ces appréciations concernent les besoins actuels du projet ; elles ne constituent pas un classement général des langages.
+
+## Intégrations propres aux systèmes
+
+### Linux et OpenWrt
+
+Le premier développement et les premiers essais locaux se feront sous Linux. La cible Windows sera prévue dès le noyau commun ; une compilation Windows et des essais sur Windows resteront deux validations distinctes.
+
+CAKE/SQM reste une intégration future du moteur Linux. Le packaging OpenWrt sera évalué sur une cible matérielle précise ; choisir Go ne suffit pas à garantir la compatibilité et le coût mémoire sur chaque routeur.
+
+### Windows
+
+Go concerne le programme en espace utilisateur. Le choix du langage ne fournit ni une passerelle fonctionnelle ni un équivalent de CAKE.
+
+Les appels aux API Windows seront isolés dans l'adaptation Windows. Microsoft recommande d'utiliser les fonctions WFP existantes en espace utilisateur lorsqu'elles suffisent, et de réserver un pilote aux traitements qui l'exigent. Un éventuel pilote sera un composant séparé avec sa propre chaîne de développement. Voir les [considérations Microsoft pour les pilotes WFP](https://learn.microsoft.com/en-us/windows-hardware/drivers/network/callout-driver-programming-considerations).
+
+### Android
+
+Kotlin est retenu pour la couche applicative native et l'accès aux services Android. Voir la [documentation Android pour Kotlin](https://developer.android.com/kotlin).
+
+Le noyau Go ne sera pas supposé directement importable depuis Kotlin. Go Mobile propose des liaisons vers Java et des bibliothèques Android ; leur adéquation à nos modèles, au cycle de vie et au packaging devra être démontrée par un prototype. Voir la [documentation Go Mobile](https://go.dev/wiki/Mobile).
+
+Le mécanisme de réutilisation du noyau sur Android reste ouvert jusqu'à cette validation. Le protocole versionné restera le contrat d'interopérabilité entre appareils. L'organisation des futurs points d'entrée Android et du projet Gradle sera définie pendant l'étape mobile.
+
+## Organisation et versions des outils
+
+Le premier code Go utilisera un seul module, avec un `go.mod` à la racine du dépôt, en conservant les dossiers existants. Plusieurs répertoires métier ne nécessitent pas plusieurs modules Go. Le chemin du module sera aligné sur le dépôt distant lors de sa création. Voir le [guide officiel d'organisation d'un module](https://go.dev/doc/modules/layout).
+
+La version stable de Go sera choisie et enregistrée lors de la préparation du premier code, avec les commandes de compilation et de vérification correspondantes. Aucun numéro de version ne doit être présenté comme testé avant cette préparation.
+
+Lors de l'inventaire de cette étape, la commande `go` n'est pas disponible dans le `PATH` de l'environnement de travail. Son installation et la création du module font partie de l'étape suivante. La [documentation d'installation Go](https://go.dev/doc/install) couvre Linux et Windows.
+
+## Suite immédiate
+
+L'étape 2.2 préparera l'outillage Go et les modèles de base dans `packages/core`. L'étape 2.3 ajoutera la commande locale `coopace status`. La validation du démarrage et des cibles de compilation complétera l'étape 2.
+
+Les choix du transport réseau, du stockage, du framework web, d'un tunnel et du ML restent réservés aux étapes qui les nécessitent.

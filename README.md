@@ -6,7 +6,9 @@ Le produit est organisé dans un dépôt Git unique, dans le dossier `coopace`.
 
 ## État du projet
 
-**Étape 1 : structure et documentation.** Aucun composant exécutable n'est encore implémenté. Les langages, dépendances et outils de compilation seront choisis lors de l'étape suivante.
+**Étape 2.1 terminée : choix techniques documentés.** Go est retenu pour le noyau et les agents Linux/Windows ; Kotlin pour l'intégration Android. Aucun composant exécutable n'est encore implémenté.
+
+Les [choix techniques](docs/TECH_STACK.md) détaillent les raisons, les limites et les décisions différées.
 
 ## Organisation
 
@@ -25,7 +27,8 @@ coopace/
 │   └── android/          # Intégrations Android pour l'agent
 └── docs/
     ├── ARCHITECTURE.md
-    └── ROADMAP.md
+    ├── ROADMAP.md
+    └── TECH_STACK.md
 ```
 
 Chaque répertoire de module contient un README qui définit sa responsabilité et son état.
@@ -45,6 +48,6 @@ Voir l'[architecture](docs/ARCHITECTURE.md) et la [progression prévue](docs/ROA
 
 ## Développement
 
-Il n'y a actuellement aucune commande de lancement, de compilation ou de test. La prochaine étape doit définir la pile technique et un premier programme minimal vérifiable.
+Il n'y a actuellement aucune commande de lancement, de compilation ou de test. La prochaine étape prépare l'outillage Go et les modèles de base ; la commande `coopace status` viendra ensuite.
 
 Le dépôt Git est propre à ce dossier et utilise la branche `main`. La commande `git remote -v` permet de consulter les dépôts distants configurés dans chaque copie locale.

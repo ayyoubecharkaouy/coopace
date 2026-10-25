@@ -6,6 +6,8 @@ Cette organisation traduit l'architecture « Edge & Peers » du rapport historiq
 
 Coopace est un produit composé de plusieurs applications et bibliothèques. Une installation peut réunir plusieurs rôles, par exemple passerelle et agent sur un même PC.
 
+Les [choix techniques de l'étape 2.1](TECH_STACK.md) retiennent Go pour le noyau et les applications Linux/Windows, et Kotlin pour l'intégration Android. La réutilisation du noyau Go sur Android reste à valider.
+
 ## Applications
 
 | Module | Responsabilité |
@@ -28,7 +30,7 @@ La passerelle est un point de passage des données. Ce rôle ne lui attribue pas
 
 Les applications utiliseront les contrats partagés et les adaptations correspondant au système. Le noyau métier doit rester indépendant des API du système et du tableau de bord. Le format des messages sera défini avant d'implémenter des clients dans plusieurs langages.
 
-Les modules partagés peuvent contenir des spécifications, schémas ou bibliothèques ; leur forme dépendra de la pile technique retenue. Cette arborescence ne suppose pas un langage unique sur toutes les plateformes.
+Le noyau partagé sera une bibliothèque Go pour les applications de bureau. Les contrats du protocole utiliseront des messages JSON versionnés et resteront indépendants du langage. Cette arborescence ne suppose pas un langage unique sur toutes les plateformes.
 
 ## Règles de dépendance et de rangement
 
@@ -65,8 +67,9 @@ Les fonctions de relais exigeront un consentement distinct. Elles ne seront auto
 
 ## Décisions encore ouvertes
 
-- Langages, outils de compilation et packaging de chaque application.
-- Premier système et première fonction à implémenter.
+- Version de Go, préparation de l'outillage et packaging de chaque application.
+- Détails des modèles de base et de la commande locale `coopace status`, avec premiers essais sous Linux et cible Windows.
+- Réutilisation du noyau Go dans l'application Android Kotlin.
 - Contrats des adaptations système et séparation des privilèges.
 - Découverte, authentification des membres et stockage local.
 - Méthode de mesure et critères d'acceptation du premier prototype.
