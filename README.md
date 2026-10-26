@@ -31,22 +31,11 @@ coopace/
 │   └── android/          # Intégrations Android pour l'agent
 ├── scripts/              # Installation locale de Go et commandes de développement
 ├── ml/                   # Futur module ML : recherche, entraînement et évaluation
-└── docs/
-    ├── ARCHITECTURE.md
-    ├── DEVELOPMENT.md
-    ├── GATEWAY_DIAGNOSTIC.md
-    ├── GROUP_EXCHANGE.md
-    ├── IDENTITY_AND_GROUP.md
-    ├── LATENCY.md
-    ├── OBSERVATIONS.md
-    ├── PRODUCT.md
-    ├── REVIEW_2026-10-26.md
-    ├── ROADMAP.md
-    ├── TECH_STACK.md
-    └── WINDOWS_VALIDATION.md
+└── docs/                 # Architecture, progression et procédures
+    └── README.md         # Index de la documentation
 ```
 
-Chaque répertoire de module contient un README qui définit sa responsabilité et son état.
+Chaque composant majeur contient un README qui définit sa responsabilité et son état. Le code Go utilise un seul module à la racine (`go.mod`), avec plusieurs paquets organisés par responsabilité. L'[index de documentation](docs/README.md) guide la lecture des décisions et des procédures.
 
 Le [module ML](ml/README.md) est réservé pour un développement ultérieur. Il reste facultatif et indépendant du fonctionnement de base.
 

@@ -22,6 +22,8 @@ agent/
 
 La détection commune utilise le système et l'architecture fournis par Go. Elle réutilise les types de plateforme et de rôle du noyau. Les commandes d'état et de mesures ne créent pas d'identité implicitement : `identity init` est une action explicite, distincte de l'adhésion.
 
+Dans `internal/cli`, `cli.go` répartit les commandes. L'observation possède son fichier `observe.go` et ses tests, comme les fichiers dédiés à la latence, à l'identité et au groupe. La collecte et les calculs restent dans leurs composants respectifs.
+
 ## Lancement
 
 Depuis la racine du dépôt :

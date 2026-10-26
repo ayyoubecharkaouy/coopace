@@ -58,6 +58,8 @@ Le noyau ne fait aucune connexion et ne définit aucun format JSON. La mesure TC
 
 La génération/lecture de la clé appartient à l'agent, et l'authentification réseau au transport TLS assemblé par l'agent. Les contrats sont convertis vers `Device` à la frontière applicative pour réutiliser les règles métier. Voir [IDENTITY_AND_GROUP.md](../../docs/IDENTITY_AND_GROUP.md).
 
+Le calcul d'empreinte est dans [identity.go](identity.go), et le modèle de consentement dans [consent.go](consent.go), avec leurs tests respectifs. Cette séparation conserve le même paquet `core` et la même API.
+
 ## Inventaire de passerelle
 
 `GatewayReading` conserve explicitement la disponibilité d'une valeur : une donnée inaccessible ne devient pas un booléen faux ou une liste vide. `GatewayInventory` regroupe interfaces, flags de forwarding, capacité observée, outils, routes par défaut et files. Ces types ne détectent ni une interface WAN ni l'aptitude à gérer le réseau ; ils n'effectuent aucun I/O et ne constituent pas une autorisation.

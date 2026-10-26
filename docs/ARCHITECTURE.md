@@ -1,4 +1,4 @@
-# Architecture initiale
+# Architecture et organisation du projet
 
 ## Périmètre
 
@@ -34,6 +34,8 @@ Les applications assemblent les contrats partagés et les adaptations correspond
 
 Le noyau partagé sera une bibliothèque Go pour les applications de bureau. Les contrats du protocole utiliseront des messages JSON versionnés et resteront indépendants du langage. Cette arborescence ne suppose pas un langage unique sur toutes les plateformes.
 
+Les composants de l'arborescence sont des unités de responsabilité. Côté Go, le dépôt possède un seul module défini par `go.mod`, et plusieurs paquets ; les dossiers `apps`, `packages` et `platforms` ne nécessitent pas de modules Go séparés. Les répertoires réservés à Windows, Android, au tableau de bord et au ML gardent leur README tant que leur implémentation n'a pas commencé.
+
 ## Règles de dépendance et de rangement
 
 | Emplacement | Dépendances et limites |
@@ -49,6 +51,15 @@ Un message réseau et un modèle métier ont des responsabilités distinctes. Le
 La structure est organisée par responsabilité, puis par système : une règle d'évaluation commune va dans `packages/core`, une mesure propre à Windows dans `platforms/windows`, et leur orchestration dans l'application concernée. La logique commune ne doit pas être dupliquée dans chaque adaptation.
 
 Les tests propres à un module seront placés avec ce module, selon les conventions de la pile choisie. Un répertoire de tests entre plusieurs composants ne sera ajouté que lorsqu'un scénario d'intégration le nécessitera.
+
+Le découpage des fichiers suit aussi les responsabilités :
+
+- Les modèles et règles partagés restent dans `packages/core`, avec notamment `identity.go` pour l'empreinte publique et `consent.go` pour les autorisations de groupe.
+- Les messages échangés restent dans `packages/protocol`. Les rapports locaux propres à une application restent dans ses paquets `internal`.
+- Dans la CLI de l'agent, `cli.go` répartit les commandes ; `observe.go` contient l'orchestration et l'affichage de l'observation, comme les fichiers dédiés à la latence, à l'identité et au groupe.
+- L'inventaire Linux sépare `gateway.go` pour la collecte, `gateway_parse.go` pour le décodage pur et `gateway_linux.go` pour les accès système et processus externes. Les tests correspondants restent à côté de ces fichiers ; les suffixes et contraintes de compilation distinguent les sources natives.
+
+Le préfixe commun des fichiers regroupe une fonctionnalité dans son paquet. Créer un sous-paquet seulement lorsqu'une responsabilité ou une dépendance distincte le justifie ; les modèles, parseurs et rapports n'ont pas besoin d'un dossier global commun. Les fichiers générés et états locaux restent dans les emplacements exclus de Git, notamment `.local/` et `.cache/`.
 
 Les futurs services privilégiés et clients mobiles pourront nécessiter leurs propres points d'entrée ou paquets. Leur découpage sera décidé avec le packaging ; les dossiers actuels décrivent les responsabilités, pas un nombre imposé de processus ou d'installateurs.
 
