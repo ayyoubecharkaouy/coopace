@@ -25,7 +25,7 @@ Date : 25 octobre 2026.
 | `apps/dashboard` | Interface web locale ; framework différé | Le choix du framework attend les premiers besoins d'interface. |
 | `ml/` | Python envisagé ; bibliothèques différées | Recherche, entraînement hors ligne et évaluation ; export et inférence à déterminer après validation. |
 
-JSON désigne ici le format retenu pour les futurs contrats. Aucun schéma de message, transport, mécanisme d'authentification ou service réseau n'est encore défini.
+JSON est le format des contrats réseau v2 implémentés aux étapes 3.3/3.4, distincts de l'export local de latence v1. Le transport TLS 1.3 mutuel utilise la bibliothèque standard ; voir [GROUP_EXCHANGE.md](GROUP_EXCHANGE.md). Aucun service réseau permanent n'est fourni.
 
 ## Pourquoi Go pour le premier agent
 
@@ -74,7 +74,7 @@ Le script `scripts/go.sh` utilise le SDK local sans modifier le `PATH` du termin
 
 ## Suite immédiate
 
-Les étapes 2.2 à 3.3 livrent le socle, les mesures et les fondations d'identité/consentement/contrats. Ed25519 et SHA-256 de la bibliothèque standard sont retenus pour l'identité ; TLS 1.3 mutuel est prévu à l'étape 3.4. Le stockage persistant de clé est activé sous Linux seulement, car les permissions doivent être adaptées au système. La collecte des compteurs et le stockage protégé Windows restent à implémenter ; son exécution native reste à consigner selon [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md).
+Les étapes 2.2 à 3.4 livrent le socle, les mesures, les fondations d'identité et un premier échange authentifié Linux. Ed25519 et SHA-256 de la bibliothèque standard sont retenus pour l'identité ; TLS 1.3 mutuel est intégré à l'étape 3.4 et testé en mémoire ; la validation TCP réelle reste à confirmer. Le stockage persistant de clé est activé sous Linux seulement, car les permissions doivent être adaptées au système. La collecte des compteurs et le stockage protégé Windows restent à implémenter ; son exécution native reste à consigner selon [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md).
 
 Les choix du transport réseau, du stockage, du framework web, d'un tunnel et du ML restent réservés aux étapes qui les nécessitent.
 

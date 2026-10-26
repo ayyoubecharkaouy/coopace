@@ -1,4 +1,4 @@
-// Package group contains application-level boundaries for future group sessions.
+// Package group manages explicit peer approvals and bounded authenticated exchanges.
 package group
 
 import (

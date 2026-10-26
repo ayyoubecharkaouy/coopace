@@ -20,6 +20,7 @@ Commandes :
   observe   Observer le trafic local par interface pendant environ une seconde (Linux).
   latency   Mesurer l'établissement TCP vers --target IP:port (options : latency --help).
   identity  Initialiser ou afficher l'identité locale (identity --help).
+  group     Approuver un pair et effectuer un échange TLS borné (group --help).
   help      Afficher cette aide.
 `
 
@@ -29,7 +30,7 @@ func Run(args []string, version string, stdout, stderr io.Writer) int {
 	return RunContext(context.Background(), args, version, stdout, stderr)
 }
 
-// RunContext allows cancellation of active latency measurements.
+// RunContext allows cancellation of measurements and group exchanges.
 func RunContext(ctx context.Context, args []string, version string, stdout, stderr io.Writer) int {
 	if len(args) == 0 || (len(args) == 1 && (args[0] == "help" || args[0] == "--help" || args[0] == "-h")) {
 		if _, err := io.WriteString(stdout, usage); err != nil {
@@ -43,6 +44,9 @@ func RunContext(ctx context.Context, args []string, version string, stdout, stde
 	}
 	if args[0] == "identity" {
 		return runIdentity(args[1:], stdout, stderr)
+	}
+	if args[0] == "group" {
+		return runGroup(ctx, args[1:], stdout, stderr)
 	}
 	if len(args) != 1 || (args[0] != "status" && args[0] != "observe") {
 		fmt.Fprintln(stderr, "Commande ou arguments non reconnus.")

@@ -83,7 +83,7 @@ Le résultat attendu est un message indiquant que l'observation du trafic n'est 
 
 ## Consigner le résultat natif
 
-Depuis l'étape 3.3, `identity --help` est disponible dans le binaire Windows, mais `identity init/show --state-dir DOSSIER` doit retourner une erreur d'indisponibilité avant toute création de clé. Le stockage protégé natif n'est pas implémenté : les modes de fichier Linux ne sont pas considérés comme une protection des ACL Windows. Les contrats du groupe compilent, sans connexion TLS ni adhésion active.
+Depuis l'étape 3.3, `identity --help` est disponible dans le binaire Windows, mais `identity init/show/export-cert --state-dir DOSSIER` doit retourner une erreur d'indisponibilité avant toute création de clé. Le stockage protégé natif n'est pas implémenté : les modes de fichier Linux ne sont pas considérés comme une protection des ACL Windows. Les contrats v2 et le moteur TLS compilent. Les opérations `group configure/show/revoke/listen/exchange` restent indisponibles sur Windows faute de stockage d'identité protégé ; leur exécution Linux ne valide pas cette cible. `group --help` reste accessible.
 
 Depuis l'étape 3.2, le binaire comprend aussi `latency`. L'aide ne nécessite aucune connexion :
 

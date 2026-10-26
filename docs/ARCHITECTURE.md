@@ -52,11 +52,11 @@ Les tests propres à un module seront placés avec ce module, selon les conventi
 
 Les futurs services privilégiés et clients mobiles pourront nécessiter leurs propres points d'entrée ou paquets. Leur découpage sera décidé avec le packaging ; les dossiers actuels décrivent les responsabilités, pas un nombre imposé de processus ou d'installateurs.
 
-La première observation suit ce découpage : compteurs lus par l'adaptation Linux, différences calculées dans le noyau sans accès système, puis orchestration et affichage par l'agent. Les modèles et horodatages locaux ne définissent pas encore les messages du groupe. Voir [OBSERVATIONS.md](OBSERVATIONS.md).
+La première observation suit ce découpage : compteurs lus par l'adaptation Linux, différences calculées dans le noyau sans accès système, puis orchestration et affichage par l'agent. Les modèles et horodatages locaux sont convertis vers les contrats réseau par l’agent. Voir [OBSERVATIONS.md](OBSERVATIONS.md).
 
 La mesure TCP de l'étape 3.2 utilise la bibliothèque réseau portable de Go dans l'agent, vers une cible explicite. Les statistiques restent pures dans le noyau. Son JSON versionné est un format local de conservation, distinct du protocole du groupe. Voir [LATENCY.md](LATENCY.md).
 
-À l'étape 3.3, les premiers contrats du groupe sont définis dans `packages/protocol` et convertis vers le noyau par `apps/agent/internal/group`. La génération et le stockage privé de l'identité relèvent de l'agent ; le noyau calcule seulement l'empreinte publique et valide le consentement, sans I/O. Les [fondations d'identité et de groupe](IDENTITY_AND_GROUP.md) précisent le futur TLS mutuel, qui n'est pas encore intégré.
+À l'étape 3.3, les premiers contrats du groupe sont définis dans `packages/protocol` et convertis vers le noyau par `apps/agent/internal/group`. La génération et le stockage privé de l'identité relèvent de l'agent ; le noyau calcule seulement l'empreinte publique et valide le consentement, sans I/O. Les [fondations d'identité et de groupe](IDENTITY_AND_GROUP.md) définissent ces frontières. À l'étape 3.4, l'agent ajoute l'approbation et le consentement persistés, TLS mutuel et un échange borné ; le protocole v2 fournit le cadrage et l'ordre des messages sans I/O réseau. Voir [GROUP_EXCHANGE.md](GROUP_EXCHANGE.md).
 
 ## Module ML facultatif
 
@@ -86,5 +86,5 @@ Les fonctions de relais exigeront un consentement distinct. Elles ne seront auto
 - Packaging de chaque application et validation effective sur les systèmes cibles.
 - Réutilisation du noyau Go dans l'application Android Kotlin.
 - Contrats des adaptations système et séparation des privilèges.
-- Intégration du TLS mutuel, approbation/admission persistée, découverte et stockage protégé de clé sur les autres systèmes.
+- Découverte, groupe à plusieurs pairs, renouvellement des certificats et stockage protégé de clé sur les autres systèmes.
 - Méthode de mesure et critères d'acceptation du premier prototype.

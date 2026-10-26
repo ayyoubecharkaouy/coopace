@@ -1,6 +1,6 @@
 # Préparation du développement Go
 
-## État des étapes 2.2 à 3.3
+## État des étapes 2.2 à 3.4
 
 L'étape 2.2 est validée sous Linux x86_64 avec Go 1.27.3, installé localement à partir de l'archive officielle vérifiée. Le module Go et les premiers modèles métier sont présents, avec leurs tests.
 
@@ -10,7 +10,9 @@ L'étape 3.1 ajoute `coopace observe` et les premiers taux de trafic par interfa
 
 L'étape 3.2 ajoute `coopace latency`, les statistiques de durée TCP et un export JSON local v1. Les tests déterministes passent dans l'environnement isolé ; le test TCP réel en boucle locale a été exécuté avec succès depuis le terminal utilisateur sous Linux. Voir [LATENCY.md](LATENCY.md) pour reproduire le test, choisir une cible et établir une référence.
 
-L'étape 3.3 ajoute l'identité persistante sous Linux, le consentement et des contrats JSON validés hors réseau. La [documentation d'identité et de groupe](IDENTITY_AND_GROUP.md) distingue ces fonctions de l'admission et du TLS non encore intégrés. Le stockage de clé privée Windows reste explicitement indisponible.
+L'étape 3.3 ajoute l'identité persistante sous Linux, le consentement et des contrats JSON validés hors réseau. La [documentation d'identité et de groupe](IDENTITY_AND_GROUP.md) décrit ces fondations. Le stockage de clé privée Windows reste explicitement indisponible.
+
+L'étape 3.4 ajoute l'approbation et le consentement persistés, les certificats publics et un échange TLS mutuel borné. Les tests TLS en mémoire passent ; le test TCP réel est ignoré dans l'environnement isolé et reste à confirmer depuis le terminal utilisateur. Voir [GROUP_EXCHANGE.md](GROUP_EXCHANGE.md) pour les commandes et la portée du prototype Linux.
 
 ## Version et module
 
@@ -67,6 +69,7 @@ sh scripts/go.sh run ./apps/agent/cmd/coopace observe
 sh scripts/go.sh run ./apps/agent/cmd/coopace --help
 sh scripts/go.sh run ./apps/agent/cmd/coopace latency --help
 sh scripts/go.sh run ./apps/agent/cmd/coopace identity --help
+sh scripts/go.sh run ./apps/agent/cmd/coopace group --help
 ```
 
 Exemple de résultat sous Linux x86_64 :
@@ -115,6 +118,12 @@ Les tests d'identité utilisent des dossiers temporaires privés. Ils vérifient
 sh scripts/go.sh test -parallel=2 -fuzz=FuzzDecode -fuzztime=2s ./packages/protocol
 ```
 
+Les tests du groupe vérifient de vraies négociations TLS sur `net.Pipe`, les consentements indépendants, les refus d'identité/groupe et la révocation. `TestGroupLoopbackExchange` vérifie aussi le chemin TCP lorsqu'il est autorisé :
+
+```sh
+sh scripts/go.sh test -count=1 -v -run '^TestGroupLoopbackExchange$' ./apps/agent/internal/group
+```
+
 Les tests de régression du script d'installation fonctionnent sans Go et sans réseau, avec Python 3 et de petites archives de test :
 
 ```sh
@@ -146,7 +155,7 @@ Une validation réelle sous Windows devra être consignée séparément. Elle ne
 
 ## Organisation du code actuel
 
-Les fichiers de `packages/core` décrivent l'appareil, le système, les rôles et les capacités. Leurs règles et limites sont précisées dans le [README du noyau](../packages/core/README.md). Les messages JSON, la découverte et l'authentification seront développés dans les étapes suivantes.
+Les fichiers de `packages/core` décrivent l'appareil, le système, les rôles et les capacités. Leurs règles et limites sont précisées dans le [README du noyau](../packages/core/README.md). Les messages JSON sont dans `packages/protocol`, l'authentification et l'approbation dans l'agent ; la découverte reste à développer.
 
 Le point d'entrée de l'agent se trouve dans `apps/agent/cmd/coopace`, avec les commandes dans `apps/agent/internal/cli` et l'état local dans `apps/agent/internal/status`. Voir le [README de l'agent](../apps/agent/README.md).
 
@@ -154,4 +163,4 @@ La collecte des compteurs est orchestrée dans `apps/agent/internal/observe`, av
 
 La mesure TCP et l'export local sont dans `apps/agent/internal/latency`, avec les statistiques pures dans `packages/core/latency.go`. La commande impose une cible explicite et ne dépend pas d'un outil `ping` externe.
 
-L'état d'identité est géré par `apps/agent/internal/identity` ; son stockage est activé sous Linux uniquement. `packages/protocol` n'ouvre aucune connexion. `apps/agent/internal/group` convertit les contrats vers le noyau, où le consentement et les capacités restent distincts de l'identité.
+L'état d'identité est géré par `apps/agent/internal/identity` ; son stockage est activé sous Linux uniquement. `packages/protocol` n'ouvre aucune connexion. `apps/agent/internal/group` convertit les contrats vers le noyau et orchestre profil, consentement persisté, transport TLS et échange borné. Le cadrage et la validation restent dans `packages/protocol`, sans sockets ni stockage.

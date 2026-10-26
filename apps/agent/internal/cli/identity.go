@@ -12,13 +12,13 @@ import (
 
 func runIdentity(args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 || (len(args) == 1 && (args[0] == "--help" || args[0] == "help" || args[0] == "-h")) {
-		if _, err := fmt.Fprintln(stdout, "Utilisation : coopace identity <init|show> --state-dir DOSSIER\nAffiche uniquement l'identifiant et la clé publique. Stockage persistant Linux."); err != nil {
+		if _, err := fmt.Fprintln(stdout, "Utilisation : coopace identity <init|show|export-cert> --state-dir DOSSIER\nIdentité persistante Linux. export-cert écrit uniquement le certificat public PEM."); err != nil {
 			return 1
 		}
 		return 0
 	}
-	if args[0] != "init" && args[0] != "show" {
-		fmt.Fprintln(stderr, "Sous-commande d'identité non reconnue : utiliser init ou show.")
+	if args[0] != "init" && args[0] != "show" && args[0] != "export-cert" {
+		fmt.Fprintln(stderr, "Sous-commande d'identité non reconnue : utiliser init, show ou export-cert.")
 		return 2
 	}
 	flags := flag.NewFlagSet("identity "+args[0], flag.ContinueOnError)
@@ -33,6 +33,17 @@ func runIdentity(args []string, stdout, stderr io.Writer) int {
 	if strings.TrimSpace(*directory) == "" || flags.NArg() != 0 {
 		fmt.Fprintln(stderr, "Le dossier --state-dir est obligatoire ; aucun argument positionnel n'est accepté.")
 		return 2
+	}
+	if args[0] == "export-cert" {
+		data, err := identity.ExportCertificate(*directory)
+		if err == nil {
+			_, err = stdout.Write(data)
+		}
+		if err != nil {
+			fmt.Fprintf(stderr, "Erreur de certificat : %v\n", err)
+			return 1
+		}
+		return 0
 	}
 	var local identity.Identity
 	var err error

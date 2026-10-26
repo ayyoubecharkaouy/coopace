@@ -10,6 +10,9 @@ type Session struct {
 	groupID      string
 	peerID       string
 	lastSequence uint64
+	sharing      bool
+	observed     bool
+	completed    bool
 }
 
 func NewSession(groupID, authenticatedPeerID string) (*Session, error) {
@@ -20,6 +23,9 @@ func NewSession(groupID, authenticatedPeerID string) (*Session, error) {
 }
 
 func (s *Session) Next(data []byte) (Message, error) {
+	if s.completed {
+		return Message{}, fmt.Errorf("session already completed")
+	}
 	message, err := Decode(data)
 	if err != nil {
 		return Message{}, err
@@ -29,6 +35,20 @@ func (s *Session) Next(data []byte) (Message, error) {
 	}
 	if (s.lastSequence == 0 && message.Kind != HelloKind) || (s.lastSequence > 0 && message.Kind == HelloKind) {
 		return Message{}, fmt.Errorf("session requires exactly one initial hello")
+	}
+	switch message.Kind {
+	case HelloKind:
+		s.sharing = message.Hello.ShareObservations
+	case TrafficKind:
+		if !s.sharing || s.observed {
+			return Message{}, fmt.Errorf("unexpected or repeated observation")
+		}
+		s.observed = true
+	case CompleteKind:
+		if s.sharing && !s.observed {
+			return Message{}, fmt.Errorf("missing announced observation")
+		}
+		s.completed = true
 	}
 	s.lastSequence = message.Sequence
 	return message, nil

@@ -8,7 +8,7 @@ import (
 )
 
 func TestHelloConversionUsesDomainCapabilityRules(t *testing.T) {
-	message := protocol.Message{Version: 1, Kind: protocol.HelloKind, GroupID: "test-group", SenderID: "ed25519:" + strings.Repeat("a", 64), Sequence: 1,
+	message := protocol.Message{Version: protocol.Version, Kind: protocol.HelloKind, GroupID: "test-group", SenderID: "ed25519:" + strings.Repeat("a", 64), Sequence: 1,
 		Hello: &protocol.Hello{Name: "PC", OS: "linux", Roles: []string{"agent"}, Capabilities: []string{"manage_gateway_traffic"}}}
 	data, err := protocol.Encode(message)
 	if err != nil {

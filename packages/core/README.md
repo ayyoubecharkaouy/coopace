@@ -34,7 +34,7 @@ Une liste de capacités vide est valide lorsque leur évaluation n'a pas encore 
 
 La validation ne modifie pas la description et ne réalise aucune opération réseau. Elle doit être appelée à nouveau après modification des champs. Déclarer une capacité ne prouve ni sa disponibilité réelle ni le consentement de l'utilisateur ; ces vérifications appartiendront aux intégrations et aux règles d'autorisation.
 
-Les champs métier ne définissent pas le futur format JSON : les contrats des messages et leur conversion resteront séparés dans `packages/protocol` et les applications.
+Les champs métier ne définissent pas le format JSON : les contrats des messages et leur conversion restent séparés dans `packages/protocol` et les applications.
 
 Voir les [instructions de préparation et de vérification](../../docs/DEVELOPMENT.md).
 
@@ -56,4 +56,4 @@ Le noyau ne fait aucune connexion et ne définit aucun format JSON. La mesure TC
 
 `DeviceIDForPublicKey` calcule une empreinte SHA-256 à partir des 32 octets publics Ed25519, sans générer ni stocker de secret. `GroupConsent` sépare adhésion, partage des observations et autorisation de relais, tous liés à un groupe et à un appareil. Les permissions sont fausses par défaut ; le partage exige un consentement cohérent et la correspondance du groupe et de l'identité.
 
-La génération/lecture de la clé appartient à l'agent, et l'authentification réseau au futur transport. Les contrats sont convertis vers `Device` à la frontière applicative pour réutiliser les règles métier. Voir [IDENTITY_AND_GROUP.md](../../docs/IDENTITY_AND_GROUP.md).
+La génération/lecture de la clé appartient à l'agent, et l'authentification réseau au transport TLS assemblé par l'agent. Les contrats sont convertis vers `Device` à la frontière applicative pour réutiliser les règles métier. Voir [IDENTITY_AND_GROUP.md](../../docs/IDENTITY_AND_GROUP.md).

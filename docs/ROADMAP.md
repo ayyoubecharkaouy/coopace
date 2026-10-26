@@ -57,7 +57,7 @@ La compilation et l'analyse statique ciblant Windows réussissent. Le format PE3
 
 ## Étape 3 — Groupe et observations
 
-État : en cours ; mesures locales, identité persistante Linux, consentement et contrats de messages sont livrés jusqu'à l'étape 3.3. Admission persistée, transport authentifié et premier échange restent à développer.
+État : premier échange Linux implémenté à l'étape 3.4, avec admission persistée et TLS mutuel testés en mémoire. Validation TCP réelle de cet échange à confirmer ; les mesures locales des étapes précédentes restent disponibles.
 
 Commencer par définir et instrumenter les mesures locales utiles, avec leurs limites et une référence avant intervention. Spécifier ensuite les messages, l'identité et l'adhésion autorisée au groupe. Établir un échange minimal entre deux instances et une première vue des observations. L'élargissement à toutes les plateformes et la coordination avancée attendront la validation du prototype de passerelle.
 
@@ -81,19 +81,19 @@ Livrés : commande `coopace latency` avec cible IP:port obligatoire, essais born
 
 ### 3.3 — Identité et contrats du groupe
 
-État : terminée pour l'identité persistante Linux, le modèle de consentement et les contrats validés hors réseau. Stockage protégé Windows et sessions TLS non implémentés.
+État : fondations terminées pour l'identité persistante Linux, le modèle de consentement et les contrats validés hors réseau. TLS ajouté ensuite à l'étape 3.4 ; stockage protégé Windows non implémenté.
 
 Définir l'identité persistante, le consentement d'adhésion, les messages versionnés et l'authentification des échanges. Étudier l'adaptation des mesures aux autres plateformes selon leurs capacités réelles.
 
-Livrés : `identity init/show` avec dossier explicite et clé privée locale, empreinte publique liée à la clé Ed25519, consentements distincts, contrats JSON v1 bornés et validateur de session lié à un pair attendu. TLS 1.3 mutuel est retenu pour la prochaine étape ; le validateur seul ne constitue pas une authentification. Voir [IDENTITY_AND_GROUP.md](IDENTITY_AND_GROUP.md).
+Livrés : `identity init/show` avec dossier explicite et clé privée locale, empreinte publique liée à la clé Ed25519, consentements distincts, contrats JSON v1 bornés et validateur de session lié à un pair attendu. La v1 historique est remplacée par la v2 à l’étape 3.4 avec TLS mutuel ; le validateur seul ne constitue pas une authentification. Voir [IDENTITY_AND_GROUP.md](IDENTITY_AND_GROUP.md).
 
 ### 3.4 — Premier échange entre deux instances
 
-État : à faire.
+État : implémentée sous Linux et validée en mémoire avec de vraies négociations TLS ; essai TCP réel à confirmer depuis le terminal utilisateur.
 
 Échanger uniquement les observations autorisées dans un groupe minimal authentifié, avec refus des messages invalides et déconnexion propre. Garder l'évaluation du moteur de passerelle indépendante d'une coordination avancée.
 
-Intégrer d'abord l'approbation explicite des pairs, la persistance du consentement et de l'admission, puis le transport TLS mutuel et son cadrage limité. Utiliser deux identités et deux états distincts. Le groupe n'est actif qu'après ces vérifications, et tout partage reste conditionné au consentement. La participation depuis Windows exige aussi son adaptateur natif de stockage protégé.
+Livrés : certificats publics liés à l'identité, approbation explicite d'un pair, consentement persisté, révocation, TLS 1.3 mutuel et cadrage borné. `group listen/exchange` établit un échange unique, avec au plus une observation autorisée par pair et une limite de 30 secondes, puis déconnecte. Les tests vérifient les quatre choix de partage, le refus des mauvais pairs/groupes et l'interruption après révocation. Voir [GROUP_EXCHANGE.md](GROUP_EXCHANGE.md) pour l'essai à deux états Linux et le test TCP en boucle locale. Il n'y a pas de service de groupe permanent. La participation depuis Windows exige son adaptateur natif de stockage protégé.
 
 ## Étape 4 — Prototype de passerelle
 

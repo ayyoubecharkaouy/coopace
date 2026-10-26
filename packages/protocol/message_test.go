@@ -12,7 +12,7 @@ const testPeer = "ed25519:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
 func helloMessage() Message {
 	return Message{Version: Version, Kind: HelloKind, GroupID: "test-group", SenderID: testPeer, Sequence: 1,
-		Hello: &Hello{Name: "PC été", OS: "linux", Roles: []string{"agent"}, Capabilities: []string{"observe_local_traffic"}}}
+		Hello: &Hello{ShareObservations: true, Name: "PC été", OS: "linux", Roles: []string{"agent"}, Capabilities: []string{"observe_local_traffic"}}}
 }
 
 func trafficMessage(sequence uint64) Message {
@@ -51,11 +51,11 @@ func TestDecodeRejectsAmbiguousAndOversizedJSON(t *testing.T) {
 	valid := encodeForTest(t, helloMessage())
 	for _, data := range [][]byte{
 		nil, []byte("null"), bytes.Repeat([]byte(" "), MaxMessageBytes+1), append(append([]byte(nil), valid...), valid...),
-		bytes.Replace(valid, []byte(`"version":1`), []byte(`"version":1,"version":1`), 1),
+		bytes.Replace(valid, []byte(`"version":2`), []byte(`"version":2,"version":2`), 1),
 		bytes.Replace(valid, []byte(`"version"`), []byte(`"Version"`), 1),
 		bytes.Replace(valid, []byte(`"name"`), []byte(`"Name"`), 1),
 		bytes.Replace(valid, []byte(`"sequence"`), []byte(`"ſequence"`), 1),
-		bytes.Replace(valid, []byte(`"version":1`), []byte(`"version":1,"unknown":true`), 1),
+		bytes.Replace(valid, []byte(`"version":2`), []byte(`"version":2,"unknown":true`), 1),
 		bytes.Replace(valid, []byte("PC été"), []byte{0xff}, 1),
 		[]byte(strings.Repeat("[", 20) + "0" + strings.Repeat("]", 20)),
 	} {
@@ -67,7 +67,7 @@ func TestDecodeRejectsAmbiguousAndOversizedJSON(t *testing.T) {
 
 func TestMessageRejectsInvalidPayloads(t *testing.T) {
 	for _, change := range []func(*Message){
-		func(m *Message) { m.Version = 2 }, func(m *Message) { m.Sequence = 0 }, func(m *Message) { m.Sequence = MaxSequence + 1 },
+		func(m *Message) { m.Version = Version + 1 }, func(m *Message) { m.Sequence = 0 }, func(m *Message) { m.Sequence = MaxSequence + 1 },
 		func(m *Message) { m.SenderID = "unbound-device" }, func(m *Message) { m.Kind = "execute_command" },
 		func(m *Message) { m.Hello.Roles = []string{"agent", "agent"} }, func(m *Message) { m.Hello.Capabilities = []string{"universal_acceleration"} },
 		func(m *Message) { m.Observation = trafficMessage(2).Observation },

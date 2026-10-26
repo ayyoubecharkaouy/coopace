@@ -1,4 +1,4 @@
-// Package protocol defines bounded, versioned messages for future authenticated sessions.
+// Package protocol defines bounded, versioned messages for authenticated sessions.
 package protocol
 
 import (
@@ -14,11 +14,12 @@ import (
 )
 
 const (
-	Version         = 1
+	Version         = 2
 	MaxMessageBytes = 64 * 1024
 	MaxSequence     = uint64(1<<53 - 1)
 	HelloKind       = "hello"
 	TrafficKind     = "traffic_observation"
+	CompleteKind    = "complete"
 )
 
 type Message struct {
@@ -32,10 +33,11 @@ type Message struct {
 }
 
 type Hello struct {
-	Name         string   `json:"name"`
-	OS           string   `json:"os"`
-	Roles        []string `json:"roles"`
-	Capabilities []string `json:"capabilities"`
+	ShareObservations bool     `json:"share_observations"`
+	Name              string   `json:"name"`
+	OS                string   `json:"os"`
+	Roles             []string `json:"roles"`
+	Capabilities      []string `json:"capabilities"`
 }
 
 type TrafficObservation struct {
@@ -72,6 +74,11 @@ func (m Message) validate() error {
 		return fmt.Errorf("invalid protocol version, group, sender or sequence")
 	}
 	switch m.Kind {
+	case CompleteKind:
+		if m.Hello != nil || m.Observation != nil {
+			return fmt.Errorf("complete has no payload")
+		}
+		return nil
 	case HelloKind:
 		if m.Hello == nil || m.Observation != nil {
 			return fmt.Errorf("hello requires its own payload only")
