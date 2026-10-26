@@ -76,6 +76,6 @@ Le script `scripts/go.sh` utilise le SDK local sans modifier le `PATH` du termin
 
 Les étapes 2.2 à 3.4 livrent le socle, les mesures, les fondations d'identité et un premier échange authentifié Linux. Ed25519 et SHA-256 de la bibliothèque standard sont retenus pour l'identité ; TLS 1.3 mutuel est intégré à l'étape 3.4 et testé en mémoire ; la validation TCP réelle reste à confirmer. Le stockage persistant de clé est activé sous Linux seulement, car les permissions doivent être adaptées au système. La collecte des compteurs et le stockage protégé Windows restent à implémenter ; son exécution native reste à consigner selon [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md).
 
-Les choix du transport réseau, du stockage, du framework web, d'un tunnel et du ML restent réservés aux étapes qui les nécessitent.
+Le transport du prototype utilise TLS mutuel et son état local est stocké dans des fichiers privés Linux. Le stockage protégé sur les autres systèmes, le framework web, un éventuel tunnel et l'inférence ML restent à préciser aux étapes correspondantes.
 
 Le périmètre du futur module ML est documenté dans [`ml/README.md`](../ml/README.md).

@@ -12,6 +12,8 @@ Le [périmètre produit](docs/PRODUCT.md) décrit le résultat visé, l'état r�
 
 Les [choix techniques](docs/TECH_STACK.md) détaillent les raisons, les limites et les décisions différées.
 
+La [revue du démarrage du 26 octobre 2026](docs/REVIEW_2026-10-26.md) vérifie les étapes et leur cohérence avec le rapport V5. La priorité suivante est le diagnostic de la passerelle et les mesures de référence ; aucun bénéfice réseau n'est encore démontré.
+
 ## Organisation
 
 ```text
@@ -37,6 +39,7 @@ coopace/
     ├── LATENCY.md
     ├── OBSERVATIONS.md
     ├── PRODUCT.md
+    ├── REVIEW_2026-10-26.md
     ├── ROADMAP.md
     ├── TECH_STACK.md
     └── WINDOWS_VALIDATION.md

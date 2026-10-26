@@ -61,10 +61,10 @@ Lors de la validation dans l'environnement isolé de développement, seule l'int
 - `apps/agent/internal/observe` : orchestration des deux lectures et provenance de l'observation.
 - `apps/agent/internal/cli` : commande et affichage.
 
-Les modèles métier n'ont pas de format JSON de communication. Les messages versionnés et leur conversion seront définis dans l'étape consacrée au protocole.
+Les modèles métier n'ont pas de format JSON de communication. Les messages versionnés sont définis dans `packages/protocol` et leur conversion dans l'agent ; voir le [premier échange authentifié](GROUP_EXCHANGE.md).
 
 ## Plateformes et suite
 
 L'observation des compteurs est implémentée pour Linux. Sous Windows, la commande est compilable mais renvoie une erreur d'indisponibilité avec le code `1` ; elle n'affiche pas de faux compteurs à zéro. Le lancement natif Windows reste à vérifier. Aucune application Android n'est produite.
 
-L'étape 3.2 ajoute une mesure d'établissement TCP et son export local, avec un [protocole de référence](LATENCY.md). Cela ne transforme pas les compteurs d'interfaces en mesure WAN ou en diagnostic de congestion. La collecte Windows et l'export des compteurs d'interfaces, ainsi que l'échange entre appareils, restent à développer séparément.
+L'étape 3.2 ajoute une mesure d'établissement TCP et son export local, avec un [protocole de référence](LATENCY.md). Cela ne transforme pas les compteurs d'interfaces en mesure WAN ou en diagnostic de congestion. L'étape 3.4 permet un [échange facultatif de ces compteurs entre deux instances Linux](GROUP_EXCHANGE.md), distinct de la commande locale `observe`. La collecte Windows et un export local dédié des compteurs restent à développer.

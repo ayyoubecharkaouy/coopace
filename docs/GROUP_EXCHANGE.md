@@ -59,7 +59,7 @@ Pour tester le partage, relancer la configuration de A et/ou B avec les mêmes p
 
 Le destinataire affiche les différences d'octets par interface, la source, la portée et la fenêtre mesurée. Les valeurs indisponibles restent indisponibles. Ces compteurs incluent potentiellement LAN, boucle locale et trafic de l'échange ; ils ne mesurent ni la capacité Internet ni une congestion. La mesure et l'horloge restent des déclarations du pair authentifié. Les observations reçues ne sont pas enregistrées automatiquement sur disque ; une redirection de la sortie les conserve explicitement.
 
-L'écoute est locale par défaut. Un essai LAN demandera une adresse d'écoute explicite et l'adresse IP numérique réelle du pair ; IPv6 exige des crochets (`[adresse]:port`). Il ne faut pas confondre cet essai avec une validation du routage ou d'un moteur de passerelle.
+L'écoute est locale par défaut. Un essai LAN demandera une adresse d'écoute explicite et l'adresse IP numérique réelle du pair ; IPv6 exige des crochets (`[adresse]:port`), sans zone `%interface` dans ce prototype. Les destinations doivent être unicast avec un port non nul. Les adresses indéterminées (`0.0.0.0`, `::`) et le port `0` sont réservés à une écoute explicitement demandée ; le port réellement attribué est affiché. La diffusion limitée IPv4 et le multicast sont refusés, y compris sous forme IPv4 encapsulée en IPv6. Voir les [catégories d'adresses de Go](https://pkg.go.dev/net/netip#Addr.IsGlobalUnicast). Il ne faut pas confondre cet essai avec une validation du routage ou d'un moteur de passerelle.
 
 ### Retirer le consentement
 

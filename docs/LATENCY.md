@@ -41,7 +41,7 @@ Avec une à cinq réussites, p95 et p99 sont le maximum observé. Ces résultats
 
 ## Format local de conservation
 
-Le format JSON est défini à cette étape dans `apps/agent/internal/latency/json.go`. Il s'agit d'un export local, distinct des futurs messages du groupe.
+Le format JSON est défini à cette étape dans `apps/agent/internal/latency/json.go`. Il s'agit d'un export local v1, distinct du protocole réseau du groupe v2. Les mesures de latence ne sont pas échangées par le prototype de l'étape 3.4.
 
 | Champs | Signification |
 | --- | --- |

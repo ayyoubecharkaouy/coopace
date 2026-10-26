@@ -30,7 +30,7 @@ La passerelle est un point de passage des données. Ce rôle ne lui attribue pas
 | `platforms/windows` | Adaptations réseau Windows pour l'agent et étude d'une passerelle Windows. |
 | `platforms/android` | Adaptations de l'agent Android, sous les contraintes de permissions et de cycle de vie du système. |
 
-Les applications utiliseront les contrats partagés et les adaptations correspondant au système. Le noyau métier doit rester indépendant des API du système et du tableau de bord. Le format des messages sera défini avant d'implémenter des clients dans plusieurs langages.
+Les applications assemblent les contrats partagés et les adaptations correspondant au système. Le noyau métier reste indépendant des API du système et du tableau de bord. Le format des messages v2 est défini ; son interopérabilité devra être vérifiée lors de l'implémentation des clients dans d'autres langages.
 
 Le noyau partagé sera une bibliothèque Go pour les applications de bureau. Les contrats du protocole utiliseront des messages JSON versionnés et resteront indépendants du langage. Cette arborescence ne suppose pas un langage unique sur toutes les plateformes.
 

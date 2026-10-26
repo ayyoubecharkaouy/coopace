@@ -107,6 +107,12 @@ Le premier essai utilisera une activation manuelle et bornée. Comparer la confi
 
 Validation : couverture mesurée, latence sous charge, débit utile, équité et ressources consommées ; restauration et compatibilité IPv4/IPv6/DNS vérifiées, y compris en cas de panne. Documenter également les scénarios sans bénéfice.
 
+### 4.1 — Diagnostic de la passerelle en lecture seule
+
+État : à faire ; prochaine sous-étape prévue à la suite de la [revue du démarrage](REVIEW_2026-10-26.md).
+
+Préciser la plateforme candidate et le chemin du trafic, inventorier les interfaces, le moteur réseau et les permissions, puis indiquer ce qui est effectivement observable ou indisponible. Définir les mesures de référence et les exigences de restauration avant de modifier les files ou le routage. L'essai TCP réel de l'étape 3.4 reste à confirmer séparément ; un groupe complet n'est pas un prérequis à ce diagnostic.
+
 ## Étape 5 — Décisions coopératives
 
 État : à faire.

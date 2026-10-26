@@ -21,8 +21,13 @@ const groupALPN = "coopace-group/2"
 // ValidateAddress requires an explicit numeric IP, avoiding DNS ambiguity.
 func ValidateAddress(address string, listener bool) error {
 	value, err := netip.ParseAddrPort(address)
-	if err != nil || value.Addr().Zone() != "" || value.Addr().IsMulticast() || (!listener && (value.Port() == 0 || value.Addr().IsUnspecified())) {
+	if err != nil || value.Addr().Zone() != "" || (!listener && value.Port() == 0) {
 		return fmt.Errorf("expected numeric unicast IP:port (IPv6 in brackets)")
+	}
+	ip := value.Addr().Unmap()
+	unicast := ip.IsGlobalUnicast() || ip.IsLoopback() || ip.IsLinkLocalUnicast()
+	if !unicast && !(listener && ip.IsUnspecified()) {
+		return fmt.Errorf("expected numeric unicast IP:port (IPv6 in brackets); wildcard IP allowed only for listening")
 	}
 	return nil
 }
