@@ -97,7 +97,7 @@ Livrés : certificats publics liés à l'identité, approbation explicite d'un p
 
 ## Étape 4 — Prototype de passerelle
 
-État : à faire.
+État : démarrée par le diagnostic Linux en lecture seule de l'étape 4.1. Intervention, moteur de files, restauration et évaluation sous charge restent à réaliser.
 
 Valider sur la plateforme choisie la couverture du trafic, les permissions, les mesures de référence et la restauration. Intégrer un moteur de gestion des files adapté à ce système, puis comparer son résultat à une référence connue.
 
@@ -109,9 +109,17 @@ Validation : couverture mesurée, latence sous charge, débit utile, équité et
 
 ### 4.1 — Diagnostic de la passerelle en lecture seule
 
-État : à faire ; prochaine sous-étape prévue à la suite de la [revue du démarrage](REVIEW_2026-10-26.md).
+État : inventaire Linux implémenté et testé ; lancement réel partiel dans l'environnement isolé, lecture complète sur le PC utilisateur à confirmer. Adaptateur Windows non implémenté.
 
 Préciser la plateforme candidate et le chemin du trafic, inventorier les interfaces, le moteur réseau et les permissions, puis indiquer ce qui est effectivement observable ou indisponible. Définir les mesures de référence et les exigences de restauration avant de modifier les files ou le routage. L'essai TCP réel de l'étape 3.4 reste à confirmer séparément ; un groupe complet n'est pas un prérequis à ce diagnostic.
+
+Livrés : application `coopace-gateway inspect`, interfaces, flags de forwarding IPv4/IPv6, capacité effective `CAP_NET_ADMIN`, outils disponibles, routes par défaut et files visibles. Les requêtes sont bornées et en lecture seule ; aucune interface WAN ni aptitude à intervenir n'est déduite automatiquement. Voir [GATEWAY_DIAGNOSTIC.md](GATEWAY_DIAGNOSTIC.md) pour les sources, les limites et le protocole préalable aux interventions.
+
+### 4.2 — Scénario de laboratoire et référence initiale
+
+État : à faire.
+
+À partir d'un inventaire réel, choisir la plateforme et décrire le chemin du trafic à couvrir. Consigner la configuration initiale, les mesures au repos/sous charge, les seuils d'acceptation et le mécanisme de restauration à développer et tester avant une première modification. La comparaison doit distinguer le moteur configuré manuellement et le pilotage Coopace.
 
 ## Étape 5 — Décisions coopératives
 

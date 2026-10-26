@@ -1,6 +1,6 @@
 # Noyau métier
 
-État : modèles d'appareils, observations, statistiques TCP, empreinte de clé publique et consentement validés sous Linux x86_64 avec Go 1.27.3 jusqu'à l'étape 3.3. Le formatage, les tests, l'analyse statique et la compilation passent. L'exécution sur les autres systèmes reste à vérifier.
+État : modèles d'appareils, observations, statistiques TCP, empreinte de clé publique, consentement et données d'inventaire utilisés jusqu'à l'étape 4.1 sous Linux x86_64 avec Go 1.27.3. Le formatage, les tests, l'analyse statique et la compilation passent. L'exécution sur les autres systèmes reste à vérifier.
 
 Ce module accueille les modèles et règles communs : appareils, rôles, capacités, consentements et premières mesures. Les autres mesures et les décisions seront ajoutées progressivement.
 
@@ -57,3 +57,9 @@ Le noyau ne fait aucune connexion et ne définit aucun format JSON. La mesure TC
 `DeviceIDForPublicKey` calcule une empreinte SHA-256 à partir des 32 octets publics Ed25519, sans générer ni stocker de secret. `GroupConsent` sépare adhésion, partage des observations et autorisation de relais, tous liés à un groupe et à un appareil. Les permissions sont fausses par défaut ; le partage exige un consentement cohérent et la correspondance du groupe et de l'identité.
 
 La génération/lecture de la clé appartient à l'agent, et l'authentification réseau au transport TLS assemblé par l'agent. Les contrats sont convertis vers `Device` à la frontière applicative pour réutiliser les règles métier. Voir [IDENTITY_AND_GROUP.md](../../docs/IDENTITY_AND_GROUP.md).
+
+## Inventaire de passerelle
+
+`GatewayReading` conserve explicitement la disponibilité d'une valeur : une donnée inaccessible ne devient pas un booléen faux ou une liste vide. `GatewayInventory` regroupe interfaces, flags de forwarding, capacité observée, outils, routes par défaut et files. Ces types ne détectent ni une interface WAN ni l'aptitude à gérer le réseau ; ils n'effectuent aucun I/O et ne constituent pas une autorisation.
+
+La collecte appartient à l'adaptation Linux, et son affichage à l'application passerelle. Voir [GATEWAY_DIAGNOSTIC.md](../../docs/GATEWAY_DIAGNOSTIC.md).

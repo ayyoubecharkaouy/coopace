@@ -32,7 +32,7 @@ Un PC Linux n'est pas obligatoire parmi les membres du groupe. Les capacités de
 | Agent local Windows | Compilation Windows amd64 validée ; exécution native non vérifiée, collecte des compteurs et stockage protégé de clé non implémentés. |
 | Application Android | Prévue ; aucun APK ni intégration native disponible. |
 | Groupe coopératif | Prototype Linux à deux pairs : approbation et consentement persistés, TLS mutuel et observations facultatives. Tests en mémoire validés, TCP réel à confirmer ; coordination avancée non implémentée. |
-| Passerelle Linux/OpenWrt | Prévue ; aucune gestion de trafic implémentée dans ce dépôt. |
+| Passerelle Linux/OpenWrt | Diagnostic Linux en lecture seule implémenté ; inventaire réel partiel dans l'environnement isolé. Gestion de trafic et restauration non implémentées ; OpenWrt non validé. |
 | Passerelle Windows | Cible à étudier ; moteur et performances non validés. |
 | Tableau de bord et relais | Prévus ; aucune implémentation. |
 | ML | Périmètre documenté ; aucun dataset ni modèle entraîné dans ce dépôt. |
@@ -50,6 +50,8 @@ L'[étape 3.3](IDENTITY_AND_GROUP.md) prépare les fondations du groupe. Le [pre
 ## Premier résultat réseau utile à viser
 
 Le premier agent en ligne de commande est un socle logiciel. Le premier résultat réseau utile sera un prototype de passerelle observable et réversible, évalué face à une configuration de référence.
+
+Le [diagnostic de l'étape 4.1](GATEWAY_DIAGNOSTIC.md) prépare cette évaluation. La présence d'outils, d'une route par défaut ou du forwarding ne démontre ni une couverture du foyer ni un bénéfice ; le choix de la plateforme d'intervention et du chemin réel reste à consigner.
 
 Il devra permettre de :
 

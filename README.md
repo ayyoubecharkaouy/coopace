@@ -8,11 +8,11 @@ Le [périmètre produit](docs/PRODUCT.md) décrit le résultat visé, l'état r�
 
 ## État du projet
 
-**Étape 3.4 : premier échange authentifié implémenté sous Linux.** Approbation mutuelle, consentement persisté et échange TLS 1.3 borné entre deux instances ; les observations restent facultatives. Les tests TLS en mémoire passent ; l'essai TCP réel reste à confirmer depuis le terminal utilisateur. Le programme compile pour Windows, dont le stockage privé d'identité et l'exécution native restent à valider. Aucun gain d'optimisation réseau n'est démontré.
+**Étape 4.1 : diagnostic de passerelle en lecture seule disponible sous Linux.** La commande dédiée `coopace-gateway inspect` inventorie les informations visibles et leurs limites, sans intervention réseau. L'agent conserve l'échange TLS de l'étape 3.4, testé en mémoire ; son essai TCP réel reste à confirmer. Les exécutables compilent pour Windows ; le diagnostic, les compteurs et le stockage privé d'identité Windows restent à implémenter, et l'exécution native à valider. Aucun moteur de gestion du trafic ni gain d'optimisation réseau n'est démontré.
 
 Les [choix techniques](docs/TECH_STACK.md) détaillent les raisons, les limites et les décisions différées.
 
-La [revue du démarrage du 26 octobre 2026](docs/REVIEW_2026-10-26.md) vérifie les étapes et leur cohérence avec le rapport V5. La priorité suivante est le diagnostic de la passerelle et les mesures de référence ; aucun bénéfice réseau n'est encore démontré.
+La [revue du démarrage du 26 octobre 2026](docs/REVIEW_2026-10-26.md) consigne le bilan avant l'étape 4.1. Le [diagnostic de passerelle](docs/GATEWAY_DIAGNOSTIC.md) prépare désormais le scénario de laboratoire, les mesures de référence et la restauration.
 
 ## Organisation
 
@@ -34,6 +34,7 @@ coopace/
 └── docs/
     ├── ARCHITECTURE.md
     ├── DEVELOPMENT.md
+    ├── GATEWAY_DIAGNOSTIC.md
     ├── GROUP_EXCHANGE.md
     ├── IDENTITY_AND_GROUP.md
     ├── LATENCY.md
@@ -70,6 +71,7 @@ Sous Linux x86_64, préparer le SDK local puis lancer l'agent et les tests :
 sh scripts/setup-go.sh
 sh scripts/go.sh run ./apps/agent/cmd/coopace status
 sh scripts/go.sh run ./apps/agent/cmd/coopace observe
+sh scripts/go.sh run ./apps/gateway/cmd/coopace-gateway inspect
 sh scripts/go.sh test ./...
 ```
 

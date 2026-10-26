@@ -78,4 +78,6 @@ Les étapes 2.2 à 3.4 livrent le socle, les mesures, les fondations d'identité
 
 Le transport du prototype utilise TLS mutuel et son état local est stocké dans des fichiers privés Linux. Le stockage protégé sur les autres systèmes, le framework web, un éventuel tunnel et l'inférence ML restent à préciser aux étapes correspondantes.
 
+L'étape 4.1 ajoute `coopace-gateway inspect`, une application Go séparée pour le diagnostic local Linux. Elle utilise la bibliothèque standard et les outils `ip`/`tc` présents pour des lectures bornées, sans nouvelle dépendance Go ni installation automatique. Son [périmètre](GATEWAY_DIAGNOSTIC.md) ne valide pas encore le moteur de passerelle ou la restauration.
+
 Le périmètre du futur module ML est documenté dans [`ml/README.md`](../ml/README.md).

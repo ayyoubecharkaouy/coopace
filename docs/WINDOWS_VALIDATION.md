@@ -99,3 +99,25 @@ Le code attendu est `0`. Le lancement sans cible (`latency` seul) doit retourner
 Pour chaque PC testé, noter la version de Windows, l'architecture, l'empreinte du binaire et les résultats des commandes avec leurs codes de sortie. Si le SDK Go et les sources sont disponibles sur ce PC, `go test ./...` et `go vet ./...` peuvent compléter ce contrôle ; leur résultat doit être distingué du simple lancement de l'exécutable.
 
 Mettre ensuite à jour cette section, l'[état produit](PRODUCT.md) et la [feuille de route](ROADMAP.md). Les instructions générales sont dans [DEVELOPMENT.md](DEVELOPMENT.md).
+
+## Diagnostic de passerelle de l'étape 4.1
+
+Une commande distincte existe sous Linux : `coopace-gateway inspect`. Sa compilation Windows amd64 et son analyse statique réussissent, mais son adaptateur de collecte Windows n'est pas implémenté. Cela ne valide pas une passerelle Windows.
+
+Depuis Linux :
+
+```sh
+GOOS=windows GOARCH=amd64 CGO_ENABLED=0 sh scripts/go.sh build -trimpath -o .local/bin/coopace-gateway-windows-amd64.exe ./apps/gateway/cmd/coopace-gateway
+sha256sum .local/bin/coopace-gateway-windows-amd64.exe > .local/bin/coopace-gateway-windows-amd64.exe.sha256
+```
+
+Sur Windows, après contrôle de l'empreinte :
+
+```powershell
+.\coopace-gateway-windows-amd64.exe --help
+$LASTEXITCODE
+.\coopace-gateway-windows-amd64.exe inspect
+$LASTEXITCODE
+```
+
+L'aide doit retourner `0` ; `inspect` doit indiquer l'indisponibilité et retourner `1`, sans faux inventaire vide. Cet essai natif reste à consigner séparément de la compilation.

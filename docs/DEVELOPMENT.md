@@ -1,6 +1,6 @@
 # Préparation du développement Go
 
-## État des étapes 2.2 à 3.4
+## État des étapes 2.2 à 4.1
 
 L'étape 2.2 est validée sous Linux x86_64 avec Go 1.27.3, installé localement à partir de l'archive officielle vérifiée. Le module Go et les premiers modèles métier sont présents, avec leurs tests.
 
@@ -13,6 +13,8 @@ L'étape 3.2 ajoute `coopace latency`, les statistiques de durée TCP et un expo
 L'étape 3.3 ajoute l'identité persistante sous Linux, le consentement et des contrats JSON validés hors réseau. La [documentation d'identité et de groupe](IDENTITY_AND_GROUP.md) décrit ces fondations. Le stockage de clé privée Windows reste explicitement indisponible.
 
 L'étape 3.4 ajoute l'approbation et le consentement persistés, les certificats publics et un échange TLS mutuel borné. Les tests TLS en mémoire passent ; le test TCP réel est ignoré dans l'environnement isolé et reste à confirmer depuis le terminal utilisateur. Voir [GROUP_EXCHANGE.md](GROUP_EXCHANGE.md) pour les commandes et la portée du prototype Linux.
+
+L'étape 4.1 ajoute l'application passerelle avec un diagnostic Linux en lecture seule : `coopace-gateway inspect`. Les tests et le lancement réel sont vérifiés, avec un inventaire partiel dans l'environnement isolé où Netlink est interdit. Le [diagnostic et ses limites](GATEWAY_DIAGNOSTIC.md) décrivent les lectures, les commandes bornées et les validations encore nécessaires sur le PC utilisateur. Ce programme ne gère pas encore le trafic.
 
 ## Version et module
 
@@ -153,6 +155,20 @@ Ces commandes utilisent les emplacements de cache par défaut de l'installation 
 
 Une validation réelle sous Windows devra être consignée séparément. Elle ne peut pas être déduite d'une compilation croisée depuis Linux.
 
+## Lancer le diagnostic de passerelle
+
+L'agent et la passerelle sont deux applications du même module. Depuis le dépôt Linux, sans élévation :
+
+```sh
+sh scripts/go.sh run ./apps/gateway/cmd/coopace-gateway inspect
+sh scripts/go.sh build -o .local/bin/coopace-gateway ./apps/gateway/cmd/coopace-gateway
+./.local/bin/coopace-gateway --help
+```
+
+Les outils `ip` et `tc`, lorsqu'ils sont présents, sont utilisés uniquement pour des requêtes locales d'affichage. Leur absence, un refus Netlink ou une sortie invalide apparaît dans la rubrique concernée. Les tests des parseurs ne nécessitent pas ces outils ; un binaire de test local vérifie les limites de sortie et l'annulation d'un processus.
+
+Le binaire Windows de diagnostic compile aussi mais sa collecte est explicitement indisponible ; voir [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md). Les mesures sous charge, le chemin réel des appareils et la restauration restent à définir avant une intervention.
+
 ## Organisation du code actuel
 
 Les fichiers de `packages/core` décrivent l'appareil, le système, les rôles et les capacités. Leurs règles et limites sont précisées dans le [README du noyau](../packages/core/README.md). Les messages JSON sont dans `packages/protocol`, l'authentification et l'approbation dans l'agent ; la découverte reste à développer.
@@ -164,3 +180,5 @@ La collecte des compteurs est orchestrée dans `apps/agent/internal/observe`, av
 La mesure TCP et l'export local sont dans `apps/agent/internal/latency`, avec les statistiques pures dans `packages/core/latency.go`. La commande impose une cible explicite et ne dépend pas d'un outil `ping` externe.
 
 L'état d'identité est géré par `apps/agent/internal/identity` ; son stockage est activé sous Linux uniquement. `packages/protocol` n'ouvre aucune connexion. `apps/agent/internal/group` convertit les contrats vers le noyau et orchestre profil, consentement persisté, transport TLS et échange borné. Le cadrage et la validation restent dans `packages/protocol`, sans sockets ni stockage.
+
+Le point d'entrée passerelle est `apps/gateway/cmd/coopace-gateway`, avec CLI et orchestration dans ses propres paquets `internal`. Les types d'inventaire sont dans `packages/core/gateway.go` ; les lectures Linux et leurs parseurs sont dans `platforms/linux/gateway*.go`. Cette séparation ne dépend pas des paquets internes de l'agent.
