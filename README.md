@@ -8,7 +8,7 @@ Le [périmètre produit](docs/PRODUCT.md) décrit le résultat visé, l'état r�
 
 ## État du projet
 
-**Étape 3.2 terminée : première mesure de durée d'établissement TCP et rapport JSON de référence.** `coopace latency` mesure vers une cible IP:port choisie ; `status` affiche l'état local et `observe` les compteurs d'interfaces Linux. Les tests et une connexion locale réelle sont validés sous Linux ; le programme compile pour Windows, dont l'exécution native reste à vérifier. Aucune mesure de capacité Internet ni gain d'optimisation n'est démontré.
+**Étape 3.3 terminée pour les fondations du groupe.** Identité persistante sous Linux, consentement et contrats de messages sont implémentés et testés hors réseau. `status`, `observe` et `latency` restent disponibles ; aucun groupe actif ni transport TLS n'est encore implémenté. Le programme compile pour Windows, dont le stockage privé d'identité et l'exécution native restent à valider. Aucun gain d'optimisation réseau n'est démontré.
 
 Les [choix techniques](docs/TECH_STACK.md) détaillent les raisons, les limites et les décisions différées.
 
@@ -32,6 +32,7 @@ coopace/
 └── docs/
     ├── ARCHITECTURE.md
     ├── DEVELOPMENT.md
+    ├── IDENTITY_AND_GROUP.md
     ├── LATENCY.md
     ├── OBSERVATIONS.md
     ├── PRODUCT.md
@@ -70,6 +71,8 @@ sh scripts/go.sh test ./...
 
 Les [instructions de développement](docs/DEVELOPMENT.md) détaillent l'installation, la compilation du binaire, l'aide et les vérifications. Les [observations locales](docs/OBSERVATIONS.md) précisent les sources, les unités et les limites. La [procédure Windows](docs/WINDOWS_VALIDATION.md) décrit la compilation et les essais natifs encore à effectuer. L'application Android reste à développer.
 
-La [mesure TCP et le protocole de référence](docs/LATENCY.md) expliquent `coopace latency --target IP:port`, l'export JSON et les comparaisons au repos/sous charge. Le protocole de groupe reste à développer et les compteurs Windows restent indisponibles.
+La [mesure TCP et le protocole de référence](docs/LATENCY.md) expliquent `coopace latency --target IP:port`, l'export JSON et les comparaisons au repos/sous charge.
+
+L'[identité locale et les contrats du groupe](docs/IDENTITY_AND_GROUP.md) décrivent `identity init/show --state-dir DOSSIER`, les permissions et le futur échange authentifié. Les contrats sont validés ; l'admission et le transport restent à intégrer. Les compteurs Windows restent indisponibles.
 
 Le dépôt Git est propre à ce dossier et utilise la branche `main`. La commande `git remote -v` permet de consulter les dépôts distants configurés dans chaque copie locale.

@@ -1,9 +1,11 @@
 # Protocole de communication
 
-État : module prévu, sans implémentation.
+État : contrats v1, encodage/décodage stricts et validation de session implémentés à l'étape 3.3. Transport TLS et échanges réseau non implémentés.
 
-Ce module accueillera les contrats versionnés et les règles de validation des échanges : identité, adhésion, capacités, mesures, propositions et résultats d'actions.
+Ce module définit les premières annonces d'appareil (`hello`) et observations de compteurs (`traffic_observation`). Il ne définit aucun ordre d'exécution ou de modification du réseau.
 
-Le format retenu est JSON, avec versionnement explicite des futurs messages et encodage Go via la bibliothèque standard. Les contrats resteront indépendants du langage pour permettre leur utilisation depuis Kotlin.
+Le format est JSON v1, avec des messages limités à 64 Kio. Les champs inconnus, doublons, variantes de casse et structures invalides sont rejetés. Les compteurs sont des chaînes décimales de `uint64` et les valeurs indisponibles restent nulles. Les contrats restent indépendants du langage pour préparer l'interopérabilité Kotlin.
 
-Les champs des messages, le transport, la découverte et l'authentification restent à spécifier. Les exemples et schémas devront permettre l'interopérabilité entre les implémentations des différentes plateformes.
+`Session` vérifie le groupe, l'expéditeur attendu et les séquences consécutives, avec un unique `hello` initial. Il exige que l'appelant fournisse une identité de pair déjà authentifiée et approuvée ; il ne réalise aucune cryptographie, admission ou connexion par lui-même.
+
+Les conversions vers le noyau métier restent à la frontière applicative. Les détails des contrats, de l'identité et du futur TLS mutuel sont dans [IDENTITY_AND_GROUP.md](../../docs/IDENTITY_AND_GROUP.md).

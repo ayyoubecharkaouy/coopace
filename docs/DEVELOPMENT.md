@@ -1,6 +1,6 @@
 # Préparation du développement Go
 
-## État des étapes 2.2 à 3.2
+## État des étapes 2.2 à 3.3
 
 L'étape 2.2 est validée sous Linux x86_64 avec Go 1.27.3, installé localement à partir de l'archive officielle vérifiée. Le module Go et les premiers modèles métier sont présents, avec leurs tests.
 
@@ -9,6 +9,8 @@ L'étape 2.3 ajoute le premier agent local. Les commandes de formatage, de test 
 L'étape 3.1 ajoute `coopace observe` et les premiers taux de trafic par interface sous Linux. Les [observations locales](OBSERVATIONS.md) décrivent les sources, les unités, les tests et la portée limitée de l'essai réel. La collecte des compteurs Windows reste non implémentée.
 
 L'étape 3.2 ajoute `coopace latency`, les statistiques de durée TCP et un export JSON local v1. Les tests déterministes passent dans l'environnement isolé ; le test TCP réel en boucle locale a été exécuté avec succès depuis le terminal utilisateur sous Linux. Voir [LATENCY.md](LATENCY.md) pour reproduire le test, choisir une cible et établir une référence.
+
+L'étape 3.3 ajoute l'identité persistante sous Linux, le consentement et des contrats JSON validés hors réseau. La [documentation d'identité et de groupe](IDENTITY_AND_GROUP.md) distingue ces fonctions de l'admission et du TLS non encore intégrés. Le stockage de clé privée Windows reste explicitement indisponible.
 
 ## Version et module
 
@@ -64,6 +66,7 @@ sh scripts/go.sh run ./apps/agent/cmd/coopace status
 sh scripts/go.sh run ./apps/agent/cmd/coopace observe
 sh scripts/go.sh run ./apps/agent/cmd/coopace --help
 sh scripts/go.sh run ./apps/agent/cmd/coopace latency --help
+sh scripts/go.sh run ./apps/agent/cmd/coopace identity --help
 ```
 
 Exemple de résultat sous Linux x86_64 :
@@ -106,6 +109,12 @@ Les tests de l'agent vérifient la détection des plateformes ciblées, l'affich
 
 Les tests de latence couvrent les percentiles, valeurs absentes, unités de l'export, options invalides et annulation. Le test d'intégration ouvre uniquement une connexion en boucle locale, sans données applicatives ; il est explicitement ignoré si l'environnement interdit les sockets. Utiliser `-count=1` pour le relancer hors de l'environnement isolé sans réutiliser un résultat de test en cache.
 
+Les tests d'identité utilisent des dossiers temporaires privés. Ils vérifient stabilité, permissions et refus des clés corrompues ou liées par un lien symbolique. Les tests de protocole vérifient les limites, ambiguïtés JSON, identités/groupes attendus et séquences. Pour relancer des essais aléatoires bornés du décodeur, sans connexion réseau :
+
+```sh
+sh scripts/go.sh test -parallel=2 -fuzz=FuzzDecode -fuzztime=2s ./packages/protocol
+```
+
 Les tests de régression du script d'installation fonctionnent sans Go et sans réseau, avec Python 3 et de petites archives de test :
 
 ```sh
@@ -144,3 +153,5 @@ Le point d'entrée de l'agent se trouve dans `apps/agent/cmd/coopace`, avec les 
 La collecte des compteurs est orchestrée dans `apps/agent/internal/observe`, avec une source Linux dans `platforms/linux` et des calculs indépendants du système dans `packages/core/traffic.go`. Sous Windows, cette commande renvoie une erreur d'indisponibilité ; voir [OBSERVATIONS.md](OBSERVATIONS.md).
 
 La mesure TCP et l'export local sont dans `apps/agent/internal/latency`, avec les statistiques pures dans `packages/core/latency.go`. La commande impose une cible explicite et ne dépend pas d'un outil `ping` externe.
+
+L'état d'identité est géré par `apps/agent/internal/identity` ; son stockage est activé sous Linux uniquement. `packages/protocol` n'ouvre aucune connexion. `apps/agent/internal/group` convertit les contrats vers le noyau, où le consentement et les capacités restent distincts de l'identité.

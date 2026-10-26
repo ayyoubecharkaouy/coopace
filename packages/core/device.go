@@ -8,8 +8,8 @@ import (
 	"unicode/utf8"
 )
 
-// DeviceID is an opaque local identifier, not a hostname or a network identity.
-// Its generation and persistence are outside this package's current scope.
+// DeviceID identifies a device independently of its hostname or IP address.
+// Group identities derive this value from their public key.
 type DeviceID string
 
 // OperatingSystem identifies one of the product's target platforms.
@@ -40,10 +40,8 @@ type Device struct {
 // Validate checks the description's consistency without changing it or doing I/O.
 // Callers must validate a description again after modifying its exported fields.
 func (d Device) Validate() error {
-	if d.ID == "" || !utf8.ValidString(string(d.ID)) || strings.ContainsFunc(string(d.ID), func(r rune) bool {
-		return unicode.IsSpace(r) || unicode.IsControl(r)
-	}) {
-		return fmt.Errorf("device ID must be non-empty valid UTF-8 and contain no whitespace or control characters")
+	if err := d.ID.Validate(); err != nil {
+		return err
 	}
 	if !utf8.ValidString(d.Name) || strings.TrimSpace(d.Name) == "" || strings.ContainsFunc(d.Name, unicode.IsControl) {
 		return fmt.Errorf("device name must be non-blank valid UTF-8 and contain no control characters")
@@ -79,6 +77,15 @@ func (d Device) Validate() error {
 
 	if slices.Contains(d.Capabilities, CapabilityManageGatewayTraffic) && !slices.Contains(d.Roles, RoleGateway) {
 		return fmt.Errorf("managing gateway traffic requires the gateway role")
+	}
+	return nil
+}
+
+func (id DeviceID) Validate() error {
+	if id == "" || !utf8.ValidString(string(id)) || strings.ContainsFunc(string(id), func(r rune) bool {
+		return unicode.IsSpace(r) || unicode.IsControl(r)
+	}) {
+		return fmt.Errorf("device ID must be non-empty valid UTF-8 and contain no whitespace or control characters")
 	}
 	return nil
 }

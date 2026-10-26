@@ -19,6 +19,7 @@ Commandes :
   status    Afficher la version, le système et l'état local de l'agent.
   observe   Observer le trafic local par interface pendant environ une seconde (Linux).
   latency   Mesurer l'établissement TCP vers --target IP:port (options : latency --help).
+  identity  Initialiser ou afficher l'identité locale (identity --help).
   help      Afficher cette aide.
 `
 
@@ -39,6 +40,9 @@ func RunContext(ctx context.Context, args []string, version string, stdout, stde
 	}
 	if args[0] == "latency" {
 		return runLatency(ctx, args[1:], version, stdout, stderr, latency.Measure)
+	}
+	if args[0] == "identity" {
+		return runIdentity(args[1:], stdout, stderr)
 	}
 	if len(args) != 1 || (args[0] != "status" && args[0] != "observe") {
 		fmt.Fprintln(stderr, "Commande ou arguments non reconnus.")

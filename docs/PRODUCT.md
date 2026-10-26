@@ -28,10 +28,10 @@ Un PC Linux n'est pas obligatoire parmi les membres du groupe. Les capacités de
 | Fonction ou cible | État actuel |
 | --- | --- |
 | Modèles appareil, rôle et capacités | Implémentés et testés sous Linux. |
-| Agent local Linux | Commandes `status`, `observe`, `latency` et d'aide, compteurs par interface et durée de connexion TCP avec export local. Tests et connexion réelle en boucle locale validés. |
-| Agent local Windows | Compilation Windows amd64 validée, mesure TCP incluse ; exécution native non vérifiée et collecte des compteurs non implémentée. |
+| Agent local Linux | Commandes d'état, observation, latence et identité persistante. Tests et connexion TCP en boucle locale validés ; aucun groupe actif. |
+| Agent local Windows | Compilation Windows amd64 validée ; exécution native non vérifiée, collecte des compteurs et stockage protégé de clé non implémentés. |
 | Application Android | Prévue ; aucun APK ni intégration native disponible. |
-| Groupe coopératif | Prévu ; identité, adhésion, authentification et échanges restent à développer. |
+| Groupe coopératif | Identité locale Linux, modèle de consentement et contrats JSON validés hors réseau. Admission persistée, transport TLS et échanges restent à développer. |
 | Passerelle Linux/OpenWrt | Prévue ; aucune gestion de trafic implémentée dans ce dépôt. |
 | Passerelle Windows | Cible à étudier ; moteur et performances non validés. |
 | Tableau de bord et relais | Prévus ; aucune implémentation. |
@@ -42,6 +42,8 @@ La présence d'un modèle Android ou Windows dans les tests ne valide pas l'appl
 Les observations de l'étape 3.1 portent sur les interfaces visibles par le processus. Elles ne prouvent ni une couverture Internet du foyer, ni une mesure de capacité WAN, ni une amélioration réseau. Voir leurs [limites précises](OBSERVATIONS.md).
 
 L'étape 3.2 mesure l'établissement TCP, pas un RTT ICMP ou une perte de paquets. Le [protocole de référence](LATENCY.md) prépare les comparaisons sans démontrer de gain ; aucune mesure WAN ni comparaison après optimisation n'a encore été validée.
+
+L'[étape 3.3](IDENTITY_AND_GROUP.md) prépare les fondations du groupe. Posséder une identité ou valider un JSON ne constitue ni une adhésion ni une authentification réseau. La clé privée reste locale ; seul un transport authentifié avec admission et consentement pourra activer le partage à l'étape suivante.
 
 À chaque jalon, mettre à jour cette table et les états du README et de la feuille de route en distinguant ce qui est prévu, compilé, testé et mesuré.
 

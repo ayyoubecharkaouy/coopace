@@ -74,7 +74,7 @@ Le script `scripts/go.sh` utilise le SDK local sans modifier le `PATH` du termin
 
 ## Suite immédiate
 
-Les étapes 2.2 à 3.2 livrent le socle, la compilation Windows amd64, les compteurs Linux et une mesure d'établissement TCP avec export local. La connexion TCP en boucle locale est validée sous Linux ; l'exécution native Windows reste à consigner selon [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md). La collecte des compteurs Windows reste à implémenter. L'étape 3.3 portera sur l'identité et les contrats du groupe.
+Les étapes 2.2 à 3.3 livrent le socle, les mesures et les fondations d'identité/consentement/contrats. Ed25519 et SHA-256 de la bibliothèque standard sont retenus pour l'identité ; TLS 1.3 mutuel est prévu à l'étape 3.4. Le stockage persistant de clé est activé sous Linux seulement, car les permissions doivent être adaptées au système. La collecte des compteurs et le stockage protégé Windows restent à implémenter ; son exécution native reste à consigner selon [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md).
 
 Les choix du transport réseau, du stockage, du framework web, d'un tunnel et du ML restent réservés aux étapes qui les nécessitent.
 
