@@ -23,6 +23,8 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 | [GROUP_EXCHANGE.md](GROUP_EXCHANGE.md) | Essai entre deux pairs approuvés, TLS et révocation. |
 | [GATEWAY_DIAGNOSTIC.md](GATEWAY_DIAGNOSTIC.md) | Inventaire de passerelle en lecture seule et préparation des expériences. |
 
+Le [protocole de référence initiale](GATEWAY_BASELINE.md) décrit l’export JSON du diagnostic et la préparation de l’étape 4.2. Le [modèle d’expérience passerelle](templates/GATEWAY_EXPERIMENT.md) est à copier dans un dossier local pour renseigner le scénario ; il ne contient aucune mesure réelle.
+
 ## Bilans datés
 
 La [revue du 26 octobre 2026](REVIEW_2026-10-26.md) consigne le démarrage et la cohérence avec le rapport V5, avant le développement du diagnostic de l'étape 4.1. Elle ne remplace pas l'état courant du produit.

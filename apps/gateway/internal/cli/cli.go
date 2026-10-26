@@ -4,6 +4,7 @@ package cli
 import (
 	"context"
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"strings"
@@ -15,6 +16,7 @@ import (
 
 const usage = `Utilisation : coopace-gateway <inspect|help>
   inspect  Inventorier interfaces, forwarding, droits et files visibles (Linux).
+           --json : émettre un inventaire local JSON v1 sur stdout.
   help     Afficher cette aide.
 Diagnostic local en lecture seule, sans configuration réseau ni trafic de test.
 Les informations manquantes sont affichées comme indisponibles.
@@ -31,13 +33,30 @@ func run(ctx context.Context, args []string, version string, stdout, stderr io.W
 		}
 		return 0
 	}
-	if len(args) != 1 || args[0] != "inspect" {
+	if args[0] != "inspect" {
 		fmt.Fprintln(stderr, "Commande ou arguments non reconnus ; utiliser coopace-gateway inspect.")
+		return 2
+	}
+	flags := flag.NewFlagSet("inspect", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	asJSON := flags.Bool("json", false, "émettre l'inventaire local JSON v1")
+	if err := flags.Parse(args[1:]); err != nil {
+		if errors.Is(err, flag.ErrHelp) {
+			return 0
+		}
+		return 2
+	}
+	if flags.NArg() != 0 {
+		fmt.Fprintln(stderr, "Aucun argument positionnel n'est accepté après inspect.")
 		return 2
 	}
 	report, err := collect(ctx, version)
 	if err == nil {
-		err = printReport(stdout, report)
+		if *asJSON {
+			err = diagnostic.WriteJSON(stdout, report)
+		} else {
+			err = printReport(stdout, report)
+		}
 	}
 	if err != nil {
 		fmt.Fprintf(stderr, "Erreur de diagnostic : %v\n", err)
@@ -65,9 +84,9 @@ func printReport(output io.Writer, report diagnostic.Report) error {
 			fmt.Fprintf(&text, "  %q : index=%d, MTU=%d, active administrativement=%t, boucle locale=%t\n", item.Name, item.Index, item.MTU, item.Up, item.Loopback)
 		}
 	}
-	flag(&text, "Forwarding IPv4 (/proc/sys/net/ipv4/ip_forward)", inventory.IPv4Forwarding)
-	flag(&text, "Forwarding IPv6 global (/proc/sys/net/ipv6/conf/all/forwarding)", inventory.IPv6Forwarding)
-	flag(&text, "CAP_NET_ADMIN effective (/proc/self/status)", inventory.NetAdmin)
+	printFlag(&text, "Forwarding IPv4 (/proc/sys/net/ipv4/ip_forward)", inventory.IPv4Forwarding)
+	printFlag(&text, "Forwarding IPv6 global (/proc/sys/net/ipv6/conf/all/forwarding)", inventory.IPv6Forwarding)
+	printFlag(&text, "CAP_NET_ADMIN effective (/proc/self/status)", inventory.NetAdmin)
 	fmt.Fprintln(&text, "\nOutils dans le PATH :")
 	for _, tool := range inventory.Tools {
 		if tool.Available {
@@ -119,7 +138,7 @@ func unavailable(output io.Writer, reason string) {
 	fmt.Fprintf(output, "  Indisponible : %q\n", reason)
 }
 
-func flag(output io.Writer, label string, reading core.GatewayReading[bool]) {
+func printFlag(output io.Writer, label string, reading core.GatewayReading[bool]) {
 	fmt.Fprintf(output, "\n%s :\n", label)
 	if !reading.Available {
 		unavailable(output, reading.Reason)

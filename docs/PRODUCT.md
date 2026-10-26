@@ -63,6 +63,8 @@ Il devra permettre de :
 
 Un groupe minimal de mesure peut préparer cette évaluation. La coordination avancée, une interface complète, les relais automatiques et le ML attendront ce premier résultat. L'absence de groupe complet ne doit pas bloquer l'évaluation du moteur de passerelle.
 
+La [préparation de l’étape 4.2](GATEWAY_BASELINE.md) ajoute un export JSON local d’inventaire et un modèle de protocole. La plateforme, la topologie, les seuils et les mesures réelles restent à confirmer ; aucun résultat sous charge n’est déduit de ces outils.
+
 ## Références et mesures indispensables
 
 | Expérience | Comparaisons nécessaires |

@@ -16,6 +16,7 @@ type Report struct {
 	Architecture string
 	CollectedAt  time.Time
 	Inventory    core.GatewayInventory
+	Build        Build
 }
 
 func Local(ctx context.Context, version string) (Report, error) {
@@ -25,5 +26,5 @@ func Local(ctx context.Context, version string) (Report, error) {
 	if err != nil {
 		return Report{}, err
 	}
-	return Report{Version: version, OS: runtime.GOOS, Architecture: runtime.GOARCH, CollectedAt: time.Now().UTC(), Inventory: inventory}, nil
+	return Report{Version: version, OS: runtime.GOOS, Architecture: runtime.GOARCH, CollectedAt: time.Now().UTC(), Inventory: inventory, Build: localBuild()}, nil
 }

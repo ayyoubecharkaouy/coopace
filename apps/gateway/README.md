@@ -20,4 +20,6 @@ sh scripts/go.sh run ./apps/gateway/cmd/coopace-gateway inspect
 
 Cette commande ne démarre aucun service et ne modifie aucune configuration. Les données indisponibles restent explicites ; aucun outil trouvé ni réglage actif ne suffit à déclarer la passerelle prête. Le [diagnostic, les sources et le protocole préalable aux interventions](../../docs/GATEWAY_DIAGNOSTIC.md) décrivent les limites et les prochaines validations.
 
+`inspect --json` émet un inventaire local v1 sur stdout, avec valeurs inconnues à `null`, horodatage UTC et provenance de compilation disponible. Les types d’export et les métadonnées restent dans `internal/diagnostic`, séparés des modèles du noyau et du protocole réseau. Le [protocole de référence initiale](../../docs/GATEWAY_BASELINE.md) et son modèle préparent l’étape 4.2 ; la plateforme et les mesures réelles restent à confirmer.
+
 Le moteur réseau dépendra du système : CAKE/SQM est envisagé sous Linux ; une passerelle Windows exige une intégration et une validation spécifiques. Les privilèges et leur séparation restent à définir.

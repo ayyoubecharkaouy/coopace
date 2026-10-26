@@ -3,6 +3,7 @@ package cli
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"io"
 	"strings"
@@ -23,11 +24,28 @@ func TestGatewayHelpAndInvalidArgumentsNeverCollect(t *testing.T) {
 			t.Fatalf("invalid help: %v code %d", args, code)
 		}
 	}
-	for _, args := range [][]string{{"activate"}, {"inspect", "extra"}, {"inspect", "--apply"}} {
+	for _, args := range [][]string{{"activate"}, {"inspect", "extra"}, {"inspect", "--apply"}, {"inspect", "--json", "extra"}} {
 		var stdout, stderr bytes.Buffer
 		if code := run(context.Background(), args, "test", &stdout, &stderr, collect); code != 2 || stdout.Len() != 0 {
 			t.Fatalf("invalid args accepted: %v", args)
 		}
+	}
+}
+
+func TestGatewayJSONCommandWritesOneDocumentAndNoPreamble(t *testing.T) {
+	var stdout, stderr bytes.Buffer
+	collect := func(context.Context, string) (diagnostic.Report, error) {
+		return diagnostic.Report{Version: "test", OS: "linux"}, nil
+	}
+	if code := run(context.Background(), []string{"inspect", "--json"}, "test", &stdout, &stderr, collect); code != 0 || stderr.Len() != 0 {
+		t.Fatalf("JSON command failed: %d %s", code, &stderr)
+	}
+	var decoded map[string]any
+	if err := json.Unmarshal(stdout.Bytes(), &decoded); err != nil || decoded["kind"] != "gateway_inventory" {
+		t.Fatalf("stdout is not one inventory document: %v", err)
+	}
+	if code := run(context.Background(), []string{"inspect", "--json"}, "test", failedWriter{}, &stderr, collect); code != 1 {
+		t.Fatal("JSON output failure ignored")
 	}
 }
 

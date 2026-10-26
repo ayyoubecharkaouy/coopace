@@ -117,9 +117,11 @@ Livrés : application `coopace-gateway inspect`, interfaces, flags de forwarding
 
 ### 4.2 — Scénario de laboratoire et référence initiale
 
-État : à faire.
+État : préparation livrée avec export d’inventaire JSON local v1 et modèle de protocole. Plateforme, inventaire réel, topologie, seuils et séries de référence restent à confirmer ; aucune expérience sous charge n’est validée.
 
 À partir d'un inventaire réel, choisir la plateforme et décrire le chemin du trafic à couvrir. Consigner la configuration initiale, les mesures au repos/sous charge, les seuils d'acceptation et le mécanisme de restauration à développer et tester avant une première modification. La comparaison doit distinguer le moteur configuré manuellement et le pilotage Coopace.
+
+Livrés pour la préparation : `coopace-gateway inspect --json`, valeurs indisponibles explicites, provenance de compilation lorsqu’elle est disponible et [protocole de référence initiale](GATEWAY_BASELINE.md) avec [modèle d’expérience](templates/GATEWAY_EXPERIMENT.md). Ces fichiers ne sont pas une configuration exécutable ni une sauvegarde restaurable. La clôture de l’étape nécessite encore un scénario réel complété et ses mesures ; elle ne peut pas être déduite des tests d’export.
 
 ## Étape 5 — Décisions coopératives
 

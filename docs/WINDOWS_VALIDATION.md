@@ -120,4 +120,4 @@ $LASTEXITCODE
 $LASTEXITCODE
 ```
 
-L'aide doit retourner `0` ; `inspect` doit indiquer l'indisponibilité et retourner `1`, sans faux inventaire vide. Cet essai natif reste à consigner séparément de la compilation.
+L'aide doit retourner `0` ; `inspect` doit indiquer l'indisponibilité et retourner `1`, sans faux inventaire vide. Cet essai natif reste à consigner séparément de la compilation. L’option `inspect --json` compile aussi ; elle conserve le refus de collecte Windows avec le code `1`, sans inventaire JSON de remplacement.

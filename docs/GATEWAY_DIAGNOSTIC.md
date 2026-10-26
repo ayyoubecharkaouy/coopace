@@ -22,6 +22,8 @@ sh scripts/go.sh build -o .local/bin/coopace-gateway ./apps/gateway/cmd/coopace-
 
 Le code de sortie est `0` pour un rapport produit, même partiel ; `1` pour une erreur globale, une plateforme non prise en charge ou un échec d'affichage ; `2` pour des arguments invalides ; `130` pour une annulation par Ctrl+C. Une rubrique indisponible n'est remplacée ni par `false` ni par une liste vide. `go run` peut présenter les codes de sortie à travers son propre processus.
 
+Depuis la préparation de l’étape 4.2, `inspect --json` émet un inventaire local v1 avec disponibilité des rubriques et provenance de compilation. Le [protocole de référence initiale](GATEWAY_BASELINE.md) décrit son format et le modèle de scénario à compléter. L’export ne change pas les lectures et ne constitue pas une sauvegarde restaurable.
+
 ## Sources et portée
 
 | Information | Source | Interprétation limitée |

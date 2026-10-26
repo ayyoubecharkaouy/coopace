@@ -1,6 +1,6 @@
 # Préparation du développement Go
 
-## État des étapes 2.2 à 4.1
+## État des étapes 2.2 à 4.2
 
 L'étape 2.2 est validée sous Linux x86_64 avec Go 1.27.3, installé localement à partir de l'archive officielle vérifiée. Le module Go et les premiers modèles métier sont présents, avec leurs tests.
 
@@ -15,6 +15,8 @@ L'étape 3.3 ajoute l'identité persistante sous Linux, le consentement et des c
 L'étape 3.4 ajoute l'approbation et le consentement persistés, les certificats publics et un échange TLS mutuel borné. Les tests TLS en mémoire passent ; le test TCP réel est ignoré dans l'environnement isolé et reste à confirmer depuis le terminal utilisateur. Voir [GROUP_EXCHANGE.md](GROUP_EXCHANGE.md) pour les commandes et la portée du prototype Linux.
 
 L'étape 4.1 ajoute l'application passerelle avec un diagnostic Linux en lecture seule : `coopace-gateway inspect`. Les tests et le lancement réel sont vérifiés, avec un inventaire partiel dans l'environnement isolé où Netlink est interdit. Le [diagnostic et ses limites](GATEWAY_DIAGNOSTIC.md) décrivent les lectures, les commandes bornées et les validations encore nécessaires sur le PC utilisateur. Ce programme ne gère pas encore le trafic.
+
+La préparation de l’étape 4.2 ajoute `inspect --json`, l’export d’inventaire local v1 et les métadonnées incorporées à la compilation. Les tests vérifient les valeurs inconnues, les listes vides et la provenance manquante. Le [protocole de référence initiale](GATEWAY_BASELINE.md) prépare le scénario réel, qui reste à compléter et mesurer.
 
 ## Version et module
 
