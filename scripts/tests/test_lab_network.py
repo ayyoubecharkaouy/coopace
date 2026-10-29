@@ -34,6 +34,31 @@ class LabNetworkTests(unittest.TestCase):
         self.reservation = self.root / "coopace-lab.ABC123xy"
         self.tools = self.root / "tools"
         self.tools.mkdir()
+        # The Python driver's orchestration is tested separately. Here the fake
+        # driver checks only ownership/lifecycle at the shell boundary.
+        (self.root / "scripts/lab-series.py").write_text(r'''
+import argparse, json, os, sys, time
+from pathlib import Path
+parser = argparse.ArgumentParser()
+parser.add_argument("--client", required=True)
+parser.add_argument("--server", required=True)
+parser.add_argument("--workspace", required=True)
+args = parser.parse_args()
+root = Path(os.environ["COOPACE_LAB_TEST_STATE"]).parent
+state = json.loads(Path(os.environ["COOPACE_LAB_TEST_STATE"]).read_text())
+assert args.client in state["namespaces"] and args.server in state["namespaces"]
+assert Path(args.workspace) == Path(os.environ["COOPACE_LAB_TEST_RESERVATION"])
+(root / "server-pid").write_text(str(os.getpid()))
+mode = os.environ["COOPACE_LAB_TEST_MODE"]
+if mode == "series_pause":
+    Path(os.environ["COOPACE_LAB_TEST_PAUSED"]).touch()
+    time.sleep(10)
+if mode == "series_failure":
+    print('{"partial":true}')
+    sys.exit(1)
+if mode != "series_empty":
+    print(json.dumps({"schema_version": 1, "kind": "synthetic_latency_series", "pairs": [1, 2, 3]}))
+''')
         stub = self.root / "stub.py"
         stub.write_text(r'''
 import json, os, signal, sys, time
@@ -66,7 +91,7 @@ elif command == "ip":
         if mode == "interrupt_after_create_" + name[-1]:
             os.kill(os.getppid(), signal.SIGTERM)
     elif args[:2] == ["netns", "del"]:
-        if mode in {"cleanup_failure", "tcp_cleanup_failure", "load_cleanup_failure"} and args[2].endswith("-s"):
+        if mode in {"cleanup_failure", "tcp_cleanup_failure", "load_cleanup_failure", "series_cleanup_failure"} and args[2].endswith("-s"):
             sys.exit(1)
         pid_file = Path(os.environ["COOPACE_LAB_TEST_STATE"]).parent / "server-pid"
         if pid_file.exists():
@@ -320,6 +345,37 @@ elif command == "ip":
     def test_load_termination_stops_receiver_before_namespace_cleanup(self):
         self.check_termination("run-load", "load_pause")
         self.assert_server_stopped()
+
+    def test_series_success_publishes_bundle_after_driver_and_namespace_cleanup(self):
+        result = self.run_lab(args=("run-series",))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["pairs"], [1, 2, 3])
+        self.assert_server_stopped()
+        self.assertEqual(json.loads(self.state.read_text())["namespaces"], [])
+        self.assertFalse(self.reservation.exists())
+
+    def test_series_failures_or_empty_output_never_publish_a_bundle(self):
+        for mode in ["series_failure", "series_empty", "series_cleanup_failure"]:
+            with self.subTest(mode=mode):
+                for path in [self.log, self.state, self.root / "server-pid"]:
+                    path.unlink(missing_ok=True)
+                result = self.run_lab(mode, args=("run-series",))
+                self.assertNotEqual(result.returncode, 0)
+                self.assertEqual(result.stdout, "")
+                self.assert_server_stopped()
+                expected_remaining = 1 if mode == "series_cleanup_failure" else 0
+                self.assertEqual(len(json.loads(self.state.read_text())["namespaces"]), expected_remaining)
+                self.assertFalse(self.reservation.exists())
+
+    def test_series_termination_stops_driver_before_namespace_cleanup(self):
+        self.check_termination("run-series", "series_pause")
+        self.assert_server_stopped()
+
+    def test_missing_series_script_stops_before_resource_creation(self):
+        (self.root / "scripts/lab-series.py").unlink()
+        result = self.run_lab(args=("run-series",))
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(any(call[0] in {"ip", "mktemp"} for call in self.calls()))
 
     def test_termination_runs_cleanup(self):
         self.check_termination("run", "pause")

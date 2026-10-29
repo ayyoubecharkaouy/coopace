@@ -13,6 +13,7 @@ sh scripts/go.sh build -o .local/bin/coopace-lab-load ./scripts/lab-load
 | `--bytes` | Volume exact de 1 à 33 554 432 octets ; défaut : 8 388 608 (8 Mio). |
 | `send --rate` | Plafond moyen applicatif de 65 536 à 4 194 304 octets/s ; défaut : 1 048 576 (1 Mio/s). |
 | `--duration` | Délai de 1s à 30s ; défaut : 12s en émission et 15s en réception. |
+| `send --announce-start` | Option du pilote de séries : annonce une ligne `STARTED` après la première écriture, avant le rapport JSON final. Désactivée par défaut. |
 
 Le volume divisé par le débit demandé doit être strictement inférieur au délai d'émission. Le délai couvre la connexion, les écritures et leur cadence ; en réception, il couvre aussi l'attente du premier client et de la fin du flux. SIGINT, SIGTERM et SIGHUP annulent le contexte et ferment les sockets. Ce délai applicatif ne constitue pas un superviseur indépendant.
 
@@ -21,6 +22,8 @@ Le bloc synthétique fait au plus 16 Kio. L'émetteur cadence les écritures sel
 Le récepteur annonce `READY IP:port` sur stdout après ouverture de l'écoute. Il ferme l'écoute après la première connexion et lit au plus le volume attendu plus un octet, ce qui permet de rejeter un dépassement. Un volume incomplet, un dépassement, une erreur ou une expiration retourne `1`. Après réception exacte et fin du flux, il retourne `0` et inscrit le comptage sur stderr. Une annonce de disponibilité peut donc précéder un échec ultérieur.
 
 L'émetteur publie un objet JSON local v1 seulement si son envoi a abouti. Le format `synthetic_tcp_send` contient la cible, les versions et plateforme, le volume demandé et écrit, le plafond demandé, la taille du bloc, le délai, les horodatages UTC, la durée monotone en millisecondes et la moyenne en octets/s. Ce rapport décrit les écritures côté émetteur ; il ne prouve pas à lui seul la réception distante. Une erreur réseau retourne `1`, sans JSON de réussite ; des arguments invalides retournent `2` sans accès réseau. Les erreurs et détails vont sur stderr.
+
+Le rapport conserve aussi `first_write_at` et `last_write_at`, les instants UTC après les première et dernière écritures ayant progressé. Ces champs sont nécessaires au nouveau [pilote de séries](../../docs/VIRTUAL_SERIES.md) pour vérifier le recouvrement avec la mesure. Les anciens rapports de transfert restent inchangés et n'acquièrent pas rétroactivement ces horodatages. L'annonce facultative `STARTED` est un signal de progression, pas une confirmation de réception ni de saturation du lien.
 
 Le mode `lab-network.sh run-load` attend en plus la réussite du récepteur et du nettoyage avant de publier ce JSON. Son protocole est dans [VIRTUAL_LOAD.md](../../docs/VIRTUAL_LOAD.md) ; les [premières observations natives](../../docs/VALIDATION_VIRTUAL_LOAD_2026-10-29.md) confirment le volume et le nettoyage, avec le code exact de sortie `0` conservé.
 

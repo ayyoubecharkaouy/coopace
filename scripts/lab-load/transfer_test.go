@@ -8,6 +8,7 @@ import (
 	"io"
 	"net"
 	"strconv"
+	"strings"
 	"sync"
 	"syscall"
 	"testing"
@@ -86,6 +87,9 @@ func TestCLISendsOnlyBoundedZerosAndReportsPacedWrites(t *testing.T) {
 	if report.ElapsedMS < float64(scheduledDuration(o.bytes, o.rate))/float64(time.Millisecond) || report.AverageBytesPerSecond > float64(o.rate) || report.FinishedAt.Before(report.StartedAt) {
 		t.Fatalf("unpaced or inconsistent timing: %+v", report)
 	}
+	if report.FirstWriteAt.Before(report.StartedAt) || report.LastWriteAt.Before(report.FirstWriteAt) || report.LastWriteAt.After(report.FinishedAt) {
+		t.Fatalf("invalid write activity window: %+v", report)
+	}
 	select {
 	case payload := <-data:
 		if len(payload) != int(o.bytes) || !bytes.Equal(payload, make([]byte, o.bytes)) {
@@ -125,6 +129,29 @@ func TestReceiverRequiresExactVolumeAndEOF(t *testing.T) {
 				t.Fatal("listening socket remained open")
 			}
 		})
+	}
+}
+
+func TestAnnouncedStartPrecedesSuccessJSON(t *testing.T) {
+	source, sink := net.Pipe()
+	defer source.Close()
+	defer sink.Close()
+	go io.Copy(io.Discard, sink)
+	var stdout, stderr bytes.Buffer
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	code := run(ctx, []string{"send", "--target", "10.203.0.6:46002", "--bytes", "32768", "--rate", "4194304", "--duration", "1s", "--announce-start"},
+		&stdout, &stderr, network{dial: func(context.Context, string, string) (net.Conn, error) { return source, nil }})
+	if code != 0 {
+		t.Fatalf("code=%d stderr=%q", code, &stderr)
+	}
+	marker, raw, ok := strings.Cut(stdout.String(), "\n")
+	if !ok || marker != "STARTED" {
+		t.Fatalf("missing start announcement: %q", &stdout)
+	}
+	var report sendReport
+	if err := json.Unmarshal([]byte(raw), &report); err != nil || report.WrittenBytes != 32768 || report.FirstWriteAt.IsZero() || !report.LastWriteAt.After(report.FirstWriteAt) {
+		t.Fatalf("invalid announced report: %+v %v", report, err)
 	}
 }
 
@@ -235,7 +262,7 @@ func TestSenderHandlesShortWritesAndRejectsZeroProgress(t *testing.T) {
 		o.bytes = 31
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 		defer cancel()
-		report, err := send(ctx, o, func(context.Context, string, string) (net.Conn, error) { return shortConn{source, maximum}, nil })
+		report, err := send(ctx, o, func(context.Context, string, string) (net.Conn, error) { return shortConn{source, maximum}, nil }, nil)
 		if maximum == 0 {
 			if !errors.Is(err, io.ErrShortWrite) || report.WrittenBytes != 0 {
 				t.Fatalf("zero progress: %+v %v", report, err)
@@ -280,7 +307,7 @@ func TestLoopbackSyntheticTransfer(t *testing.T) {
 		_, err := receive(ctx, o, func(context.Context, string, string) (net.Listener, error) { return listener, nil }, func(string) error { return nil })
 		done <- err
 	}()
-	report, err := send(ctx, o, (&net.Dialer{}).DialContext)
+	report, err := send(ctx, o, (&net.Dialer{}).DialContext, nil)
 	if err != nil || report.WrittenBytes != o.bytes {
 		t.Fatalf("send: %+v %v", report, err)
 	}

@@ -22,6 +22,8 @@ La [revue du 29 octobre 2026](docs/REVIEW_2026-10-29.md) revérifie le socle et 
 
 La préparation des essais sous charge ajoute un [transfert synthétique borné](docs/VIRTUAL_LOAD.md) : `run-load` envoie 8 Mio avec un plafond moyen applicatif de 1 Mio/s et exige la réception complète avant nettoyage. Ses tests simulés passent et un [premier transfert natif](docs/VALIDATION_VIRTUAL_LOAD_2026-10-29.md) a envoyé et reçu les 8 Mio en environ huit secondes, avec nettoyage normal. Le code de sortie `0` est conservé ; les séries de latence simultanées restent à effectuer.
 
+Le mode [`run-series`](docs/VIRTUAL_SERIES.md) prépare désormais trois paires de séries sans et avec ce trafic, dix tentatives TCP par série. Il vérifie la fenêtre d'écritures de charge, conserve les échecs et utilise le comparateur strict existant. Ses tests simulés passent ; l'essai natif du scénario complet reste à effectuer.
+
 ## Organisation
 
 ```text

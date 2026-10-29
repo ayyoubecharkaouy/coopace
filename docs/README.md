@@ -29,6 +29,8 @@ Le [laboratoire Linux virtuel](VIRTUAL_LAB.md) fournit un scénario concret pour
 
 Le [premier transfert synthétique borné](VIRTUAL_LOAD.md) définit ensuite `run-load`, son volume, son plafond moyen, ses délais et ses critères. Les [premières observations natives](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) confirment 8 Mio transférés et reçus, avec nettoyage normal ; le code exact `0` est conservé et les séries de latence simultanées restent à effectuer.
 
+Les [séries sans et avec transfert](VIRTUAL_SERIES.md) définissent `run-series`, trois paires de mesures, leur ordre, le contrôle du recouvrement et le rapport groupé. Les tests simulés sont disponibles ; l'essai natif reste à effectuer.
+
 ## Bilans datés
 
 La [revue du 29 octobre 2026](REVIEW_2026-10-29.md) revérifie le projet depuis le démarrage, consigne le correctif de nettoyage du laboratoire et définit les validations nécessaires pour poursuivre l'étape 4.2.

@@ -68,10 +68,12 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer, transport
 		return 2
 	}
 	o := options{}
+	announceStart := false
 	flags := flag.NewFlagSet(args[0], flag.ContinueOnError)
 	flags.SetOutput(stderr)
 	flags.Int64Var(&o.bytes, "bytes", defaultBytes, "volume synthétique exact, de 1 à 33554432 octets")
 	if sender {
+		flags.BoolVar(&announceStart, "announce-start", false, "annoncer STARTED après la première écriture, avant le JSON")
 		flags.StringVar(&o.address, "target", "", "cible IPv4:port privée ou de boucle locale, obligatoire")
 		flags.Int64Var(&o.rate, "rate", defaultRate, "plafond applicatif en octets/s, de 65536 à 4194304")
 		flags.DurationVar(&o.duration, "duration", 12*time.Second, "durée maximale, de 1s à 30s")
@@ -96,7 +98,13 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer, transport
 	ctx, cancel := context.WithTimeout(ctx, o.duration)
 	defer cancel()
 	if sender {
-		report, err := send(ctx, o, transport.dial)
+		report, err := send(ctx, o, transport.dial, func() error {
+			if announceStart {
+				_, err := fmt.Fprintln(stdout, "STARTED")
+				return err
+			}
+			return nil
+		})
 		if err == nil {
 			err = json.NewEncoder(stdout).Encode(report)
 		}

@@ -4,7 +4,7 @@ set -eu
 
 lab_mode=${1:-plan}
 if [ "$#" -gt 1 ]; then
-    printf '%s\n' 'Utilisation : sh scripts/lab-network.sh [plan|run|run-tcp|run-load]' >&2
+    printf '%s\n' 'Utilisation : sh scripts/lab-network.sh [plan|run|run-tcp|run-load|run-series]' >&2
     exit 2
 fi
 case "$lab_mode" in
@@ -17,24 +17,27 @@ case "$lab_mode" in
             'run vérifie le blocage sans forwarding, puis trois réponses ICMP avec forwarding.' \
             'run-tcp ajoute cinq tentatives TCP vers 10.203.0.6:46001, sans charge générée.' \
             'run-load transfère 8 Mio synthétiques vers 10.203.0.6:46002, plafonnés à 1 Mio/s en moyenne applicative.' \
+            'run-series compare trois paires sans/avec ce flux, dix tentatives TCP par série.' \
             'stdout : inventaire JSON de la passerelle ; stderr : étapes, sondes et nettoyage.' \
             'Avec run-tcp, stdout contient plutôt le rapport TCP local JSON de l’agent.' \
             'Avec run-load, stdout contient le rapport JSON d’envoi après réception complète et nettoyage.' \
+            'Avec run-series, stdout contient les six séries, trois charges et comparaisons après nettoyage.' \
             'Nettoyage des seuls espaces créés après succès, erreur ou interruption gérée.' \
             'Prérequis de run : Linux, binaire coopace-gateway construit, privilèges de laboratoire.' \
             'run-tcp exige plutôt les binaires coopace et coopace-lab-tcp déjà construits.' \
             'run-load exige le binaire coopace-lab-load ; ce flux ne prouve pas une saturation.' \
+            'run-series exige Python 3 et les trois binaires coopace, coopace-lab-tcp et coopace-lab-load.' \
             'Ce mode plan ne crée aucun espace réseau et ne lance aucune sonde.'
         exit 0
         ;;
-    run|run-tcp|run-load) ;;
+    run|run-tcp|run-load|run-series) ;;
     *)
-        printf '%s\n' 'Utilisation : sh scripts/lab-network.sh [plan|run|run-tcp|run-load]' >&2
+        printf '%s\n' 'Utilisation : sh scripts/lab-network.sh [plan|run|run-tcp|run-load|run-series]' >&2
         exit 2
         ;;
 esac
 
-for lab_command in uname id sed ip ping sysctl mktemp rmdir rm sleep; do
+for lab_command in uname id sed ip ping sysctl mktemp rmdir rm sleep cat; do
     if ! command -v "$lab_command" >/dev/null 2>&1; then
         printf 'Outil requis absent : %s\n' "$lab_command" >&2
         exit 1
@@ -74,10 +77,26 @@ elif [ "$lab_mode" = run-tcp ]; then
         printf '%s\n' 'Compiler coopace et coopace-lab-tcp avant run-tcp ; consulter docs/VIRTUAL_LAB.md.' >&2
         exit 1
     fi
-else
+elif [ "$lab_mode" = run-load ]; then
     lab_load="$lab_root/.local/bin/coopace-lab-load"
     if [ ! -x "$lab_load" ]; then
         printf '%s\n' 'Compiler coopace-lab-load avant run-load ; consulter docs/VIRTUAL_LOAD.md.' >&2
+        exit 1
+    fi
+else
+    if ! command -v python3 >/dev/null 2>&1; then
+        printf '%s\n' 'Python 3 requis pour run-series.' >&2
+        exit 1
+    fi
+    for lab_program in coopace coopace-lab-tcp coopace-lab-load; do
+        if [ ! -x "$lab_root/.local/bin/$lab_program" ]; then
+            printf 'Compiler %s avant run-series ; consulter docs/VIRTUAL_SERIES.md.\n' "$lab_program" >&2
+            exit 1
+        fi
+    done
+    lab_series_script="$lab_root/scripts/lab-series.py"
+    if [ ! -f "$lab_series_script" ]; then
+        printf '%s\n' 'Pilote scripts/lab-series.py absent.' >&2
         exit 1
     fi
 fi
@@ -102,6 +121,7 @@ lab_server_created=0
 lab_report=''
 lab_server_pid=''
 lab_ready_file=''
+lab_series_file=''
 lab_critical=0
 lab_signal_status=0
 
@@ -150,6 +170,9 @@ lab_cleanup() {
     fi
     if [ -n "$lab_ready_file" ]; then
         rm -f -- "$lab_ready_file" || lab_cleanup_failed=1
+    fi
+    if [ -n "$lab_series_file" ]; then
+        rm -f -- "$lab_series_file" || lab_cleanup_failed=1
     fi
     if [ "$lab_server_created" = 1 ]; then
         ip netns del "$lab_server" >&2 || lab_cleanup_failed=1
@@ -229,6 +252,23 @@ ip netns exec "$lab_client" ping -4 -n -c 3 -w 5 -W 1 10.203.0.6 >&2
 if [ "$lab_mode" = run ]; then
     printf '%s\n' 'Test de passage réussi ; collecte de l’inventaire du laboratoire.' >&2
     lab_report=$(ip netns exec "$lab_gateway" "$lab_binary" inspect --json)
+elif [ "$lab_mode" = run-series ]; then
+    lab_series_file="$lab_tmp/series-report"
+    : > "$lab_series_file"
+    lab_critical=1
+    python3 "$lab_series_script" --client "$lab_client" --server "$lab_server" \
+        --workspace "$lab_tmp" > "$lab_series_file" &
+    lab_server_pid=$!
+    lab_end_critical
+    printf 'Pilote des séries de cette exécution : PID %s\n' "$lab_server_pid" >&2
+    if wait "$lab_server_pid"; then
+        lab_server_pid=''
+    else
+        lab_worker_result=$?
+        lab_server_pid=''
+        exit "$lab_worker_result"
+    fi
+    lab_report=$(cat "$lab_series_file")
 else
     if [ "$lab_mode" = run-tcp ]; then
         lab_ready_file="$lab_tmp/tcp-ready"

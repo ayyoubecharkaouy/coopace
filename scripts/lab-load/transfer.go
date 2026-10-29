@@ -25,6 +25,8 @@ type sendReport struct {
 	BlockBytes              int       `json:"block_bytes"`
 	TimeoutMS               float64   `json:"timeout_ms"`
 	StartedAt               time.Time `json:"started_at"`
+	FirstWriteAt            time.Time `json:"first_write_at"`
+	LastWriteAt             time.Time `json:"last_write_at"`
 	FinishedAt              time.Time `json:"finished_at"`
 	ElapsedMS               float64   `json:"elapsed_ms"`
 	AverageBytesPerSecond   float64   `json:"average_bytes_per_second"`
@@ -60,7 +62,7 @@ func closeOnCancel(ctx context.Context, connection net.Conn) (func() bool, error
 	return context.AfterFunc(ctx, func() { connection.Close() }), nil
 }
 
-func send(ctx context.Context, o options, dial func(context.Context, string, string) (net.Conn, error)) (sendReport, error) {
+func send(ctx context.Context, o options, dial func(context.Context, string, string) (net.Conn, error), onFirstWrite func() error) (sendReport, error) {
 	report := sendReport{SchemaVersion: 1, Method: "synthetic_tcp_send", OS: runtime.GOOS,
 		Architecture: runtime.GOARCH, GoVersion: runtime.Version(), Target: o.address,
 		RequestedBytes: o.bytes, RequestedBytesPerSecond: o.rate, BlockBytes: blockBytes,
@@ -95,6 +97,17 @@ func send(ctx context.Context, o options, dial func(context.Context, string, str
 			return report, io.ErrShortWrite
 		}
 		report.WrittenBytes += int64(n)
+		if n > 0 {
+			report.LastWriteAt = time.Now().UTC()
+			if report.FirstWriteAt.IsZero() {
+				report.FirstWriteAt = report.LastWriteAt
+				if onFirstWrite != nil {
+					if err := onFirstWrite(); err != nil {
+						return report, err
+					}
+				}
+			}
+		}
 		if err != nil {
 			return report, err
 		}

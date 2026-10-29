@@ -67,3 +67,5 @@ sh scripts/go.sh test -count=1 -v ./scripts/lab-load
 Préparer ensuite plusieurs paires de séries sur une même topologie, avec la même cible de latence et les mêmes paramètres : sans ce flux, puis pendant ce flux. Consigner l'ordre, les répétitions et les horaires d'activité pour vérifier le recouvrement réel avec les mesures. L'étiquette `loaded` seule ne prouve ni ce recouvrement ni une saturation.
 
 La latence simultanée, les répétitions et leur collecte ne sont pas encore intégrées dans `run-load`. La comparaison restera descriptive tant que le scénario et les conditions ne permettent pas une conclusion causale. La [référence initiale](GATEWAY_BASELINE.md), les métriques complémentaires et la restauration restent nécessaires pour clôturer l'étape 4.2.
+
+Le nouveau mode distinct [`run-series`](VIRTUAL_SERIES.md) prépare désormais cette association sur une même topologie, avec trois paires, des horodatages d'écriture et le comparateur strict. Son essai natif reste à effectuer ; `run-load` conserve son rôle de transfert seul.

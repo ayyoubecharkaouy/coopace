@@ -98,6 +98,8 @@ Le nettoyage de ressources neuves n'est pas la restauration indépendante requis
 
 Le nouveau mode [`run-load`](VIRTUAL_LOAD.md) réutilise cette topologie et ces mécanismes pour préparer un flux synthétique de 8 Mio avec cadence applicative bornée. Son fichier de disponibilité s'appelle `load-ready` ; les mêmes règles de récupération ciblée s'appliquent à ce fichier précis si un arrêt brutal empêche sa suppression. Les [premières observations natives](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) de ce mode confirment le transfert complet et le nettoyage normal ; il ne mesure pas encore simultanément la latence.
 
+Le mode [`run-series`](VIRTUAL_SERIES.md) prépare cette mesure simultanée et trois paires de séries sur une seule création du laboratoire. Le pilote Python est suivi comme un processus propre par le shell et arrête ses outils avant de rendre la main. Un arrêt brutal peut laisser un sous-dossier privé `series-*` et le fichier `series-report` sous la réservation exacte du journal ; ils sont à inspecter avec les seuls noms de cette exécution. Son essai natif reste à effectuer.
+
 ## Validation et suite
 
 Les tests Python utilisent de faux outils dans des répertoires temporaires et n'effectuent aucune opération réseau réelle. Ils couvrent prévisualisation, privilèges ou binaire manquants, ciblage des espaces propres, échec du serveur ou de la mesure, arrêt du serveur avant suppression, nettoyage après erreur/interruption et absence de JSON après un échec de nettoyage. Les tests Go vérifient aussi l'endpoint avec des connexions en mémoire ; le test de boucle locale peut être ignoré faute de permissions.
