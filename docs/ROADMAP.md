@@ -129,6 +129,8 @@ Un premier [scénario Linux virtuel](VIRTUAL_LAB.md) est maintenant défini : cl
 
 La [revue du 29 octobre 2026](REVIEW_2026-10-29.md) confirme la cohérence du démarrage après correction d'une fenêtre d'interruption du nettoyage. L'essai natif ICMP/TCP est désormais consigné ; la prochaine activité est de préparer une charge contrôlée et des séries répétées. Cette validation de connectivité ne clôture pas l'étape 4.2.
 
+Un [premier flux synthétique borné](VIRTUAL_LOAD.md) est maintenant préparé avec `run-load` : un transfert client → serveur de 8 Mio, plafond moyen applicatif de 1 Mio/s, délais de 12s en émission et 15s en réception. Les tests en mémoire et simulés couvrent volumes, cadence, erreurs et nettoyage. Son essai natif reste à effectuer avant d'intégrer la latence simultanée et les répétitions au repos/sous charge. Il n'applique pas de politique de files et ne garantit pas une congestion du réseau virtuel.
+
 ## Étape 5 — Décisions coopératives
 
 État : à faire.

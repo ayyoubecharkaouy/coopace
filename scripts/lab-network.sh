@@ -4,7 +4,7 @@ set -eu
 
 lab_mode=${1:-plan}
 if [ "$#" -gt 1 ]; then
-    printf '%s\n' 'Utilisation : sh scripts/lab-network.sh [plan|run|run-tcp]' >&2
+    printf '%s\n' 'Utilisation : sh scripts/lab-network.sh [plan|run|run-tcp|run-load]' >&2
     exit 2
 fi
 case "$lab_mode" in
@@ -16,17 +16,20 @@ case "$lab_mode" in
             'Routes spécifiques seulement ; aucun accès Internet ni lien avec le réseau de l’hôte.' \
             'run vérifie le blocage sans forwarding, puis trois réponses ICMP avec forwarding.' \
             'run-tcp ajoute cinq tentatives TCP vers 10.203.0.6:46001, sans charge générée.' \
+            'run-load transfère 8 Mio synthétiques vers 10.203.0.6:46002, plafonnés à 1 Mio/s en moyenne applicative.' \
             'stdout : inventaire JSON de la passerelle ; stderr : étapes, sondes et nettoyage.' \
             'Avec run-tcp, stdout contient plutôt le rapport TCP local JSON de l’agent.' \
+            'Avec run-load, stdout contient le rapport JSON d’envoi après réception complète et nettoyage.' \
             'Nettoyage des seuls espaces créés après succès, erreur ou interruption gérée.' \
             'Prérequis de run : Linux, binaire coopace-gateway construit, privilèges de laboratoire.' \
             'run-tcp exige plutôt les binaires coopace et coopace-lab-tcp déjà construits.' \
+            'run-load exige le binaire coopace-lab-load ; ce flux ne prouve pas une saturation.' \
             'Ce mode plan ne crée aucun espace réseau et ne lance aucune sonde.'
         exit 0
         ;;
-    run|run-tcp) ;;
+    run|run-tcp|run-load) ;;
     *)
-        printf '%s\n' 'Utilisation : sh scripts/lab-network.sh [plan|run|run-tcp]' >&2
+        printf '%s\n' 'Utilisation : sh scripts/lab-network.sh [plan|run|run-tcp|run-load]' >&2
         exit 2
         ;;
 esac
@@ -64,11 +67,17 @@ if [ "$lab_mode" = run ]; then
         printf '%s\n' 'Compiler coopace-gateway avec le compte habituel avant de lancer run.' >&2
         exit 1
     fi
-else
+elif [ "$lab_mode" = run-tcp ]; then
     lab_agent="$lab_root/.local/bin/coopace"
     lab_tcp="$lab_root/.local/bin/coopace-lab-tcp"
     if [ ! -x "$lab_agent" ] || [ ! -x "$lab_tcp" ]; then
         printf '%s\n' 'Compiler coopace et coopace-lab-tcp avant run-tcp ; consulter docs/VIRTUAL_LAB.md.' >&2
+        exit 1
+    fi
+else
+    lab_load="$lab_root/.local/bin/coopace-lab-load"
+    if [ ! -x "$lab_load" ]; then
+        printf '%s\n' 'Compiler coopace-lab-load avant run-load ; consulter docs/VIRTUAL_LOAD.md.' >&2
         exit 1
     fi
 fi
@@ -110,6 +119,21 @@ lab_end_critical() {
     if [ "$lab_signal_status" -ne 0 ]; then
         exit "$lab_signal_status"
     fi
+}
+
+lab_wait_ready() {
+    lab_ready_attempt=0
+    while :; do
+        if IFS= read -r lab_ready < "$lab_ready_file" && [ "$lab_ready" = "$1" ]; then
+            return 0
+        fi
+        if ! kill -0 "$lab_server_pid" 2>/dev/null || [ "$lab_ready_attempt" -ge 50 ]; then
+            printf '%s\n' 'Serveur de laboratoire indisponible ; essai arrêté.' >&2
+            return 1
+        fi
+        lab_ready_attempt=$((lab_ready_attempt + 1))
+        sleep 0.1
+    done
 }
 
 lab_cleanup() {
@@ -206,35 +230,40 @@ if [ "$lab_mode" = run ]; then
     printf '%s\n' 'Test de passage réussi ; collecte de l’inventaire du laboratoire.' >&2
     lab_report=$(ip netns exec "$lab_gateway" "$lab_binary" inspect --json)
 else
-    lab_ready_file="$lab_tmp/tcp-ready"
+    if [ "$lab_mode" = run-tcp ]; then
+        lab_ready_file="$lab_tmp/tcp-ready"
+    else
+        lab_ready_file="$lab_tmp/load-ready"
+    fi
     : > "$lab_ready_file"
     lab_critical=1
-    ip netns exec "$lab_server" "$lab_tcp" --listen 10.203.0.6:46001 \
-        --connections 5 --duration 15s > "$lab_ready_file" &
+    if [ "$lab_mode" = run-tcp ]; then
+        ip netns exec "$lab_server" "$lab_tcp" --listen 10.203.0.6:46001 \
+            --connections 5 --duration 15s > "$lab_ready_file" &
+    else
+        ip netns exec "$lab_server" "$lab_load" receive --listen 10.203.0.6:46002 \
+            --bytes 8388608 --duration 15s > "$lab_ready_file" &
+    fi
     lab_server_pid=$!
     lab_end_critical
-    printf 'Serveur TCP de cette exécution : PID %s\n' "$lab_server_pid" >&2
-    lab_ready_attempt=0
-    while :; do
-        if IFS= read -r lab_ready < "$lab_ready_file" && [ "$lab_ready" = 'READY 10.203.0.6:46001' ]; then
-            break
-        fi
-        if ! kill -0 "$lab_server_pid" 2>/dev/null || [ "$lab_ready_attempt" -ge 50 ]; then
-            printf '%s\n' 'Serveur TCP indisponible ; essai arrêté.' >&2
-            exit 1
-        fi
-        lab_ready_attempt=$((lab_ready_attempt + 1))
-        sleep 0.1
-    done
-    printf '%s\n' 'Mesure de cinq établissements TCP dans le laboratoire, sans charge ajoutée.' >&2
-    lab_report=$(ip netns exec "$lab_client" "$lab_agent" latency \
-        --target 10.203.0.6:46001 --count 5 --timeout 1s --interval 250ms \
-        --condition unspecified --json)
+    printf 'Serveur de cette exécution : PID %s\n' "$lab_server_pid" >&2
+    if [ "$lab_mode" = run-tcp ]; then
+        lab_wait_ready 'READY 10.203.0.6:46001'
+        printf '%s\n' 'Mesure de cinq établissements TCP dans le laboratoire, sans charge ajoutée.' >&2
+        lab_report=$(ip netns exec "$lab_client" "$lab_agent" latency \
+            --target 10.203.0.6:46001 --count 5 --timeout 1s --interval 250ms \
+            --condition unspecified --json)
+    else
+        lab_wait_ready 'READY 10.203.0.6:46002'
+        printf '%s\n' 'Envoi de 8388608 octets synthétiques, plafonné à 1048576 octets/s en moyenne applicative.' >&2
+        lab_report=$(ip netns exec "$lab_client" "$lab_load" send --target 10.203.0.6:46002 \
+            --bytes 8388608 --rate 1048576 --duration 12s)
+    fi
     if wait "$lab_server_pid"; then
         lab_server_pid=''
     else
         lab_server_pid=''
-        printf '%s\n' 'Le serveur TCP n’a pas accepté les cinq connexions attendues.' >&2
+        printf '%s\n' 'Le serveur de laboratoire n’a pas terminé le travail attendu.' >&2
         exit 1
     fi
 fi

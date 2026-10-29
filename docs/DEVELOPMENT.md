@@ -140,6 +140,8 @@ La même commande Python inclut les tests de `scripts/lab-network.sh`. Ils copie
 
 Le [laboratoire virtuel](VIRTUAL_LAB.md) se prévisualise avec `sh scripts/lab-network.sh plan`, sans privilèges. Ses modes `run` et `run-tcp` créent et configurent explicitement des ressources temporaires et demandent des capacités système ; ils sont distincts des commandes de diagnostic en lecture seule. `run-tcp` réutilise la CLI de l'agent et la cible bornée de `scripts/lab-tcp`, dont les tests font partie de `go test ./...`. Son test TCP en boucle locale est ignoré si les sockets sont interdites. Les tests Python vérifient aussi l'arrêt du processus serveur avant la suppression de son espace réseau. Le [premier essai natif ICMP/TCP](VALIDATION_VIRTUAL_LAB_2026-10-29.md) est consigné ; l'exécution privilégiée du laboratoire reste distincte des tests automatiques ordinaires.
 
+Le nouveau mode [`run-load`](VIRTUAL_LOAD.md) demande les mêmes privilèges et le binaire `coopace-lab-load`, construit avec `sh scripts/go.sh build -o .local/bin/coopace-lab-load ./scripts/lab-load`. Ses tests Go utilisent des connexions en mémoire et font partie de la suite générale ; le test de transfert en boucle locale est ignoré si les sockets sont interdites. La suite Python couvre aussi l'échec de réception et l'arrêt de ce récepteur avant suppression. L'essai natif de ce nouveau flux reste à consigner ; aucune collecte simultanée de latence sous charge n'est ajoutée à ce stade.
+
 ## Sous Windows
 
 Un exécutable Windows x64 est disponible dans `.local/bin/coopace-windows-amd64.exe`, accompagné de son empreinte SHA-256. La [procédure Windows](WINDOWS_VALIDATION.md) explique comment le compiler depuis Linux et le tester sur un PC Windows sans installer Go.

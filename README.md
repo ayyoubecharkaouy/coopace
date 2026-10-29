@@ -20,6 +20,8 @@ Un [laboratoire Linux virtuel](docs/VIRTUAL_LAB.md) prépare désormais un scén
 
 La [revue du 29 octobre 2026](docs/REVIEW_2026-10-29.md) revérifie le socle et consigne le correctif de nettoyage après interruption apporté avant ces essais natifs.
 
+La préparation des essais sous charge ajoute un [transfert synthétique borné](docs/VIRTUAL_LOAD.md) : `run-load` envoie 8 Mio avec un plafond moyen applicatif de 1 Mio/s et exige la réception complète avant nettoyage. Ses tests simulés passent ; l'essai natif de ce nouveau flux et les séries de latence simultanées restent à effectuer.
+
 ## Organisation
 
 ```text

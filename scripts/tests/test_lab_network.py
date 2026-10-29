@@ -24,7 +24,7 @@ class LabNetworkTests(unittest.TestCase):
         self.script = self.root / "scripts/lab-network.sh"
         source = Path(__file__).resolve().parents[1] / "lab-network.sh"
         shutil.copyfile(source, self.script)
-        for name in ["coopace-gateway", "coopace", "coopace-lab-tcp"]:
+        for name in ["coopace-gateway", "coopace", "coopace-lab-tcp", "coopace-lab-load"]:
             binary = self.root / ".local/bin" / name
             binary.parent.mkdir(parents=True, exist_ok=True)
             binary.write_text("#!/bin/sh\nexit 0\n")
@@ -66,7 +66,7 @@ elif command == "ip":
         if mode == "interrupt_after_create_" + name[-1]:
             os.kill(os.getppid(), signal.SIGTERM)
     elif args[:2] == ["netns", "del"]:
-        if mode in {"cleanup_failure", "tcp_cleanup_failure"} and args[2].endswith("-s"):
+        if mode in {"cleanup_failure", "tcp_cleanup_failure", "load_cleanup_failure"} and args[2].endswith("-s"):
             sys.exit(1)
         pid_file = Path(os.environ["COOPACE_LAB_TEST_STATE"]).parent / "server-pid"
         if pid_file.exists():
@@ -91,6 +91,34 @@ elif command == "ip":
             if mode == "unexpected_pass" and not state["forwarding"]:
                 sys.exit(0)
             sys.exit(1 if not state["forwarding"] or mode == "unreachable" else 0)
+        elif Path(args[3]).name == "coopace-lab-load":
+            root = state_path.parent
+            if args[4] == "receive":
+                assert args[2].endswith("-s")
+                assert args[5:] == ["--listen", "10.203.0.6:46002", "--bytes", "8388608", "--duration", "15s"]
+                (root / "server-pid").write_text(str(os.getpid()))
+                def stop(signum, frame):
+                    (root / "server-stopped").touch()
+                    sys.exit(1)
+                signal.signal(signal.SIGTERM, stop)
+                if mode == "load_receiver_failure":
+                    sys.exit(1)
+                print("READY 10.203.0.6:46002", flush=True)
+                deadline = time.monotonic() + 3
+                while not (root / "client-done").exists() and time.monotonic() < deadline:
+                    time.sleep(0.01)
+                sys.exit(0 if (root / "client-done").exists() and mode != "load_incomplete" else 1)
+            else:
+                assert args[2].endswith("-c") and args[4] == "send"
+                assert args[5:] == ["--target", "10.203.0.6:46002", "--bytes", "8388608", "--rate", "1048576", "--duration", "12s"]
+                if mode == "load_pause":
+                    Path(os.environ["COOPACE_LAB_TEST_PAUSED"]).touch()
+                    time.sleep(1)
+                if mode == "load_sender_failure":
+                    sys.exit(1)
+                (root / "client-done").touch()
+                if mode != "load_empty":
+                    print(json.dumps({"schema_version": 1, "method": "synthetic_tcp_send", "written_bytes": 8388608}))
         elif Path(args[3]).name == "coopace-lab-tcp":
             assert args[2].endswith("-s")
             assert args[4:] == ["--listen", "10.203.0.6:46001", "--connections", "5", "--duration", "15s"]
@@ -257,6 +285,41 @@ elif command == "ip":
         result = self.run_lab(args=("run-tcp",))
         self.assertNotEqual(result.returncode, 0)
         self.assertFalse(any(call[0] in {"ip", "mktemp"} for call in self.calls()))
+
+    def test_load_success_requires_receiver_completion_and_cleanup(self):
+        result = self.run_lab(args=("run-load",))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["method"], "synthetic_tcp_send")
+        self.assertEqual(report["written_bytes"], 8388608)
+        self.assert_server_stopped()
+        self.assertEqual(json.loads(self.state.read_text())["namespaces"], [])
+        self.assertFalse(self.reservation.exists())
+
+    def test_load_failures_stop_receiver_and_emit_no_report(self):
+        for mode in ["load_receiver_failure", "load_sender_failure", "load_incomplete", "load_empty", "load_cleanup_failure"]:
+            with self.subTest(mode=mode):
+                for path in [self.log, self.state, self.root / "server-pid", self.root / "client-done", self.root / "server-stopped"]:
+                    path.unlink(missing_ok=True)
+                result = self.run_lab(mode, args=("run-load",))
+                self.assertNotEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(result.stdout, "")
+                self.assert_server_stopped()
+                expected_remaining = 1 if mode == "load_cleanup_failure" else 0
+                self.assertEqual(len(json.loads(self.state.read_text())["namespaces"]), expected_remaining)
+                self.assertFalse(self.reservation.exists())
+                if mode == "load_sender_failure":
+                    self.assertTrue((self.root / "server-stopped").exists())
+
+    def test_missing_load_binary_stops_before_resource_creation(self):
+        (self.root / ".local/bin/coopace-lab-load").unlink()
+        result = self.run_lab(args=("run-load",))
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(any(call[0] in {"ip", "mktemp"} for call in self.calls()))
+
+    def test_load_termination_stops_receiver_before_namespace_cleanup(self):
+        self.check_termination("run-load", "load_pause")
+        self.assert_server_stopped()
 
     def test_termination_runs_cleanup(self):
         self.check_termination("run", "pause")

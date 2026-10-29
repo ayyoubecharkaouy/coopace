@@ -69,6 +69,8 @@ La comparaison hors ligne des rapports TCP au repos/sous charge est disponible v
 
 Le [laboratoire virtuel de développement](VIRTUAL_LAB.md) prépare un chemin IPv4 contrôlé entre des espaces réseau Linux neufs. Le mode `run-tcp` ajoute cinq tentatives TCP vers une cible temporaire bornée, sans générer de charge de saturation. Le script ne raccorde aucun appareil du foyer et n'applique pas de politique de files. Un [premier essai natif Linux](VALIDATION_VIRTUAL_LAB_2026-10-29.md) confirme le passage ICMP/TCP et le nettoyage normal. Il ne valide pas un moteur de files ni un gain de performance réseau.
 
+Le [générateur de trafic synthétique](VIRTUAL_LOAD.md) prépare ensuite un transfert de 8 Mio, limité en débit moyen et en durée. Son essai natif reste à valider ; la mesure de latence simultanée et les séries répétées ne sont pas encore intégrées. Ce trafic de laboratoire ne constitue pas une référence WAN ni une saturation démontrée.
+
 ## Références et mesures indispensables
 
 | Expérience | Comparaisons nécessaires |
