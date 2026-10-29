@@ -14,7 +14,9 @@ Les [choix techniques](docs/TECH_STACK.md) détaillent les raisons, les limites 
 
 La [revue du démarrage du 26 octobre 2026](docs/REVIEW_2026-10-26.md) consigne le bilan avant l'étape 4.1. Le [diagnostic de passerelle](docs/GATEWAY_DIAGNOSTIC.md) prépare désormais le scénario de laboratoire, les mesures de référence et la restauration.
 
-La [préparation de l’étape 4.2](docs/GATEWAY_BASELINE.md) ajoute `coopace-gateway inspect --json` et un modèle d’expérience. Le choix de plateforme, la topologie et les mesures de référence restent à confirmer avant de clôturer cette étape.
+La [préparation de l’étape 4.2](docs/GATEWAY_BASELINE.md) ajoute `coopace-gateway inspect --json` et un modèle d’expérience. Un scénario de laboratoire Linux virtuel est maintenant défini ; la plateforme du foyer, la topologie réelle et les mesures de référence restent à confirmer avant de clôturer cette étape.
+
+Un [laboratoire Linux virtuel](docs/VIRTUAL_LAB.md) prépare désormais un scénario client → passerelle → serveur, sans raccorder le réseau du foyer. `sh scripts/lab-network.sh plan` permet de le prévisualiser ; le mode de création et nettoyage est testé avec des outils simulés, avec exécution native encore à confirmer.
 
 ## Organisation
 

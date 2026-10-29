@@ -25,6 +25,8 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 
 Le [protocole de référence initiale](GATEWAY_BASELINE.md) décrit l’export JSON du diagnostic et la préparation de l’étape 4.2. Le [modèle d’expérience passerelle](templates/GATEWAY_EXPERIMENT.md) est à copier dans un dossier local pour renseigner le scénario ; il ne contient aucune mesure réelle.
 
+Le [laboratoire Linux virtuel](VIRTUAL_LAB.md) fournit un scénario concret pour préparer le point de passage IPv4, avec prévisualisation, création explicite et nettoyage de ressources propres. Son exécution native reste à confirmer.
+
 ## Bilans datés
 
 La [revue du 26 octobre 2026](REVIEW_2026-10-26.md) consigne le démarrage et la cohérence avec le rapport V5, avant le développement du diagnostic de l'étape 4.1. Elle ne remplace pas l'état courant du produit.

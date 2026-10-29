@@ -125,6 +125,8 @@ Livrés pour la préparation : `coopace-gateway inspect --json`, valeurs indispo
 
 Un outil de comparaison hors ligne est aussi livré : `coopace latency compare --idle FICHIER --loaded FICHIER`. Il valide les rapports TCP locaux v1, recalcule leurs statistiques et affiche les différences descriptives avec les échecs. Les tests sur données contrôlées ne remplacent pas la référence réelle et ne démontrent aucun bénéfice réseau.
 
+Un premier [scénario Linux virtuel](VIRTUAL_LAB.md) est maintenant défini : client, passerelle et serveur dans des espaces réseau neufs, routes spécifiques et sondes ICMP pour vérifier le passage IPv4. `scripts/lab-network.sh plan` le prévisualise ; `run` crée le laboratoire et tente de supprimer ses ressources avant de publier l'inventaire. Les tests de cycle de vie utilisent des outils simulés. L'exécution réelle, les flux TCP, les mesures sous charge et la restauration d'une passerelle réelle restent à valider.
+
 ## Étape 5 — Décisions coopératives
 
 État : à faire.

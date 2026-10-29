@@ -136,6 +136,10 @@ python3 -B -m unittest discover -s scripts/tests -p 'test_*.py' -v
 
 Ils vérifient la conservation et la reprise d'un téléchargement interrompu, la réutilisation d'une archive vérifiée et le refus d'une archive corrompue. Ils ne valident pas le téléchargement réel du SDK ni le noyau Go.
 
+La même commande Python inclut les tests de `scripts/lab-network.sh`. Ils copient le script dans des dossiers temporaires et remplacent les outils réseau et contrôles de privilèges par des exécutables simulés. Ils couvrent le ciblage des espaces propres, les erreurs, l'interruption et le nettoyage, sans ressource réseau réelle. Ces tests sont réservés à Linux.
+
+Le [laboratoire virtuel](VIRTUAL_LAB.md) se prévisualise avec `sh scripts/lab-network.sh plan`, sans privilèges. Son mode `run` crée et configure explicitement des ressources temporaires et demande des capacités système ; il est distinct des commandes de diagnostic en lecture seule. L'exécution native reste à consigner et ne fait pas partie des tests automatiques ordinaires.
+
 ## Sous Windows
 
 Un exécutable Windows x64 est disponible dans `.local/bin/coopace-windows-amd64.exe`, accompagné de son empreinte SHA-256. La [procédure Windows](WINDOWS_VALIDATION.md) explique comment le compiler depuis Linux et le tester sur un PC Windows sans installer Go.

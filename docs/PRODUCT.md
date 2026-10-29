@@ -67,6 +67,8 @@ La [préparation de l’étape 4.2](GATEWAY_BASELINE.md) ajoute un export JSON l
 
 La comparaison hors ligne des rapports TCP au repos/sous charge est disponible via `latency compare`. Elle vérifie les paramètres et les statistiques, sans vérifier le contexte réel ni attribuer un gain à Coopace. L'étape expérimentale reste ouverte.
 
+Le [laboratoire virtuel de développement](VIRTUAL_LAB.md) prépare un chemin IPv4 contrôlé entre des espaces réseau Linux neufs. Le script ne raccorde aucun appareil du foyer et n'applique pas de politique de files. Ses tests simulés ne valident pas encore son exécution native, un moteur de passerelle ou une performance réseau.
+
 ## Références et mesures indispensables
 
 | Expérience | Comparaisons nécessaires |

@@ -64,6 +64,8 @@ Le préfixe commun des fichiers regroupe une fonctionnalité dans son paquet. Cr
 
 Le contrôle des clés JSON et des limites est factorisé dans `internal/strictjson`, partagé par le protocole et la lecture des rapports TCP. Les schémas, leurs champs requis et les conversions restent dans leurs composants respectifs. Le comparateur de rapports appartient à `apps/agent/internal/latency` et sa commande à la CLI de l'agent ; il n'ouvre aucune connexion.
 
+Les scénarios de laboratoire restent dans `scripts`, séparés des applications distribuées et des adaptations de production. `lab-network.sh` prépare uniquement des espaces réseau Linux neufs ; ses tests utilisent de faux outils dans `scripts/tests`. Ce scénario n'est pas un moteur de passerelle, et le diagnostic de l'application conserve son mode lecture seule. Voir [VIRTUAL_LAB.md](VIRTUAL_LAB.md).
+
 Les futurs services privilégiés et clients mobiles pourront nécessiter leurs propres points d'entrée ou paquets. Leur découpage sera décidé avec le packaging ; les dossiers actuels décrivent les responsabilités, pas un nombre imposé de processus ou d'installateurs.
 
 À l'étape 4.1, `apps/gateway/cmd/coopace-gateway` fournit une commande distincte de l'agent : `inspect`, en lecture seule sous Linux. Ses paquets internes orchestrent les lectures de `platforms/linux` et utilisent les modèles d'inventaire du noyau. Aucun paquet interne d'une application n'est importé par l'autre. Ce découpage prépare les rôles ; il ne démarre pas un service privilégié et ne fixe pas le nombre d'installateurs du produit final. Voir [GATEWAY_DIAGNOSTIC.md](GATEWAY_DIAGNOSTIC.md).
