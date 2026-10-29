@@ -4,7 +4,7 @@ set -eu
 
 lab_mode=${1:-plan}
 if [ "$#" -gt 1 ]; then
-    printf '%s\n' 'Utilisation : sh scripts/lab-network.sh [plan|run]' >&2
+    printf '%s\n' 'Utilisation : sh scripts/lab-network.sh [plan|run|run-tcp]' >&2
     exit 2
 fi
 case "$lab_mode" in
@@ -15,20 +15,23 @@ case "$lab_mode" in
             'Passerelle wan 10.203.0.5/30 -> serveur 10.203.0.6/30' \
             'Routes spécifiques seulement ; aucun accès Internet ni lien avec le réseau de l’hôte.' \
             'run vérifie le blocage sans forwarding, puis trois réponses ICMP avec forwarding.' \
+            'run-tcp ajoute cinq tentatives TCP vers 10.203.0.6:46001, sans charge générée.' \
             'stdout : inventaire JSON de la passerelle ; stderr : étapes, sondes et nettoyage.' \
+            'Avec run-tcp, stdout contient plutôt le rapport TCP local JSON de l’agent.' \
             'Nettoyage des seuls espaces créés après succès, erreur ou interruption gérée.' \
             'Prérequis de run : Linux, binaire coopace-gateway construit, privilèges de laboratoire.' \
+            'run-tcp exige plutôt les binaires coopace et coopace-lab-tcp déjà construits.' \
             'Ce mode plan ne crée aucun espace réseau et ne lance aucune sonde.'
         exit 0
         ;;
-    run) ;;
+    run|run-tcp) ;;
     *)
-        printf '%s\n' 'Utilisation : sh scripts/lab-network.sh [plan|run]' >&2
+        printf '%s\n' 'Utilisation : sh scripts/lab-network.sh [plan|run|run-tcp]' >&2
         exit 2
         ;;
 esac
 
-for lab_command in uname id sed ip ping sysctl mktemp rmdir; do
+for lab_command in uname id sed ip ping sysctl mktemp rmdir rm sleep; do
     if ! command -v "$lab_command" >/dev/null 2>&1; then
         printf 'Outil requis absent : %s\n' "$lab_command" >&2
         exit 1
@@ -55,10 +58,19 @@ if [ $(( 0x$lab_caps & lab_required )) -ne "$lab_required" ]; then
     exit 1
 fi
 lab_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
-lab_binary="$lab_root/.local/bin/coopace-gateway"
-if [ ! -x "$lab_binary" ]; then
-    printf '%s\n' 'Compiler coopace-gateway avec le compte habituel avant de lancer run.' >&2
-    exit 1
+if [ "$lab_mode" = run ]; then
+    lab_binary="$lab_root/.local/bin/coopace-gateway"
+    if [ ! -x "$lab_binary" ]; then
+        printf '%s\n' 'Compiler coopace-gateway avec le compte habituel avant de lancer run.' >&2
+        exit 1
+    fi
+else
+    lab_agent="$lab_root/.local/bin/coopace"
+    lab_tcp="$lab_root/.local/bin/coopace-lab-tcp"
+    if [ ! -x "$lab_agent" ] || [ ! -x "$lab_tcp" ]; then
+        printf '%s\n' 'Compiler coopace et coopace-lab-tcp avant run-tcp ; consulter docs/VIRTUAL_LAB.md.' >&2
+        exit 1
+    fi
 fi
 
 # The private reservation supplies a random run ID, not shell code or state.
@@ -79,11 +91,22 @@ lab_client_created=0
 lab_gateway_created=0
 lab_server_created=0
 lab_report=''
+lab_server_pid=''
+lab_ready_file=''
 
 lab_cleanup() {
     lab_result=$?
     trap - EXIT HUP INT TERM
     lab_cleanup_failed=0
+    # Stop and reap our child before deleting its namespace. No broad PID search.
+    if [ -n "$lab_server_pid" ]; then
+        kill "$lab_server_pid" 2>/dev/null || :
+        wait "$lab_server_pid" 2>/dev/null || :
+        lab_server_pid=''
+    fi
+    if [ -n "$lab_ready_file" ]; then
+        rm -f -- "$lab_ready_file" || lab_cleanup_failed=1
+    fi
     if [ "$lab_server_created" = 1 ]; then
         ip netns del "$lab_server" >&2 || lab_cleanup_failed=1
     fi
@@ -153,9 +176,41 @@ fi
 ip netns exec "$lab_gateway" sysctl -q -w net.ipv4.ip_forward=1
 printf '%s\n' 'Vérification du passage IPv4 par la passerelle...' >&2
 ip netns exec "$lab_client" ping -4 -n -c 3 -w 5 -W 1 10.203.0.6 >&2
-printf '%s\n' 'Test de passage réussi ; collecte de l’inventaire du laboratoire.' >&2
-lab_report=$(ip netns exec "$lab_gateway" "$lab_binary" inspect --json)
+if [ "$lab_mode" = run ]; then
+    printf '%s\n' 'Test de passage réussi ; collecte de l’inventaire du laboratoire.' >&2
+    lab_report=$(ip netns exec "$lab_gateway" "$lab_binary" inspect --json)
+else
+    lab_ready_file="$lab_tmp/tcp-ready"
+    : > "$lab_ready_file"
+    ip netns exec "$lab_server" "$lab_tcp" --listen 10.203.0.6:46001 \
+        --connections 5 --duration 15s > "$lab_ready_file" &
+    lab_server_pid=$!
+    printf 'Serveur TCP de cette exécution : PID %s\n' "$lab_server_pid" >&2
+    lab_ready_attempt=0
+    while :; do
+        if IFS= read -r lab_ready < "$lab_ready_file" && [ "$lab_ready" = 'READY 10.203.0.6:46001' ]; then
+            break
+        fi
+        if ! kill -0 "$lab_server_pid" 2>/dev/null || [ "$lab_ready_attempt" -ge 50 ]; then
+            printf '%s\n' 'Serveur TCP indisponible ; essai arrêté.' >&2
+            exit 1
+        fi
+        lab_ready_attempt=$((lab_ready_attempt + 1))
+        sleep 0.1
+    done
+    printf '%s\n' 'Mesure de cinq établissements TCP dans le laboratoire, sans charge ajoutée.' >&2
+    lab_report=$(ip netns exec "$lab_client" "$lab_agent" latency \
+        --target 10.203.0.6:46001 --count 5 --timeout 1s --interval 250ms \
+        --condition unspecified --json)
+    if wait "$lab_server_pid"; then
+        lab_server_pid=''
+    else
+        lab_server_pid=''
+        printf '%s\n' 'Le serveur TCP n’a pas accepté les cinq connexions attendues.' >&2
+        exit 1
+    fi
+fi
 if [ -z "$lab_report" ]; then
-    printf '%s\n' 'Inventaire vide ; essai arrêté.' >&2
+    printf '%s\n' 'Rapport vide ; essai arrêté.' >&2
     exit 1
 fi

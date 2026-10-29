@@ -4,7 +4,7 @@
 
 Le scénario utilise un hôte Linux et trois espaces réseau neufs : client, passerelle et serveur. Il prépare la vérification d'un point de passage logiciel sans raccorder les appareils du foyer. Linux est ici une plateforme de laboratoire, sans imposer ce système au produit final.
 
-Le script et les tests simulés sont livrés. **La création réelle du laboratoire n'est pas encore validée.** Les capacités nécessaires sont absentes dans l'environnement isolé de développement ; aucun essai privilégié n'y est lancé. Aucun résultat de performance n'est revendiqué.
+Le script, la cible TCP bornée et les tests simulés sont livrés. **La création réelle du laboratoire n'est pas encore validée.** Les capacités nécessaires sont absentes dans l'environnement isolé de développement ; aucun essai privilégié n'y est lancé. Le test du serveur en boucle locale est également ignoré lorsque les sockets sont interdites. Aucun résultat de performance n'est revendiqué.
 
 ```mermaid
 flowchart LR
@@ -35,7 +35,7 @@ mkdir -p .local/bin .local/experiments
 sh scripts/go.sh build -o .local/bin/coopace-gateway ./apps/gateway/cmd/coopace-gateway
 ```
 
-`run` demande Linux, les outils `ip`, `ping` d'iputils, `sysctl`, `sed`, `mktemp`, `rmdir`, `id`, `uname`, puis l'UID effectif zéro et les capacités `CAP_NET_ADMIN`, `CAP_NET_RAW`, `CAP_SYS_ADMIN`. Les vérifications précèdent la création. Le script n'installe rien, ne compile rien et ne change pas lui-même ses privilèges. Un conteneur peut refuser l'essai même avec un UID zéro. Voir la [définition Linux des capacités](https://github.com/torvalds/linux/blob/master/include/uapi/linux/capability.h).
+`run` et `run-tcp` demandent Linux, les outils `ip`, `ping` d'iputils, `sysctl`, `sed`, `mktemp`, `rmdir`, `rm`, `sleep`, `id`, `uname`, puis l'UID effectif zéro et les capacités `CAP_NET_ADMIN`, `CAP_NET_RAW`, `CAP_SYS_ADMIN`. Les vérifications précèdent la création. Le script n'installe rien, ne compile rien et ne change pas lui-même ses privilèges. Un conteneur peut refuser l'essai même avec un UID zéro. Voir la [définition Linux des capacités](https://github.com/torvalds/linux/blob/master/include/uapi/linux/capability.h).
 
 Après lecture du plan et du script, sur l'hôte de laboratoire :
 
@@ -62,21 +62,46 @@ Le code `0` signifie que les vérifications prévues, l'inventaire non vide et l
 
 Le champ JSON `traffic_coverage` reste `unverified`. Le journal et le retour du script concernent uniquement le chemin IPv4 synthétique ; le diagnostic générique n'en déduit aucune couverture du foyer. L'absence de routes par défaut est intentionnelle dans ce laboratoire.
 
+## Mesurer des connexions TCP dans ce chemin
+
+Le mode `run-tcp` crée une nouvelle instance du même réseau et effectue les contrôles ICMP précédents. Il remplace ensuite la collecte de l'inventaire par cinq tentatives `coopace latency` depuis le client vers `10.203.0.6:46001` : délai par tentative de `1s`, intervalle de `250ms`, condition déclarée `unspecified`. Aucune charge n'est ajoutée ; l'absence de charge générée ne prouve pas que la machine physique est au repos.
+
+Construire avec le compte habituel les deux binaires nécessaires à ce mode :
+
+```sh
+mkdir -p .local/bin .local/experiments
+sh scripts/go.sh build -o .local/bin/coopace ./apps/agent/cmd/coopace
+sh scripts/go.sh build -o .local/bin/coopace-lab-tcp ./scripts/lab-tcp
+```
+
+Puis, sur la machine Linux de laboratoire :
+
+```sh
+sudo sh scripts/lab-network.sh run-tcp > .local/experiments/virtual-tcp.json 2> .local/experiments/virtual-tcp.log
+```
+
+La [cible TCP](../scripts/lab-tcp/README.md) écoute uniquement dans le serveur neuf. Elle ferme chaque connexion sans données applicatives et termine après cinq acceptations, avec expiration au bout de `15s`. Le script attend son annonce d'écoute pendant au plus 50 pauses de `0,1s`, puis lance les mesures. Il exige le retour réussi de l'agent et la fin normale du serveur après les cinq acceptations ; il arrête et attend son propre processus serveur avant toute suppression d'espace réseau en cas d'erreur ou d'interruption gérée. Le PID est inscrit dans le journal.
+
+La sortie standard contient uniquement le [rapport local TCP v1](LATENCY.md), publié après nettoyage réussi. Ce mode n'exporte pas l'inventaire de la passerelle ; `run` reste disponible séparément. Les échecs individuels demeurent dans le rapport : le code `0` de l'agent signifie au moins une réussite, et les acceptations côté serveur ne remplacent pas les résultats côté client. Un échec du script laisse la sortie JSON vide ; le journal explique l'erreur.
+
+Ces durées synthétiques concernent l'établissement TCP sur le noyau partagé de l'hôte. Elles ne mesurent pas une connexion Internet et ne constituent pas une référence au repos/sous charge. `declared_condition` étant `unspecified`, ce rapport n'est pas directement admissible à la comparaison `--idle`/`--loaded`.
+
 ## Nettoyage et limites
 
 Le nettoyage est tenté à la sortie normale, après une erreur et pour HUP/INT/TERM. Une collision de nom arrête la création sans supprimer l'espace en conflit. Il n'y a aucune suppression globale d'espaces réseau.
 
-SIGKILL, un arrêt machine ou une erreur de suppression ne permettent pas de garantir le nettoyage. Reprendre les noms et le répertoire précis du journal, vérifier ces ressources, puis effectuer si nécessaire une suppression ciblée avec `ip netns del NOM_EXACT` et `rmdir CHEMIN_EXACT` pour le répertoire vide. Un espace dont le nom est supprimé peut subsister tant qu'un processus le référence, comme l'explique `ip-netns`.
+SIGKILL, un arrêt machine ou une erreur de suppression ne permettent pas de garantir le nettoyage. Reprendre les noms, le PID éventuel et le répertoire précis du journal, vérifier ces ressources, puis effectuer si nécessaire une suppression ciblée avec `ip netns del NOM_EXACT`. Pour `run-tcp`, vérifier d'abord que le processus serveur de cette exécution est terminé ; retirer son fichier `tcp-ready` précis s'il subsiste, puis utiliser `rmdir CHEMIN_EXACT` pour le répertoire vide. Un espace dont le nom est supprimé peut subsister tant qu'un processus le référence, comme l'explique `ip-netns`.
 
-Le nettoyage de ressources neuves n'est pas la restauration indépendante requise avant de piloter une passerelle réelle. Aucune file CAKE/SQM, règle de pare-feu ou politique de débit n'est appliquée. L'essai ne mesure pas le WAN, la radio, IPv6, DNS, l'équité ou la latence sous charge. Les statistiques ICMP ne sont pas des rapports `tcp_connect`.
+Le nettoyage de ressources neuves n'est pas la restauration indépendante requise avant de piloter une passerelle réelle. Aucune file CAKE/SQM, règle de pare-feu ou politique de débit n'est appliquée. L'essai ne mesure pas le WAN, la radio, IPv6, DNS, l'équité ou la latence sous charge. Les statistiques ICMP et le rapport `tcp_connect` restent des observations distinctes.
 
 ## Validation et suite
 
-Les tests utilisent de faux outils dans des répertoires temporaires et n'effectuent aucune opération réseau réelle. Ils couvrent prévisualisation, privilèges manquants, ciblage des espaces propres, nettoyage après erreur/interruption et absence de JSON après un échec de nettoyage.
+Les tests Python utilisent de faux outils dans des répertoires temporaires et n'effectuent aucune opération réseau réelle. Ils couvrent prévisualisation, privilèges ou binaire manquants, ciblage des espaces propres, échec du serveur ou de la mesure, arrêt du serveur avant suppression, nettoyage après erreur/interruption et absence de JSON après un échec de nettoyage. Les tests Go vérifient aussi l'endpoint avec des connexions en mémoire ; le test de boucle locale peut être ignoré faute de permissions.
 
 ```sh
 sh -n scripts/lab-network.sh
 python3 -B -m unittest discover -s scripts/tests -p 'test_*.py' -v
+sh scripts/go.sh test -count=1 -v ./scripts/lab-tcp
 ```
 
-L'essai natif reste à exécuter et à consigner. Ensuite pourront être préparés des flux TCP synthétiques et une charge contrôlée dans ce chemin. La [référence initiale](GATEWAY_BASELINE.md), les mesures au repos/sous charge et la restauration réelle restent nécessaires pour poursuivre et clôturer l'étape 4.2.
+Les essais natifs ICMP et TCP restent à exécuter et à consigner. Ensuite pourra être préparée une charge contrôlée dans ce chemin. La [référence initiale](GATEWAY_BASELINE.md), les mesures au repos/sous charge et la restauration réelle restent nécessaires pour poursuivre et clôturer l'étape 4.2.

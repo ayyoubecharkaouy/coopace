@@ -24,10 +24,11 @@ class LabNetworkTests(unittest.TestCase):
         self.script = self.root / "scripts/lab-network.sh"
         source = Path(__file__).resolve().parents[1] / "lab-network.sh"
         shutil.copyfile(source, self.script)
-        binary = self.root / ".local/bin/coopace-gateway"
-        binary.parent.mkdir(parents=True)
-        binary.write_text("#!/bin/sh\nexit 0\n")
-        binary.chmod(0o755)
+        for name in ["coopace-gateway", "coopace", "coopace-lab-tcp"]:
+            binary = self.root / ".local/bin" / name
+            binary.parent.mkdir(parents=True, exist_ok=True)
+            binary.write_text("#!/bin/sh\nexit 0\n")
+            binary.chmod(0o755)
         self.log = self.root / "calls.jsonl"
         self.state = self.root / "state.json"
         self.reservation = self.root / "coopace-lab.ABC123xy"
@@ -35,7 +36,7 @@ class LabNetworkTests(unittest.TestCase):
         self.tools.mkdir()
         stub = self.root / "stub.py"
         stub.write_text(r'''
-import json, os, sys, time
+import json, os, signal, sys, time
 from pathlib import Path
 command, args = sys.argv[1], sys.argv[2:]
 with open(os.environ["COOPACE_LAB_TEST_LOG"], "a") as log:
@@ -63,8 +64,16 @@ elif command == "ip":
         state["namespaces"].append(name)
         save()
     elif args[:2] == ["netns", "del"]:
-        if mode == "cleanup_failure" and args[2].endswith("-s"):
+        if mode in {"cleanup_failure", "tcp_cleanup_failure"} and args[2].endswith("-s"):
             sys.exit(1)
+        pid_file = Path(os.environ["COOPACE_LAB_TEST_STATE"]).parent / "server-pid"
+        if pid_file.exists():
+            try:
+                os.kill(int(pid_file.read_text()), 0)
+            except ProcessLookupError:
+                pass
+            else:
+                sys.exit("server process still alive during namespace deletion")
         state["namespaces"].remove(args[2])
         save()
     elif args[:2] == ["netns", "exec"]:
@@ -78,6 +87,38 @@ elif command == "ip":
             if mode == "unexpected_pass" and not state["forwarding"]:
                 sys.exit(0)
             sys.exit(1 if not state["forwarding"] or mode == "unreachable" else 0)
+        elif Path(args[3]).name == "coopace-lab-tcp":
+            assert args[2].endswith("-s")
+            assert args[4:] == ["--listen", "10.203.0.6:46001", "--connections", "5", "--duration", "15s"]
+            root = state_path.parent
+            (root / "server-pid").write_text(str(os.getpid()))
+            def stop(signum, frame):
+                (root / "server-stopped").touch()
+                sys.exit(1)
+            signal.signal(signal.SIGTERM, stop)
+            if mode == "tcp_server_failure":
+                sys.exit(1)
+            if mode == "tcp_no_readiness":
+                time.sleep(10)
+                sys.exit(1)
+            print("READY 10.203.0.6:46001", flush=True)
+            if mode == "tcp_server_incomplete":
+                sys.exit(1)
+            deadline = time.monotonic() + 3
+            while not (root / "client-done").exists() and time.monotonic() < deadline:
+                time.sleep(0.01)
+            sys.exit(0 if (root / "client-done").exists() else 1)
+        elif Path(args[3]).name == "coopace":
+            assert args[2].endswith("-c")
+            assert args[4:] == ["latency", "--target", "10.203.0.6:46001", "--count", "5", "--timeout", "1s", "--interval", "250ms", "--condition", "unspecified", "--json"]
+            if mode == "tcp_pause":
+                Path(os.environ["COOPACE_LAB_TEST_PAUSED"]).touch()
+                time.sleep(1)
+            if mode == "tcp_latency_failure":
+                sys.exit(1)
+            (state_path.parent / "client-done").touch()
+            if mode != "tcp_empty":
+                print(json.dumps({"schema_version": 1, "kind": "tcp_connect_fixture"}))
         else:
             assert args[-2:] == ["inspect", "--json"]
             if mode == "inventory_failure":
@@ -178,9 +219,51 @@ elif command == "ip":
         self.assertEqual(result.stdout, "")
         self.assertEqual(len(json.loads(self.state.read_text())["namespaces"]), 1)
 
+    def assert_server_stopped(self):
+        pid_file = self.root / "server-pid"
+        if pid_file.exists():
+            with self.assertRaises(ProcessLookupError):
+                os.kill(int(pid_file.read_text()), 0)
+
+    def test_tcp_success_exports_report_after_stopping_server_and_cleanup(self):
+        result = self.run_lab(args=("run-tcp",))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["kind"], "tcp_connect_fixture")
+        self.assert_server_stopped()
+        self.assertEqual(json.loads(self.state.read_text())["namespaces"], [])
+        self.assertFalse(self.reservation.exists())
+
+    def test_tcp_failure_stops_server_and_emits_no_report(self):
+        for mode in ["tcp_server_failure", "tcp_no_readiness", "tcp_server_incomplete", "tcp_latency_failure", "tcp_empty", "tcp_cleanup_failure"]:
+            with self.subTest(mode=mode):
+                for path in [self.log, self.state, self.root / "server-pid", self.root / "client-done", self.root / "server-stopped"]:
+                    path.unlink(missing_ok=True)
+                result = self.run_lab(mode, args=("run-tcp",))
+                self.assertNotEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(result.stdout, "")
+                self.assert_server_stopped()
+                expected_remaining = 1 if mode == "tcp_cleanup_failure" else 0
+                self.assertEqual(len(json.loads(self.state.read_text())["namespaces"]), expected_remaining)
+                self.assertFalse(self.reservation.exists())
+                if mode in {"tcp_latency_failure", "tcp_no_readiness"}:
+                    self.assertTrue((self.root / "server-stopped").exists())
+
+    def test_missing_tcp_binary_stops_before_resource_creation(self):
+        (self.root / ".local/bin/coopace-lab-tcp").unlink()
+        result = self.run_lab(args=("run-tcp",))
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(any(call[0] in {"ip", "mktemp"} for call in self.calls()))
+
     def test_termination_runs_cleanup(self):
-        process = subprocess.Popen(["sh", str(self.script), "run"],
-                                   env=self.environment("pause"),
+        self.check_termination("run", "pause")
+
+    def test_tcp_termination_stops_server_before_namespace_cleanup(self):
+        self.check_termination("run-tcp", "tcp_pause")
+        self.assert_server_stopped()
+
+    def check_termination(self, command, mode):
+        process = subprocess.Popen(["sh", str(self.script), command],
+                                   env=self.environment(mode),
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         try:
             deadline = time.monotonic() + 5

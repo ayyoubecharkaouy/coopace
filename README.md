@@ -16,7 +16,7 @@ La [revue du démarrage du 26 octobre 2026](docs/REVIEW_2026-10-26.md) consigne 
 
 La [préparation de l’étape 4.2](docs/GATEWAY_BASELINE.md) ajoute `coopace-gateway inspect --json` et un modèle d’expérience. Un scénario de laboratoire Linux virtuel est maintenant défini ; la plateforme du foyer, la topologie réelle et les mesures de référence restent à confirmer avant de clôturer cette étape.
 
-Un [laboratoire Linux virtuel](docs/VIRTUAL_LAB.md) prépare désormais un scénario client → passerelle → serveur, sans raccorder le réseau du foyer. `sh scripts/lab-network.sh plan` permet de le prévisualiser ; le mode de création et nettoyage est testé avec des outils simulés, avec exécution native encore à confirmer.
+Un [laboratoire Linux virtuel](docs/VIRTUAL_LAB.md) prépare désormais un scénario client → passerelle → serveur, sans raccorder le réseau du foyer. `sh scripts/lab-network.sh plan` permet de le prévisualiser ; `run-tcp` prépare cinq mesures d'établissement TCP vers une cible temporaire bornée. Le cycle de vie est testé avec des outils simulés, avec exécution native encore à confirmer et sans charge de saturation.
 
 ## Organisation
 

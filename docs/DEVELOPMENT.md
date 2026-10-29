@@ -138,7 +138,7 @@ Ils vérifient la conservation et la reprise d'un téléchargement interrompu, l
 
 La même commande Python inclut les tests de `scripts/lab-network.sh`. Ils copient le script dans des dossiers temporaires et remplacent les outils réseau et contrôles de privilèges par des exécutables simulés. Ils couvrent le ciblage des espaces propres, les erreurs, l'interruption et le nettoyage, sans ressource réseau réelle. Ces tests sont réservés à Linux.
 
-Le [laboratoire virtuel](VIRTUAL_LAB.md) se prévisualise avec `sh scripts/lab-network.sh plan`, sans privilèges. Son mode `run` crée et configure explicitement des ressources temporaires et demande des capacités système ; il est distinct des commandes de diagnostic en lecture seule. L'exécution native reste à consigner et ne fait pas partie des tests automatiques ordinaires.
+Le [laboratoire virtuel](VIRTUAL_LAB.md) se prévisualise avec `sh scripts/lab-network.sh plan`, sans privilèges. Ses modes `run` et `run-tcp` créent et configurent explicitement des ressources temporaires et demandent des capacités système ; ils sont distincts des commandes de diagnostic en lecture seule. `run-tcp` réutilise la CLI de l'agent et la cible bornée de `scripts/lab-tcp`, dont les tests font partie de `go test ./...`. Son test TCP en boucle locale est ignoré si les sockets sont interdites. Les tests Python vérifient aussi l'arrêt du processus serveur avant la suppression de son espace réseau. L'exécution native du laboratoire reste à consigner et ne fait pas partie des tests automatiques ordinaires.
 
 ## Sous Windows
 
