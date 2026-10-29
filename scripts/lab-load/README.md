@@ -22,7 +22,7 @@ Le récepteur annonce `READY IP:port` sur stdout après ouverture de l'écoute. 
 
 L'émetteur publie un objet JSON local v1 seulement si son envoi a abouti. Le format `synthetic_tcp_send` contient la cible, les versions et plateforme, le volume demandé et écrit, le plafond demandé, la taille du bloc, le délai, les horodatages UTC, la durée monotone en millisecondes et la moyenne en octets/s. Ce rapport décrit les écritures côté émetteur ; il ne prouve pas à lui seul la réception distante. Une erreur réseau retourne `1`, sans JSON de réussite ; des arguments invalides retournent `2` sans accès réseau. Les erreurs et détails vont sur stderr.
 
-Le mode `lab-network.sh run-load` attend en plus la réussite du récepteur et du nettoyage avant de publier ce JSON. Son protocole et sa validation native encore à effectuer sont dans [VIRTUAL_LOAD.md](../../docs/VIRTUAL_LOAD.md).
+Le mode `lab-network.sh run-load` attend en plus la réussite du récepteur et du nettoyage avant de publier ce JSON. Son protocole est dans [VIRTUAL_LOAD.md](../../docs/VIRTUAL_LOAD.md) ; les [premières observations natives](../../docs/VALIDATION_VIRTUAL_LOAD_2026-10-29.md) confirment le volume et le nettoyage, avec le code exact de sortie encore à consigner.
 
 Les tests utilisent des connexions en mémoire : volume exact, octets nuls, écritures partielles, absence de progression, cadence, arguments invalides, délais et libération des sockets. Un test en boucle locale est ignoré explicitement si les sockets sont interdites :
 

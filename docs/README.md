@@ -27,7 +27,7 @@ Le [protocole de référence initiale](GATEWAY_BASELINE.md) décrit l’export J
 
 Le [laboratoire Linux virtuel](VIRTUAL_LAB.md) fournit un scénario concret pour préparer le point de passage IPv4, avec prévisualisation, création explicite et nettoyage de ressources propres. Un [premier essai natif ICMP/TCP du 29 octobre](VALIDATION_VIRTUAL_LAB_2026-10-29.md) est consigné, avec inventaire complet, cinq connexions réussies sans échec et nettoyage normal. Les essais sous charge restent à effectuer.
 
-Le [premier transfert synthétique borné](VIRTUAL_LOAD.md) définit ensuite `run-load`, son volume, son plafond moyen, ses délais, ses critères et l'essai natif encore à effectuer avant les séries de latence simultanées.
+Le [premier transfert synthétique borné](VIRTUAL_LOAD.md) définit ensuite `run-load`, son volume, son plafond moyen, ses délais et ses critères. Les [premières observations natives](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) confirment 8 Mio transférés et reçus, avec nettoyage normal ; le code exact reste à consigner et les séries de latence simultanées à effectuer.
 
 ## Bilans datés
 

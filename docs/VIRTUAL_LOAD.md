@@ -2,7 +2,7 @@
 
 ## Objectif et état
 
-Le chemin IPv4 du laboratoire a été [validé en ICMP/TCP](VALIDATION_VIRTUAL_LAB_2026-10-29.md). Le nouveau mode `run-load` prépare maintenant un transfert borné entre le client et le serveur neufs, par la même passerelle. Le code et les tests simulés sont livrés ; **l'essai natif de ce nouveau transfert reste à effectuer**.
+Le chemin IPv4 du laboratoire a été [validé en ICMP/TCP](VALIDATION_VIRTUAL_LAB_2026-10-29.md). Le nouveau mode `run-load` prépare maintenant un transfert borné entre le client et le serveur neufs, par la même passerelle. Le code et les tests simulés sont livrés. **Un premier transfert natif est consigné** : 8 Mio envoyés et reçus en environ huit secondes, avec cadence et nettoyage conformes. Le [compte rendu](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) conserve les observations et précise que le code de sortie exact n'a pas encore été enregistré.
 
 Cette sous-étape vérifie la génération, la réception et l'arrêt d'un flux synthétique. Elle précède les séries de latence comparées au repos/sous charge. Elle n'ajoute ni politique de files, ni goulot artificiel, ni mesure de saturation ; le réseau virtuel peut absorber ce flux sans congestion.
 
@@ -29,7 +29,7 @@ Un volume incomplet ou excessif, une erreur de connexion, une expiration, une in
 
 Ces critères évaluent le fonctionnement du générateur. Aucun seuil de gain de latence, de capacité WAN ou d'équité n'est fixé par ce test. Les séries futures devront définir ces critères selon leur scénario avant de mesurer.
 
-## Exécution native à effectuer
+## Reproduire l'essai natif
 
 Depuis la racine du dépôt, compiler sans élévation :
 
@@ -62,7 +62,7 @@ python3 -B -m unittest discover -s scripts/tests -p 'test_*.py' -v
 sh scripts/go.sh test -count=1 -v ./scripts/lab-load
 ```
 
-## Suite après validation de ce flux
+## Prochaine activité
 
 Préparer ensuite plusieurs paires de séries sur une même topologie, avec la même cible de latence et les mêmes paramètres : sans ce flux, puis pendant ce flux. Consigner l'ordre, les répétitions et les horaires d'activité pour vérifier le recouvrement réel avec les mesures. L'étiquette `loaded` seule ne prouve ni ce recouvrement ni une saturation.
 

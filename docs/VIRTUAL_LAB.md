@@ -96,7 +96,7 @@ SIGKILL, un arrêt machine ou une erreur de suppression ne permettent pas de gar
 
 Le nettoyage de ressources neuves n'est pas la restauration indépendante requise avant de piloter une passerelle réelle. Aucune file CAKE/SQM, règle de pare-feu ou politique de débit n'est appliquée à la passerelle. L'essai ne mesure pas le WAN, la radio, IPv6, DNS, l'équité ou la latence sous charge. Les statistiques ICMP et le rapport `tcp_connect` restent des observations distinctes.
 
-Le nouveau mode [`run-load`](VIRTUAL_LOAD.md) réutilise cette topologie et ces mécanismes pour préparer un flux synthétique de 8 Mio avec cadence applicative bornée. Son fichier de disponibilité s'appelle `load-ready` ; les mêmes règles de récupération ciblée s'appliquent à ce fichier précis si un arrêt brutal empêche sa suppression. L'essai natif de ce mode reste à effectuer ; il ne mesure pas encore simultanément la latence.
+Le nouveau mode [`run-load`](VIRTUAL_LOAD.md) réutilise cette topologie et ces mécanismes pour préparer un flux synthétique de 8 Mio avec cadence applicative bornée. Son fichier de disponibilité s'appelle `load-ready` ; les mêmes règles de récupération ciblée s'appliquent à ce fichier précis si un arrêt brutal empêche sa suppression. Les [premières observations natives](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) de ce mode confirment le transfert complet et le nettoyage normal ; il ne mesure pas encore simultanément la latence.
 
 ## Validation et suite
 
