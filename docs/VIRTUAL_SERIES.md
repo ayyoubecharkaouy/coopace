@@ -4,7 +4,7 @@
 
 Le chemin IPv4 et le [transfert borné de 8 Mio](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) sont validés séparément. Le mode `run-series` prépare leur association : six séries de latence, dont trois pendant un transfert, sur une même instance du laboratoire.
 
-Le code et les tests simulés sont livrés. **L'essai natif de ce nouveau mode reste à effectuer.** La création d'un réseau virtuel rapide, sans goulot configuré, ne garantit pas de congestion. Cet essai mesure une différence descriptive, sans intervention d'optimisation.
+Le code et les tests simulés sont livrés. **Un premier essai natif est validé** : six séries, 60 connexions réussies sans échec, trois transferts complets et recouvrement vérifié. Le [compte rendu](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) conserve les résultats, empreintes et limites. La création d'un réseau virtuel rapide, sans goulot configuré, ne garantit pas de congestion. Cet essai mesure une différence descriptive, sans intervention d'optimisation.
 
 ## Paramètres fixés avant la collecte
 
@@ -36,7 +36,7 @@ La charge doit aussi respecter le volume exact et le plafond moyen du protocole 
 
 **Les échecs de connexion sont conservés.** Le code `1` de `coopace latency` est admis uniquement pour un rapport complet et valide avec zéro réussite ; il ne fait pas disparaître la série. Une erreur de configuration, de processus ou un JSON incomplet arrête l'essai. Le code `0` final indique des séries complètes et validées, pas une absence d'échecs ni une amélioration.
 
-## Exécution native à effectuer
+## Reproduire l'essai natif
 
 Depuis le dépôt, compiler les trois binaires avec le compte habituel pour incorporer les nouveaux marqueurs du générateur :
 
@@ -89,4 +89,4 @@ python3 -B -m unittest discover -s scripts/tests -p 'test_*.py' -v
 sh scripts/go.sh test -count=1 -v ./scripts/lab-load
 ```
 
-La [feuille de route](ROADMAP.md) garde l'étape 4.2 ouverte. L'essai natif de ces séries, leur analyse et une restauration indépendante restent nécessaires avant de piloter une politique de files.
+La [feuille de route](ROADMAP.md) garde l'étape 4.2 ouverte. Le premier essai natif et son analyse descriptive sont [consignés](VALIDATION_VIRTUAL_SERIES_2026-10-29.md). Une référence avec goulot contrôlé, les critères pertinents et une restauration indépendante restent nécessaires avant de piloter une politique de files.

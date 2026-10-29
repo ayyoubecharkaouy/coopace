@@ -117,7 +117,7 @@ Livrés : application `coopace-gateway inspect`, interfaces, flags de forwarding
 
 ### 4.2 — Scénario de laboratoire et référence initiale
 
-État : préparation livrée et premier scénario Linux virtuel validé en exécution native ICMP/TCP, avec inventaire complet dans cet espace. La topologie du foyer, les seuils et les séries de référence restent à confirmer ; aucune série de référence au repos/sous charge n’est validée.
+État : préparation livrée et premier scénario Linux virtuel validé en exécution native ICMP/TCP, avec inventaire complet dans cet espace. Des séries synthétiques sans/avec transfert sont validées dans ce laboratoire ; la topologie du foyer, les seuils et les références WAN restent à confirmer.
 
 À partir d'un inventaire réel, choisir la plateforme et décrire le chemin du trafic à couvrir. Consigner la configuration initiale, les mesures au repos/sous charge, les seuils d'acceptation et le mécanisme de restauration à développer et tester avant une première modification. La comparaison doit distinguer le moteur configuré manuellement et le pilotage Coopace.
 
@@ -131,7 +131,7 @@ La [revue du 29 octobre 2026](REVIEW_2026-10-29.md) confirme la cohérence du d�
 
 Un [premier flux synthétique borné](VIRTUAL_LOAD.md) est maintenant préparé avec `run-load` : un transfert client → serveur de 8 Mio, plafond moyen applicatif de 1 Mio/s, délais de 12s en émission et 15s en réception. Les tests en mémoire et simulés couvrent volumes, cadence, erreurs et nettoyage. Un [premier transfert natif](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) a envoyé et reçu les 8 Mio en environ huit secondes avec nettoyage normal ; le code de sortie exact `0` est également conservé. Il n'applique pas de politique de files et ne garantit pas une congestion du réseau virtuel.
 
-Le mode [`run-series`](VIRTUAL_SERIES.md) associe maintenant trois paires sans/avec ce flux sur une même topologie, dans un ordre alterné, avec dix tentatives TCP par série. Il attend la première écriture et impose le recouvrement de la mesure avec la fenêtre d'écritures de charge. Les rapports complets et comparaisons par paire sont regroupés après nettoyage, y compris pour des séries sans réussite. Les tests de processus, de recouvrement et d'interruption passent sans réseau. L'essai natif et l'analyse de ces séries restent à effectuer ; aucune amélioration causale ou saturation n'est déduite de cette préparation.
+Le mode [`run-series`](VIRTUAL_SERIES.md) associe maintenant trois paires sans/avec ce flux sur une même topologie, dans un ordre alterné, avec dix tentatives TCP par série. Il attend la première écriture et impose le recouvrement de la mesure avec la fenêtre d'écritures de charge. Les rapports complets et comparaisons par paire sont regroupés après nettoyage, y compris pour des séries sans réussite. Les tests de processus, de recouvrement et d'interruption passent sans réseau. Le [premier essai natif et son analyse descriptive](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) sont consignés : 60 connexions réussies sans échec, trois transferts complets, recouvrement et nettoyage conformes. Aucune amélioration causale ou saturation n'est déduite de cet essai. La prochaine activité est de définir un goulot virtuel contrôlé et les critères d'expérience, puis préparer la restauration avant une politique de files.
 
 ## Étape 5 — Décisions coopératives
 

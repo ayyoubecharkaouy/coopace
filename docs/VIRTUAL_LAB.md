@@ -98,7 +98,7 @@ Le nettoyage de ressources neuves n'est pas la restauration indépendante requis
 
 Le nouveau mode [`run-load`](VIRTUAL_LOAD.md) réutilise cette topologie et ces mécanismes pour préparer un flux synthétique de 8 Mio avec cadence applicative bornée. Son fichier de disponibilité s'appelle `load-ready` ; les mêmes règles de récupération ciblée s'appliquent à ce fichier précis si un arrêt brutal empêche sa suppression. Les [premières observations natives](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) de ce mode confirment le transfert complet et le nettoyage normal ; il ne mesure pas encore simultanément la latence.
 
-Le mode [`run-series`](VIRTUAL_SERIES.md) prépare cette mesure simultanée et trois paires de séries sur une seule création du laboratoire. Le pilote Python est suivi comme un processus propre par le shell et arrête ses outils avant de rendre la main. Un arrêt brutal peut laisser un sous-dossier privé `series-*` et le fichier `series-report` sous la réservation exacte du journal ; ils sont à inspecter avec les seuls noms de cette exécution. Son essai natif reste à effectuer.
+Le mode [`run-series`](VIRTUAL_SERIES.md) prépare cette mesure simultanée et trois paires de séries sur une seule création du laboratoire. Le pilote Python est suivi comme un processus propre par le shell et arrête ses outils avant de rendre la main. Un arrêt brutal peut laisser un sous-dossier privé `series-*` et le fichier `series-report` sous la réservation exacte du journal ; ils sont à inspecter avec les seuls noms de cette exécution. Un [premier essai natif des séries](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) est désormais consigné, avec recouvrement et nettoyage conformes.
 
 ## Validation et suite
 
@@ -110,4 +110,4 @@ python3 -B -m unittest discover -s scripts/tests -p 'test_*.py' -v
 sh scripts/go.sh test -count=1 -v ./scripts/lab-tcp
 ```
 
-Le premier essai natif ICMP/TCP et son nettoyage normal sont [consignés](VALIDATION_VIRTUAL_LAB_2026-10-29.md). La prochaine activité est de préparer une charge contrôlée et des séries répétées dans ce chemin. Les tests natifs d'interruption ou de panne ne sont pas encore effectués. La [référence initiale](GATEWAY_BASELINE.md), les mesures au repos/sous charge et la restauration réelle restent nécessaires pour poursuivre et clôturer l'étape 4.2.
+Le premier essai natif ICMP/TCP et son nettoyage normal sont [consignés](VALIDATION_VIRTUAL_LAB_2026-10-29.md). Le transfert borné et les [séries répétées sans/avec trafic](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) sont également validés dans ce chemin. La prochaine activité est de définir un goulot virtuel contrôlé et le périmètre de restauration. Les tests natifs d'interruption ou de panne ne sont pas encore effectués. La [référence initiale](GATEWAY_BASELINE.md), les mesures au repos/sous charge et la restauration réelle restent nécessaires pour poursuivre et clôturer l'étape 4.2.

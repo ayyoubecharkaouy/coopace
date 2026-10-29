@@ -25,11 +25,11 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 
 Le [protocole de référence initiale](GATEWAY_BASELINE.md) décrit l’export JSON du diagnostic et la préparation de l’étape 4.2. Le [modèle d’expérience passerelle](templates/GATEWAY_EXPERIMENT.md) est à copier dans un dossier local pour renseigner le scénario ; il ne contient aucune mesure réelle.
 
-Le [laboratoire Linux virtuel](VIRTUAL_LAB.md) fournit un scénario concret pour préparer le point de passage IPv4, avec prévisualisation, création explicite et nettoyage de ressources propres. Un [premier essai natif ICMP/TCP du 29 octobre](VALIDATION_VIRTUAL_LAB_2026-10-29.md) est consigné, avec inventaire complet, cinq connexions réussies sans échec et nettoyage normal. Les essais sous charge restent à effectuer.
+Le [laboratoire Linux virtuel](VIRTUAL_LAB.md) fournit un scénario concret pour préparer le point de passage IPv4, avec prévisualisation, création explicite et nettoyage de ressources propres. Un [premier essai natif ICMP/TCP du 29 octobre](VALIDATION_VIRTUAL_LAB_2026-10-29.md) est consigné, avec inventaire complet, cinq connexions réussies sans échec et nettoyage normal. Les références WAN restent à recueillir.
 
-Le [premier transfert synthétique borné](VIRTUAL_LOAD.md) définit ensuite `run-load`, son volume, son plafond moyen, ses délais et ses critères. Les [premières observations natives](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) confirment 8 Mio transférés et reçus, avec nettoyage normal ; le code exact `0` est conservé et les séries de latence simultanées restent à effectuer.
+Le [premier transfert synthétique borné](VIRTUAL_LOAD.md) définit ensuite `run-load`, son volume, son plafond moyen, ses délais et ses critères. Les [premières observations natives](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) confirment 8 Mio transférés et reçus, avec nettoyage normal ; le code exact `0` est conservé.
 
-Les [séries sans et avec transfert](VIRTUAL_SERIES.md) définissent `run-series`, trois paires de mesures, leur ordre, le contrôle du recouvrement et le rapport groupé. Les tests simulés sont disponibles ; l'essai natif reste à effectuer.
+Les [séries sans et avec transfert](VIRTUAL_SERIES.md) définissent `run-series`, trois paires de mesures, leur ordre, le contrôle du recouvrement et le rapport groupé. Un [premier essai natif et son analyse descriptive](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) sont consignés : 60 réussites sans échec, trois transferts complets et recouvrement conforme.
 
 ## Bilans datés
 

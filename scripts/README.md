@@ -18,7 +18,7 @@ Le mode `run` exige les privilèges documentés et le binaire passerelle constru
 
 `run-load` requiert plutôt le binaire du sous-dossier [lab-load](lab-load/README.md), qui contient l'émetteur et le récepteur de données synthétiques. Les paramètres et le protocole de son premier essai natif sont dans [VIRTUAL_LOAD.md](../docs/VIRTUAL_LOAD.md).
 
-`run-series` exige Python 3 et les trois binaires `coopace`, `coopace-lab-tcp` et `coopace-lab-load`. Le shell appelle `lab-series.py` avec ses propres noms d'espaces et sa réservation privée ; ce pilote de développement possède ses processus et utilise la CLI existante. Voir [VIRTUAL_SERIES.md](../docs/VIRTUAL_SERIES.md) pour les paramètres et l'essai natif encore à effectuer.
+`run-series` exige Python 3 et les trois binaires `coopace`, `coopace-lab-tcp` et `coopace-lab-load`. Le shell appelle `lab-series.py` avec ses propres noms d'espaces et sa réservation privée ; ce pilote de développement possède ses processus et utilise la CLI existante. Voir [VIRTUAL_SERIES.md](../docs/VIRTUAL_SERIES.md) pour les paramètres et le premier essai natif consigné.
 
 Les tests Python de `tests/` utilisent des outils simulés et des fichiers temporaires. Ils n'installent pas de SDK réel et ne créent aucun réseau :
 
