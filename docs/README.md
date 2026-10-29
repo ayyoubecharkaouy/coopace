@@ -33,6 +33,8 @@ Les [séries sans et avec transfert](VIRTUAL_SERIES.md) définissent `run-series
 
 Le [protocole de goulot virtuel contrôlé](VIRTUAL_BOTTLENECK.md) fixe la prochaine expérience : TBF/FIFO à 4 Mbit/s dans la passerelle neuve, critères de congestion, mesures à compléter et nettoyage indépendant à développer. Il s'agit d'une conception ; aucune file n'est encore appliquée.
 
+Le [superviseur indépendant du laboratoire](LAB_GUARD.md) prépare ce nettoyage avec deux contrôles ciblés : fin normale et mort forcée du pilote. Les tests utilisent des espaces simulés et de vrais processus ; la validation native et l'intégration au futur scénario avec file restent à effectuer.
+
 ## Bilans datés
 
 La [revue du 29 octobre 2026](REVIEW_2026-10-29.md) revérifie le projet depuis le démarrage, consigne le correctif de nettoyage du laboratoire et définit les validations nécessaires pour poursuivre l'étape 4.2.

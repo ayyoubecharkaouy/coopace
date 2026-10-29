@@ -146,6 +146,8 @@ Le mode [`run-series`](VIRTUAL_SERIES.md) prépare maintenant la collecte simult
 
 Le [protocole de goulot virtuel](VIRTUAL_BOTTLENECK.md) prépare l'expérience suivante, avec une file TBF/FIFO à 4 Mbit/s et des critères fixés avant collecte. Ce document n'est pas une configuration exécutable. Les futurs délais allongés ne doivent pas modifier les paramètres des modes existants ; le nettoyage indépendant et les tests du cycle de vie de la file précèdent cette nouvelle collecte.
 
+Le [superviseur indépendant](LAB_GUARD.md) dispose maintenant de contrôles `check` et `check-crash`, sans file ni trafic. Les tests Python lancent et récupèrent de vrais processus avec des espaces simulés. `python3 -I scripts/lab-guard.py plan` reste sans privilèges ; les contrôles natifs sont distincts de la suite automatique et restent à consigner.
+
 ## Sous Windows
 
 Un exécutable Windows x64 est disponible dans `.local/bin/coopace-windows-amd64.exe`, accompagné de son empreinte SHA-256. La [procédure Windows](WINDOWS_VALIDATION.md) explique comment le compiler depuis Linux et le tester sur un PC Windows sans installer Go.
