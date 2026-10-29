@@ -63,6 +63,8 @@ elif command == "ip":
             sys.exit(1)
         state["namespaces"].append(name)
         save()
+        if mode == "interrupt_after_create_" + name[-1]:
+            os.kill(os.getppid(), signal.SIGTERM)
     elif args[:2] == ["netns", "del"]:
         if mode in {"cleanup_failure", "tcp_cleanup_failure"} and args[2].endswith("-s"):
             sys.exit(1)
@@ -76,6 +78,8 @@ elif command == "ip":
                 sys.exit("server process still alive during namespace deletion")
         state["namespaces"].remove(args[2])
         save()
+        if mode == "interrupt_after_create_g":
+            os.kill(os.getppid(), signal.SIGHUP)
     elif args[:2] == ["netns", "exec"]:
         assert args[2] in state["namespaces"]
         if args[3] == "sysctl":
@@ -256,6 +260,17 @@ elif command == "ip":
 
     def test_termination_runs_cleanup(self):
         self.check_termination("run", "pause")
+
+    def test_termination_just_after_creation_still_cleans_owned_namespace(self):
+        for role in ["c", "g", "s"]:
+            with self.subTest(role=role):
+                self.log.unlink(missing_ok=True)
+                self.state.unlink(missing_ok=True)
+                result = self.run_lab("interrupt_after_create_" + role)
+                self.assertEqual(result.returncode, 143, result.stderr)
+                self.assertEqual(result.stdout, "")
+                self.assertEqual(json.loads(self.state.read_text())["namespaces"], [])
+                self.assertFalse(self.reservation.exists())
 
     def test_tcp_termination_stops_server_before_namespace_cleanup(self):
         self.check_termination("run-tcp", "tcp_pause")

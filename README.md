@@ -18,6 +18,8 @@ La [préparation de l’étape 4.2](docs/GATEWAY_BASELINE.md) ajoute `coopace-ga
 
 Un [laboratoire Linux virtuel](docs/VIRTUAL_LAB.md) prépare désormais un scénario client → passerelle → serveur, sans raccorder le réseau du foyer. `sh scripts/lab-network.sh plan` permet de le prévisualiser ; `run-tcp` prépare cinq mesures d'établissement TCP vers une cible temporaire bornée. Le cycle de vie est testé avec des outils simulés, avec exécution native encore à confirmer et sans charge de saturation.
 
+La [revue du 29 octobre 2026](docs/REVIEW_2026-10-29.md) revérifie le socle, corrige un défaut de nettoyage après interruption et précise la suite : valider le laboratoire en exécution native avant les essais sous charge.
+
 ## Organisation
 
 ```text

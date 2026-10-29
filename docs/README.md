@@ -29,6 +29,8 @@ Le [laboratoire Linux virtuel](VIRTUAL_LAB.md) fournit un scénario concret pour
 
 ## Bilans datés
 
+La [revue du 29 octobre 2026](REVIEW_2026-10-29.md) revérifie le projet depuis le démarrage, consigne le correctif de nettoyage du laboratoire et définit les validations nécessaires pour poursuivre l'étape 4.2.
+
 La [revue du 26 octobre 2026](REVIEW_2026-10-26.md) consigne le démarrage et la cohérence avec le rapport V5, avant le développement du diagnostic de l'étape 4.1. Elle ne remplace pas l'état courant du produit.
 
 Les README des [applications agent](../apps/agent/README.md) et [passerelle](../apps/gateway/README.md), du [noyau](../packages/core/README.md), du [protocole](../packages/protocol/README.md) et des [adaptations Linux](../platforms/linux/README.md) détaillent le code de chaque composant. Le [module ML](../ml/README.md) garde son périmètre futur dans son propre dossier.

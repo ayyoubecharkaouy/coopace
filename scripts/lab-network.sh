@@ -93,10 +93,30 @@ lab_server_created=0
 lab_report=''
 lab_server_pid=''
 lab_ready_file=''
+lab_critical=0
+lab_signal_status=0
+
+# Defer managed interrupts until a newly created resource has been recorded.
+# Otherwise a successful ip command can be followed by a trap before its flag.
+lab_signal() {
+    if [ "$lab_signal_status" = 0 ]; then lab_signal_status=$1; fi
+    if [ "$lab_critical" = 0 ]; then
+        exit "$lab_signal_status"
+    fi
+}
+
+lab_end_critical() {
+    lab_critical=0
+    if [ "$lab_signal_status" -ne 0 ]; then
+        exit "$lab_signal_status"
+    fi
+}
 
 lab_cleanup() {
     lab_result=$?
-    trap - EXIT HUP INT TERM
+    if [ "$lab_signal_status" -ne 0 ]; then lab_result=$lab_signal_status; fi
+    trap - EXIT
+    trap '' HUP INT TERM
     lab_cleanup_failed=0
     # Stop and reap our child before deleting its namespace. No broad PID search.
     if [ -n "$lab_server_pid" ]; then
@@ -130,19 +150,25 @@ lab_cleanup() {
     exit "$lab_result"
 }
 trap lab_cleanup EXIT
-trap 'exit 129' HUP
-trap 'exit 130' INT
-trap 'exit 143' TERM
+trap 'lab_signal 129' HUP
+trap 'lab_signal 130' INT
+trap 'lab_signal 143' TERM
 
 printf 'Espaces de cette exécution : %s %s %s\n' \
     "$lab_client" "$lab_gateway" "$lab_server" >&2
 printf 'Réservation temporaire : %s\n' "$lab_tmp" >&2
+lab_critical=1
 ip netns add "$lab_client"
 lab_client_created=1
+lab_end_critical
+lab_critical=1
 ip netns add "$lab_gateway"
 lab_gateway_created=1
+lab_end_critical
+lab_critical=1
 ip netns add "$lab_server"
 lab_server_created=1
+lab_end_critical
 
 for lab_namespace in "$lab_client" "$lab_gateway" "$lab_server"; do
     ip -n "$lab_namespace" link set lo up
@@ -182,9 +208,11 @@ if [ "$lab_mode" = run ]; then
 else
     lab_ready_file="$lab_tmp/tcp-ready"
     : > "$lab_ready_file"
+    lab_critical=1
     ip netns exec "$lab_server" "$lab_tcp" --listen 10.203.0.6:46001 \
         --connections 5 --duration 15s > "$lab_ready_file" &
     lab_server_pid=$!
+    lab_end_critical
     printf 'Serveur TCP de cette exécution : PID %s\n' "$lab_server_pid" >&2
     lab_ready_attempt=0
     while :; do

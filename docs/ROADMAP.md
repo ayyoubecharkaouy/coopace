@@ -127,6 +127,8 @@ Un outil de comparaison hors ligne est aussi livré : `coopace latency compare -
 
 Un premier [scénario Linux virtuel](VIRTUAL_LAB.md) est maintenant défini : client, passerelle et serveur dans des espaces réseau neufs, routes spécifiques et sondes ICMP pour vérifier le passage IPv4. `scripts/lab-network.sh plan` le prévisualise ; `run` crée le laboratoire et tente de supprimer ses ressources avant de publier l'inventaire. `run-tcp` prépare cinq tentatives d'établissement TCP avec l'agent et une cible temporaire bornée, sans charge de saturation. Les tests de cycle de vie utilisent des outils simulés et le serveur TCP est testé en mémoire ; son essai en boucle locale peut être ignoré faute de permissions. L'exécution réelle ICMP/TCP, les mesures sous charge et la restauration d'une passerelle réelle restent à valider.
 
+La [revue du 29 octobre 2026](REVIEW_2026-10-29.md) confirme la cohérence du démarrage après correction d'une fenêtre d'interruption du nettoyage. La prochaine activité est l'essai natif ICMP/TCP du laboratoire, puis sa préparation pour des séries sous charge. Les tests simulés ne clôturent pas cette étape.
+
 ## Étape 5 — Décisions coopératives
 
 État : à faire.

@@ -90,6 +90,8 @@ Ces durées synthétiques concernent l'établissement TCP sur le noyau partagé 
 
 Le nettoyage est tenté à la sortie normale, après une erreur et pour HUP/INT/TERM. Une collision de nom arrête la création sans supprimer l'espace en conflit. Il n'y a aucune suppression globale d'espaces réseau.
 
+Les interruptions gérées sont différées pendant la création d'un espace et l'enregistrement de son état, ainsi que pendant le lancement du serveur TCP et l'enregistrement de son PID. Cela permet au nettoyage de connaître la ressource qui vient d'être créée. Durant le nettoyage, les interruptions gérées supplémentaires sont ignorées ; le code initial est conservé. Le test de régression envoie SIGTERM juste après chaque création simulée. Voir la [revue du 29 octobre](REVIEW_2026-10-29.md).
+
 SIGKILL, un arrêt machine ou une erreur de suppression ne permettent pas de garantir le nettoyage. Reprendre les noms, le PID éventuel et le répertoire précis du journal, vérifier ces ressources, puis effectuer si nécessaire une suppression ciblée avec `ip netns del NOM_EXACT`. Pour `run-tcp`, vérifier d'abord que le processus serveur de cette exécution est terminé ; retirer son fichier `tcp-ready` précis s'il subsiste, puis utiliser `rmdir CHEMIN_EXACT` pour le répertoire vide. Un espace dont le nom est supprimé peut subsister tant qu'un processus le référence, comme l'explique `ip-netns`.
 
 Le nettoyage de ressources neuves n'est pas la restauration indépendante requise avant de piloter une passerelle réelle. Aucune file CAKE/SQM, règle de pare-feu ou politique de débit n'est appliquée. L'essai ne mesure pas le WAN, la radio, IPv6, DNS, l'équité ou la latence sous charge. Les statistiques ICMP et le rapport `tcp_connect` restent des observations distinctes.
