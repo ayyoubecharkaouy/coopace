@@ -2,7 +2,7 @@
 
 ## Objectif et état
 
-Le chemin IPv4 du laboratoire a été [validé en ICMP/TCP](VALIDATION_VIRTUAL_LAB_2026-10-29.md). Le nouveau mode `run-load` prépare maintenant un transfert borné entre le client et le serveur neufs, par la même passerelle. Le code et les tests simulés sont livrés. **Un premier transfert natif est consigné** : 8 Mio envoyés et reçus en environ huit secondes, avec cadence et nettoyage conformes. Le [compte rendu](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) conserve les observations et précise que le code de sortie exact n'a pas encore été enregistré.
+Le chemin IPv4 du laboratoire a été [validé en ICMP/TCP](VALIDATION_VIRTUAL_LAB_2026-10-29.md). Le nouveau mode `run-load` prépare maintenant un transfert borné entre le client et le serveur neufs, par la même passerelle. Le code et les tests simulés sont livrés. **Un premier transfert natif est validé** : 8 Mio envoyés et reçus en environ huit secondes, avec cadence et nettoyage conformes. Le [compte rendu](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) conserve les observations, les empreintes et le code de sortie exact `0`.
 
 Cette sous-étape vérifie la génération, la réception et l'arrêt d'un flux synthétique. Elle précède les séries de latence comparées au repos/sous charge. Elle n'ajoute ni politique de files, ni goulot artificiel, ni mesure de saturation ; le réseau virtuel peut absorber ce flux sans congestion.
 

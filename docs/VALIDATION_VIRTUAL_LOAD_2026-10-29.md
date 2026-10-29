@@ -1,8 +1,8 @@
 # Premier transfert synthétique natif — 29 octobre 2026
 
-## Résultat observé
+## Résultat validé
 
-L'utilisateur a exécuté `sudo sh scripts/lab-network.sh run-load` depuis son terminal Linux. Le rapport et le journal confirment 8 388 608 octets synthétiques envoyés et reçus, avec une émission d'environ huit secondes et un nettoyage normal réussi. Le code de sortie exact est à récupérer : il n'a pas été enregistré dans la commande initialement montrée. Il n'est pas remplacé par une valeur supposée dans le bilan local.
+L'utilisateur a exécuté `sudo sh scripts/lab-network.sh run-load` depuis son terminal Linux. Le rapport et le journal confirment 8 388 608 octets synthétiques envoyés et reçus, avec une émission d'environ huit secondes et un nettoyage normal réussi. Le code de sortie exact `0` a ensuite été récupéré depuis le terminal utilisateur et conservé dans `exit-code`. Le premier transfert natif est validé pour ce scénario borné.
 
 Les contrôles fonctionnels sont conformes aux paramètres du [protocole fixé avant l'essai](VIRTUAL_LOAD.md). Ce résultat ne valide pas encore une série de latence au repos/sous charge ni une saturation du réseau.
 
@@ -14,12 +14,13 @@ Les contrôles fonctionnels sont conformes aux paramètres du [protocole fixé a
 - Émission : `2026-10-29T18:32:25.419625683Z` à `2026-10-29T18:32:33.419942882Z`.
 - Empreintes du binaire et du script recontrôlées après l'essai : conformes à `prepared.json`.
 
-La préparation et le protocole sont conservés tels qu'ils étaient avant l'essai. `validation.json` consigne les observations ultérieures et les empreintes des pièces. Les données brutes restent locales et exclues de Git.
+La préparation et le protocole sont conservés tels qu'ils étaient avant l'essai. `validation.json` consigne les observations ultérieures, le code de sortie et les empreintes des pièces. Le bilan antérieur à la récupération du code est conservé dans `validation-before-exit.json`. Les données brutes restent locales et exclues de Git.
 
 | Pièce | SHA-256 |
 | --- | --- |
 | `report.json` | `b73782856c528ef1bd056e1b7fb10ce4a95778b9dfd34a269203a3df4ed4b209` |
 | `run.log` | `960dab8670e58aedb03613785286c9971261c4d485980b17648960d0a7681bf9` |
+| `exit-code` | `9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa` |
 
 ## Contrôles
 
@@ -34,10 +35,10 @@ La préparation et le protocole sont conservés tels qu'ils étaient avant l'ess
 | ICMP sans forwarding | Aucune réponse à la sonde. |
 | ICMP après activation | Trois réponses sur trois. |
 | Nettoyage normal | Suppression réussie dans le journal ; les trois noms `cp-h6IIMZWj-c/g/s` et `/tmp/coopace-lab.h6IIMZWj` ne sont plus visibles depuis le développement. |
-| Code de sortie exact | Non enregistré dans la commande initiale ; demande de récupération en cours. |
+| Code de sortie exact | `0`, récupéré depuis le terminal utilisateur et conservé. |
 
 La moyenne a été recalculée depuis le volume et la durée. Les horodatages sont cohérents avec cette durée. Les blocs sont plafonnés à 16 Kio ; la cadence moyenne ne constitue pas un plafond instantané sur le lien. Les délais de réception de 15s, les interruptions et les volumes invalides n'ont pas été injectés dans cet essai natif ; leurs tests restent en mémoire ou simulés.
 
 ## Suite
 
-Compléter le code de sortie s'il est encore disponible, puis intégrer la mesure de latence pendant ce flux et les répétitions comparables sans et avec trafic synthétique. Conserver les horaires pour vérifier le recouvrement réel. L'étape 4.2 reste ouverte ; les performances WAN, l'équité, les ressources et la restauration indépendante ne sont pas validées par cet essai.
+Intégrer ensuite la mesure de latence pendant ce flux et les répétitions comparables sans et avec trafic synthétique. Conserver les horaires pour vérifier le recouvrement réel. L'étape 4.2 reste ouverte ; les performances WAN, l'équité, les ressources et la restauration indépendante ne sont pas validées par cet essai.
