@@ -14,9 +14,9 @@ L'étape 3.3 ajoute l'identité persistante sous Linux, le consentement et des c
 
 L'étape 3.4 ajoute l'approbation et le consentement persistés, les certificats publics et un échange TLS mutuel borné. Les tests TLS en mémoire passent ; le test TCP réel est ignoré dans l'environnement isolé et reste à confirmer depuis le terminal utilisateur. Voir [GROUP_EXCHANGE.md](GROUP_EXCHANGE.md) pour les commandes et la portée du prototype Linux.
 
-L'étape 4.1 ajoute l'application passerelle avec un diagnostic Linux en lecture seule : `coopace-gateway inspect`. Les tests et le lancement réel sont vérifiés, avec un inventaire partiel dans l'environnement isolé où Netlink est interdit. Le [diagnostic et ses limites](GATEWAY_DIAGNOSTIC.md) décrivent les lectures, les commandes bornées et les validations encore nécessaires sur le PC utilisateur. Ce programme ne gère pas encore le trafic.
+L'étape 4.1 ajoute l'application passerelle avec un diagnostic Linux en lecture seule : `coopace-gateway inspect`. Les tests et le lancement réel sont vérifiés, avec un inventaire partiel dans l'environnement isolé où Netlink est interdit, puis un [inventaire complet dans la passerelle virtuelle](VALIDATION_VIRTUAL_LAB_2026-10-29.md). Le [diagnostic et ses limites](GATEWAY_DIAGNOSTIC.md) distinguent cet essai de l'inventaire du foyer encore à recueillir. Ce programme ne gère pas encore le trafic.
 
-La préparation de l’étape 4.2 ajoute `inspect --json`, l’export d’inventaire local v1 et les métadonnées incorporées à la compilation. Les tests vérifient les valeurs inconnues, les listes vides et la provenance manquante. Le [protocole de référence initiale](GATEWAY_BASELINE.md) prépare le scénario réel, qui reste à compléter et mesurer.
+L'étape 4.2 ajoute `inspect --json`, l'export d'inventaire local v1 et les métadonnées de compilation, puis les outils de laboratoire décrits ci-dessous. Leurs premiers essais natifs de connectivité, transfert, séries et supervision sont consignés. Le [protocole de référence initiale](GATEWAY_BASELINE.md) reste à compléter pour une passerelle du foyer ; le goulot virtuel, sa collecte et le moteur de files restent à développer.
 
 ## Version et module
 
@@ -128,13 +128,13 @@ Les tests du groupe vérifient de vraies négociations TLS sur `net.Pipe`, les c
 sh scripts/go.sh test -count=1 -v -run '^TestGroupLoopbackExchange$' ./apps/agent/internal/group
 ```
 
-Les tests de régression du script d'installation fonctionnent sans Go et sans réseau, avec Python 3 et de petites archives de test :
+La suite Python de développement se lance sans Go, sans privilèges et sans réseau :
 
 ```sh
 python3 -B -m unittest discover -s scripts/tests -p 'test_*.py' -v
 ```
 
-Ils vérifient la conservation et la reprise d'un téléchargement interrompu, la réutilisation d'une archive vérifiée et le refus d'une archive corrompue. Ils ne valident pas le téléchargement réel du SDK ni le noyau Go.
+Elle regroupe les tests de l'installation et des pilotes de laboratoire. Les tests du script d'installation utilisent de petites archives pour vérifier la reprise d'un téléchargement interrompu, la réutilisation d'une archive vérifiée et le refus d'une archive corrompue. Ils ne valident pas le téléchargement réel du SDK ni le noyau Go.
 
 La même commande Python inclut les tests de `scripts/lab-network.sh`. Ils copient le script dans des dossiers temporaires et remplacent les outils réseau et contrôles de privilèges par des exécutables simulés. Ils couvrent le ciblage des espaces propres, les erreurs, l'interruption et le nettoyage, sans ressource réseau réelle. Ces tests sont réservés à Linux.
 
@@ -142,7 +142,7 @@ Le [laboratoire virtuel](VIRTUAL_LAB.md) se prévisualise avec `sh scripts/lab-n
 
 Le mode [`run-load`](VIRTUAL_LOAD.md) demande les mêmes privilèges et le binaire `coopace-lab-load`, construit avec `sh scripts/go.sh build -o .local/bin/coopace-lab-load ./scripts/lab-load`. Ses tests Go utilisent des connexions en mémoire et font partie de la suite générale ; le test de transfert en boucle locale est ignoré si les sockets sont interdites. La suite Python couvre aussi l'échec de réception et l'arrêt de ce récepteur avant suppression. Les [premières observations natives](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) de ce flux sont consignées, avec le code de sortie exact `0` conservé.
 
-Le mode [`run-series`](VIRTUAL_SERIES.md) prépare maintenant la collecte simultanée et répétée, avec Python 3 en exécution pour ce seul pilote de laboratoire. Recompiler les trois binaires `coopace`, `coopace-lab-tcp` et `coopace-lab-load` avant l'essai, selon le protocole. La suite Python vérifie l'ordre, la conservation des échecs, le recouvrement temporel et les processus locaux sans réseau. Un [premier essai natif](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) est consigné, avec 60 connexions réussies sans échec et les trois recouvrements vérifiés. Le JSON groupé contient les six exports de latence et trois rapports de charge ; il n'est pas une entrée directe de `latency compare`.
+Le mode [`run-series`](VIRTUAL_SERIES.md) réalise la collecte simultanée et répétée avec Python 3 pour son pilote de laboratoire. Recompiler les trois binaires `coopace`, `coopace-lab-tcp` et `coopace-lab-load` avant l'essai, selon le protocole. La suite Python vérifie l'ordre, la conservation des échecs, le recouvrement temporel et les processus locaux sans réseau. Un [premier essai natif](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) est consigné, avec 60 connexions réussies sans échec et les trois recouvrements vérifiés. Le JSON groupé contient les six exports de latence et trois rapports de charge ; il n'est pas une entrée directe de `latency compare`.
 
 Le [protocole de goulot virtuel](VIRTUAL_BOTTLENECK.md) prépare l'expérience suivante, avec une file TBF/FIFO à 4 Mbit/s et des critères fixés avant collecte. Ce document n'est pas une configuration exécutable. Les futurs délais allongés ne doivent pas modifier les paramètres des modes existants ; le nettoyage indépendant et les tests du cycle de vie de la file précèdent cette nouvelle collecte.
 
@@ -181,7 +181,7 @@ sh scripts/go.sh build -o .local/bin/coopace-gateway ./apps/gateway/cmd/coopace-
 
 Les outils `ip` et `tc`, lorsqu'ils sont présents, sont utilisés uniquement pour des requêtes locales d'affichage. Leur absence, un refus Netlink ou une sortie invalide apparaît dans la rubrique concernée. Les tests des parseurs ne nécessitent pas ces outils ; un binaire de test local vérifie les limites de sortie et l'annulation d'un processus.
 
-Le binaire Windows de diagnostic compile aussi mais sa collecte est explicitement indisponible ; voir [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md). Les mesures sous charge, le chemin réel des appareils et la restauration restent à définir avant une intervention.
+Le binaire Windows de diagnostic compile aussi mais sa collecte est explicitement indisponible ; voir [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md). Les références WAN sous charge, le chemin réel des appareils du foyer et la restauration de leur passerelle restent à définir avant une intervention sur ce réseau.
 
 ## Organisation du code actuel
 

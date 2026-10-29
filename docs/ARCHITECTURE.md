@@ -26,7 +26,7 @@ La passerelle est un point de passage des données. Ce rôle ne lui attribue pas
 | --- | --- |
 | `packages/core` | Modèles métier, capacités, consentements, décisions bornées, abstention et règles d'évaluation indépendantes des systèmes. |
 | `packages/protocol` | Définition versionnée des messages et de leur validation : identité, capacités, mesures et propositions d'actions. |
-| `platforms/linux` | Adaptations réseau Linux, notamment les intégrations futures avec `tc` et CAKE/SQM. Compatibilité OpenWrt à vérifier selon le matériel et le packaging. |
+| `platforms/linux` | Compteurs et inventaire Linux, avec lecture des files par `tc` ; modification des files et intégration CAKE/SQM futures. Compatibilité OpenWrt à vérifier selon le matériel et le packaging. |
 | `platforms/windows` | Adaptations réseau Windows pour l'agent et étude d'une passerelle Windows. |
 | `platforms/android` | Adaptations de l'agent Android, sous les contraintes de permissions et de cycle de vie du système. |
 
@@ -68,6 +68,8 @@ Les scénarios de laboratoire restent dans `scripts`, séparés des applications
 
 `scripts/lab-series.py` orchestre les outils et la CLI de l'agent par arguments explicites, sans shell ni import des paquets internes applicatifs. Il vérifie les horodatages de charge et appelle le comparateur existant sur des rapports temporaires privés. Ses tests Python restent dans `scripts/tests`. Le shell possède les espaces et le PID de ce pilote ; le pilote possède et arrête ses processus avant le nettoyage des espaces. Voir [VIRTUAL_SERIES.md](VIRTUAL_SERIES.md).
 
+`scripts/lab-guard.py` fournit séparément le [superviseur indépendant](LAB_GUARD.md) : il possède trois espaces neufs et un groupe de processus distinct, puis récupère le pilote et ses descendants avant de retirer les espaces. Ses contrôles de fin normale et de mort forcée sont validés en natif. Il n'est pas encore intégré à `lab-network.sh` ou au futur scénario avec file. Python 3 et sa bibliothèque standard sont utilisés pour ces pilotes et les tests de développement ; ils ne sont pas une dépendance d'exécution des applications Go et ne constituent pas une implémentation du ML.
+
 Les futurs services privilégiés et clients mobiles pourront nécessiter leurs propres points d'entrée ou paquets. Leur découpage sera décidé avec le packaging ; les dossiers actuels décrivent les responsabilités, pas un nombre imposé de processus ou d'installateurs.
 
 À l'étape 4.1, `apps/gateway/cmd/coopace-gateway` fournit une commande distincte de l'agent : `inspect`, en lecture seule sous Linux. Ses paquets internes orchestrent les lectures de `platforms/linux` et utilisent les modèles d'inventaire du noyau. Aucun paquet interne d'une application n'est importé par l'autre. Ce découpage prépare les rôles ; il ne démarre pas un service privilégié et ne fixe pas le nombre d'installateurs du produit final. Voir [GATEWAY_DIAGNOSTIC.md](GATEWAY_DIAGNOSTIC.md).
@@ -107,4 +109,4 @@ Les fonctions de relais exigeront un consentement distinct. Elles ne seront auto
 - Réutilisation du noyau Go dans l'application Android Kotlin.
 - Contrats des adaptations système et séparation des privilèges.
 - Découverte, groupe à plusieurs pairs, renouvellement des certificats et stockage protégé de clé sur les autres systèmes.
-- Méthode de mesure et critères d'acceptation du premier prototype.
+- Mesures complémentaires et critères du premier prototype de passerelle réelle ; la méthode TCP et les paramètres du goulot synthétique sont déjà documentés.

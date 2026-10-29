@@ -1,6 +1,6 @@
 # Documentation de Coopace
 
-Ce dossier rassemble les décisions, les procédures et les limites du projet. Le [périmètre produit](PRODUCT.md) et la [feuille de route](ROADMAP.md) décrivent l'état courant ; les bilans datés conservent le contexte de leur rédaction.
+Ce dossier rassemble les décisions, les procédures et les limites du projet. Le [périmètre produit](PRODUCT.md) et la [feuille de route](ROADMAP.md) décrivent l'état courant ; les bilans datés conservent le contexte de leur rédaction. Pour connaître ce qui fonctionne aujourd'hui, commencer par ces deux documents. Pour reproduire un essai, suivre son protocole ; son compte rendu décrit uniquement l'exécution consignée.
 
 ## Comprendre et développer le projet
 
@@ -43,4 +43,4 @@ La [revue du 26 octobre 2026](REVIEW_2026-10-26.md) consigne le démarrage et la
 
 Les README des [applications agent](../apps/agent/README.md) et [passerelle](../apps/gateway/README.md), du [noyau](../packages/core/README.md), du [protocole](../packages/protocol/README.md) et des [adaptations Linux](../platforms/linux/README.md) détaillent le code de chaque composant. Le [module ML](../ml/README.md) garde son périmètre futur dans son propre dossier.
 
-Ajouter une procédure technique ici lorsqu'une fonction le nécessite, puis la référencer dans cet index. Garder les détails propres à un composant dans son README et les résultats historiques dans des documents explicitement datés.
+Ajouter une procédure technique ici lorsqu'une fonction le nécessite, puis la référencer dans cet index. Garder les détails propres à un composant dans son README et les résultats historiques dans des documents explicitement datés. Après une validation, actualiser les états courants et la prochaine activité des protocoles concernés, sans réécrire les mesures ni les copies de protocoles figées dans `.local/experiments/`. Distinguer systématiquement compilation, tests en mémoire ou simulés, exécution native, et bénéfice réseau démontré.

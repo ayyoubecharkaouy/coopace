@@ -63,7 +63,7 @@ Il devra permettre de :
 
 Un groupe minimal de mesure peut préparer cette évaluation. La coordination avancée, une interface complète, les relais automatiques et le ML attendront ce premier résultat. L'absence de groupe complet ne doit pas bloquer l'évaluation du moteur de passerelle.
 
-La [préparation de l’étape 4.2](GATEWAY_BASELINE.md) ajoute un export JSON local d’inventaire et un modèle de protocole. La plateforme et la topologie du foyer, les seuils et les mesures au repos/sous charge restent à confirmer ; aucun résultat sous charge n’est déduit de ces outils.
+La [préparation de l’étape 4.2](GATEWAY_BASELINE.md) ajoute un export JSON local d’inventaire et un modèle de protocole. La plateforme et la topologie du foyer, ses seuils et ses références au repos/sous charge restent à confirmer ; l'inventaire seul ne fournit aucune de ces mesures.
 
 La comparaison hors ligne des rapports TCP au repos/sous charge est disponible via `latency compare`. Elle vérifie les paramètres et les statistiques, sans vérifier le contexte réel ni attribuer un gain à Coopace. L'étape expérimentale reste ouverte.
 
@@ -71,7 +71,9 @@ Le [laboratoire virtuel de développement](VIRTUAL_LAB.md) prépare un chemin IP
 
 Le [générateur de trafic synthétique](VIRTUAL_LOAD.md) prépare ensuite un transfert de 8 Mio, limité en débit moyen et en durée. Un [premier transfert natif](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) confirme les 8 Mio envoyés et reçus et le nettoyage normal ; le code de sortie exact `0` est conservé dans le compte rendu local. Le mode [`run-series`](VIRTUAL_SERIES.md) prépare la mesure de latence simultanée et trois paires de séries, avec contrôle du recouvrement et conservation des échecs. Un [premier essai natif](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) confirme 60 réussites sans échec, les trois transferts, le recouvrement et le nettoyage normal. Ce trafic de laboratoire ne constitue pas une référence WAN ni une saturation démontrée.
 
-Le [protocole du prochain goulot virtuel](VIRTUAL_BOTTLENECK.md) définit TBF/FIFO à 4 Mbit/s, les critères de congestion et le nettoyage à développer. Il n'ajoute pas encore de gestion du trafic au produit : implémentation, collecte avec file puis référence CAKE manuelle restent à valider.
+Le [superviseur indépendant du laboratoire](LAB_GUARD.md) dispose de deux [contrôles natifs validés](VALIDATION_LAB_GUARD_2026-10-29.md) : fin normale et mort forcée du pilote, avec récupération des descendants et retrait des espaces possédés. Il s'agit d'un outil de développement distinct de l'application passerelle ; il n'est pas encore intégré aux séries de mesure et ne restaure pas la configuration d'un réseau existant.
+
+Le [protocole du prochain goulot virtuel](VIRTUAL_BOTTLENECK.md) définit TBF/FIFO à 4 Mbit/s et ses critères de congestion. Le cycle de vie de la file, l'intégration du superviseur et l'instrumentation complémentaire restent à développer. La collecte avec file puis la référence CAKE manuelle restent à valider avant de revendiquer une gestion du trafic dans le produit.
 
 ## Références et mesures indispensables
 

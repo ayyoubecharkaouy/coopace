@@ -27,7 +27,7 @@ L'essai exige les contrôles ICMP du laboratoire, l'annonce de disponibilité du
 
 Un volume incomplet ou excessif, une erreur de connexion, une expiration, une indisponibilité du récepteur ou un échec de nettoyage arrête l'essai avec un code non nul. Aucun JSON n'est publié par le script après un échec. Il ne relance pas automatiquement un transfert.
 
-Ces critères évaluent le fonctionnement du générateur. Aucun seuil de gain de latence, de capacité WAN ou d'équité n'est fixé par ce test. Les séries futures devront définir ces critères selon leur scénario avant de mesurer.
+Ces critères évaluent le fonctionnement du générateur. Aucun seuil de gain de latence, de capacité WAN ou d'équité n'est fixé par ce test. Les [séries sans goulot](VIRTUAL_SERIES.md) ont leurs propres critères fonctionnels ; le [protocole de goulot](VIRTUAL_BOTTLENECK.md) fixe ceux de la future expérience de congestion.
 
 ## Reproduire l'essai natif
 
@@ -64,8 +64,6 @@ sh scripts/go.sh test -count=1 -v ./scripts/lab-load
 
 ## Prochaine activité
 
-Préparer ensuite plusieurs paires de séries sur une même topologie, avec la même cible de latence et les mêmes paramètres : sans ce flux, puis pendant ce flux. Consigner l'ordre, les répétitions et les horaires d'activité pour vérifier le recouvrement réel avec les mesures. L'étiquette `loaded` seule ne prouve ni ce recouvrement ni une saturation.
+Le mode distinct [`run-series`](VIRTUAL_SERIES.md) réalise l'association avec la latence sur une même topologie : trois paires sans/avec transfert, horodatages d'écriture et comparateur strict. Son [premier essai natif](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) est validé. `run-load` conserve son rôle de transfert seul ; l'étiquette `loaded` ne prouve pas une saturation.
 
-La latence simultanée, les répétitions et leur collecte ne sont pas encore intégrées dans `run-load`. La comparaison restera descriptive tant que le scénario et les conditions ne permettent pas une conclusion causale. La [référence initiale](GATEWAY_BASELINE.md), les métriques complémentaires et la restauration restent nécessaires pour clôturer l'étape 4.2.
-
-Le nouveau mode distinct [`run-series`](VIRTUAL_SERIES.md) prépare désormais cette association sur une même topologie, avec trois paires, des horodatages d'écriture et le comparateur strict. Un [premier essai natif de ces séries](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) est consigné ; `run-load` conserve son rôle de transfert seul.
+La prochaine activité porte sur le [goulot virtuel contrôlé](VIRTUAL_BOTTLENECK.md), en commençant par le cycle de vie de la file sous le superviseur validé. Le débit utile reçu et les statistiques de file restent à instrumenter. Les séries existantes restent descriptives ; la [référence initiale](GATEWAY_BASELINE.md), les métriques complémentaires et la restauration de passerelle réelle sont nécessaires pour clôturer l'étape 4.2.

@@ -2,7 +2,7 @@
 
 ## État actuel
 
-Cette étape prépare une expérience reproductible : un export local d'inventaire est disponible et un modèle de protocole peut être complété. Un premier scénario Linux virtuel est défini ; la plateforme du foyer, le chemin réel du trafic et les seuils restent à confirmer. Aucune référence WAN au repos/sous charge, aucune intervention sur le trafic du foyer et aucun résultat d'optimisation ne sont revendiqués.
+Cette étape prépare une expérience reproductible : un export local d'inventaire est disponible et un modèle de protocole peut être complété. Un premier scénario Linux virtuel est validé ; la plateforme du foyer, le chemin réel de son trafic et ses seuils restent à confirmer. Aucune référence WAN au repos/sous charge, aucune intervention sur le trafic du foyer et aucun résultat d'optimisation ne sont revendiqués.
 
 Pour avancer sans détourner le trafic du foyer, un [scénario Linux virtuel](VIRTUAL_LAB.md) utilise des ressources réseau neuves et des sondes IPv4 synthétiques, avec nettoyage. Un [premier essai natif ICMP/TCP](VALIDATION_VIRTUAL_LAB_2026-10-29.md) a réussi sur le PC Linux utilisateur, avec inventaire complet dans cet espace, cinq connexions réussies sans échec et nettoyage normal. Des [séries avec transfert synthétique](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) sont également validées, sans saturation démontrée. Le [protocole de goulot contrôlé](VIRTUAL_BOTTLENECK.md) fixe les critères de l'expérience suivante ; sa mise en œuvre et les références WAN restent à réaliser. Ce choix de laboratoire ne fixe pas la plateforme d'une future passerelle du foyer.
 
@@ -74,6 +74,8 @@ Après une collecte réelle, `coopace latency compare --idle FICHIER --loaded FI
 
 L'expérience distinguera la configuration initiale, le moteur configuré manuellement et le pilotage Coopace sans ML. Les règles d'acceptation doivent être définies avant de comparer. Conserver les répétitions, les dégradations et les cas sans bénéfice ; ne pas sélectionner uniquement les meilleurs résultats.
 
-Avant toute modification, la restauration doit couvrir les objets qui seront réellement modifiés, fonctionner indépendamment du processus de pilotage et être testée lors de son interruption, avec IPv4, IPv6 et DNS. Le modèle demande de consigner ces preuves ; aucun mécanisme de restauration n'est encore implémenté ou validé.
+Avant une modification de passerelle réelle, la restauration doit couvrir les objets qui seront réellement modifiés, fonctionner indépendamment du processus de pilotage et être testée lors de son interruption, avec IPv4, IPv6 et DNS. Le modèle demande de consigner ces preuves ; cette restauration de configuration existante n'est pas encore implémentée ou validée.
+
+Pour le laboratoire jetable, les [deux contrôles natifs du superviseur](VALIDATION_LAB_GUARD_2026-10-29.md) valident la récupération de ses processus et la suppression des espaces qu'il crée. Cette preuve limitée ne remplace pas la restauration ci-dessus. Son intégration au futur scénario avec file reste à réaliser selon [VIRTUAL_BOTTLENECK.md](VIRTUAL_BOTTLENECK.md).
 
 Les prochaines décisions dépendent de l'inventaire réel et du choix de la plateforme. Cette préparation ne remplace pas une expérience exécutée et n'autorise aucune intervention automatique.

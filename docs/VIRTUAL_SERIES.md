@@ -2,7 +2,7 @@
 
 ## Objectif et état
 
-Le chemin IPv4 et le [transfert borné de 8 Mio](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) sont validés séparément. Le mode `run-series` prépare leur association : six séries de latence, dont trois pendant un transfert, sur une même instance du laboratoire.
+Le chemin IPv4 et le [transfert borné de 8 Mio](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) sont validés séparément. Le mode `run-series` les associe : six séries de latence, dont trois pendant un transfert, sur une même instance du laboratoire.
 
 Le code et les tests simulés sont livrés. **Un premier essai natif est validé** : six séries, 60 connexions réussies sans échec, trois transferts complets et recouvrement vérifié. Le [compte rendu](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) conserve les résultats, empreintes et limites. La création d'un réseau virtuel rapide, sans goulot configuré, ne garantit pas de congestion. Cet essai mesure une différence descriptive, sans intervention d'optimisation.
 
@@ -89,4 +89,4 @@ python3 -B -m unittest discover -s scripts/tests -p 'test_*.py' -v
 sh scripts/go.sh test -count=1 -v ./scripts/lab-load
 ```
 
-La [feuille de route](ROADMAP.md) garde l'étape 4.2 ouverte. Le premier essai natif et son analyse descriptive sont [consignés](VALIDATION_VIRTUAL_SERIES_2026-10-29.md). Le [protocole de goulot contrôlé](VIRTUAL_BOTTLENECK.md) définit maintenant la prochaine référence et ses critères ; son implémentation, sa collecte et le nettoyage indépendant restent à réaliser avant de piloter une politique de files.
+La [feuille de route](ROADMAP.md) garde l'étape 4.2 ouverte. Le premier essai natif et son analyse descriptive sont [consignés](VALIDATION_VIRTUAL_SERIES_2026-10-29.md). Le [protocole de goulot contrôlé](VIRTUAL_BOTTLENECK.md) définit la prochaine référence et ses critères. Les contrôles séparés du [superviseur indépendant](LAB_GUARD.md) sont validés, mais son intégration à un scénario avec file, l'implémentation du goulot et sa collecte restent à réaliser. `run-series` utilise toujours son cycle de vie actuel.

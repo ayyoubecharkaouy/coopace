@@ -30,7 +30,7 @@ L'identité de chaque espace est conservée après création réussie sous forme
 
 Le nettoyage a un budget global de 10s, avec au plus 2s par commande `ip`. Si l'arrêt des processus n'est pas confirmé, les espaces sont conservés. Si une suppression échoue, les autres ressources possédées sont tout de même traitées et aucun JSON de réussite n'est publié. Ces délais ne garantissent pas l'interruption d'une opération bloquée dans le noyau.
 
-La réservation privée `/tmp/coopace-guard.JETON` contient `owner.json`, journal de diagnostic, sans commandes de restauration automatique. En cas de succès, le journal et la réservation vide sont retirés. En cas d'échec, le journal est conservé lorsque possible ; un fichier inconnu empêche le retrait du dossier, sans suppression récursive. Le chemin est imprimé dans le journal d'exécution avant la création des espaces.
+La réservation privée `/tmp/coopace-guard.JETON` contient `owner.json`, journal de diagnostic, sans commandes de restauration automatique. Quand le nettoyage réussit, le journal et la réservation vide sont retirés, y compris si le contrôle lui-même a échoué. Si le nettoyage échoue, le journal est conservé lorsque possible ; un fichier inconnu empêche le retrait du dossier, sans suppression récursive. Le chemin est imprimé dans le journal d'exécution avant la création des espaces. Les rapports, stderr et codes conservés par le lanceur restent donc les pièces durables de l'essai.
 
 ## Vérifications automatiques
 

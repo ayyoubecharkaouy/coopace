@@ -105,4 +105,6 @@ Ces résultats ne valident pas une mesure WAN ni l'exécution native Windows. Po
 sh scripts/go.sh test -count=1 -v ./apps/agent/internal/latency
 ```
 
+Les essais du laboratoire ajoutent une [première mesure TCP routée](VALIDATION_VIRTUAL_LAB_2026-10-29.md), puis [trois paires de séries sans/avec transfert](VALIDATION_VIRTUAL_SERIES_2026-10-29.md), avec 60 connexions réussies sans échec et comparaisons strictes reproduites. Ces validations portent sur le chemin IPv4 synthétique à noyau partagé, sans goulot configuré. Elles ne valident pas l'échange TLS du groupe, la saturation, une référence WAN ou un gain après intervention.
+
 Les compteurs Linux restent décrits dans [OBSERVATIONS.md](OBSERVATIONS.md), et les essais Windows dans [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md).

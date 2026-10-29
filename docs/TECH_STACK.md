@@ -72,6 +72,8 @@ Le code Go utilise un seul module, avec un `go.mod` à la racine du dépôt, en 
 
 Le script `scripts/go.sh` utilise le SDK local sans modifier le `PATH` du terminal. Le script d'installation conserve les téléchargements interrompus pour permettre leur reprise. La [documentation d'installation Go](https://go.dev/doc/install) couvre également l'installation système sous Linux et Windows.
 
+L'outillage de développement utilise aussi Python 3 et sa bibliothèque standard : tests des scripts, pilote de [séries synthétiques](VIRTUAL_SERIES.md) et [superviseur indépendant du laboratoire](LAB_GUARD.md). Leur première validation utilise Python 3.12.3. Python n'est pas requis pour exécuter les applications Go ; Kotlin reste prévu pour Android et le ML reste non implémenté. Les outils externes `ip`, `ping`, `sysctl` et `tc` sont requis selon l'opération de laboratoire ou de diagnostic décrite par son protocole.
+
 ## Suite immédiate
 
 Les étapes 2.2 à 3.4 livrent le socle, les mesures, les fondations d'identité et un premier échange authentifié Linux. Ed25519 et SHA-256 de la bibliothèque standard sont retenus pour l'identité ; TLS 1.3 mutuel est intégré à l'étape 3.4 et testé en mémoire ; la validation TCP réelle reste à confirmer. Le stockage persistant de clé est activé sous Linux seulement, car les permissions doivent être adaptées au système. La collecte des compteurs et le stockage protégé Windows restent à implémenter ; son exécution native reste à consigner selon [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md).

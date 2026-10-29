@@ -97,7 +97,7 @@ Livrés : certificats publics liés à l'identité, approbation explicite d'un p
 
 ## Étape 4 — Prototype de passerelle
 
-État : démarrée par le diagnostic Linux en lecture seule de l'étape 4.1. Intervention, moteur de files, restauration et évaluation sous charge restent à réaliser.
+État : diagnostic Linux, premiers essais synthétiques sans/avec transfert et contrôles natifs du superviseur disponibles. Moteur de files, restauration de passerelle réelle et évaluation du bénéfice sous charge restent à réaliser.
 
 Valider sur la plateforme choisie la couverture du trafic, les permissions, les mesures de référence et la restauration. Intégrer un moteur de gestion des files adapté à ce système, puis comparer son résultat à une référence connue.
 
@@ -117,7 +117,7 @@ Livrés : application `coopace-gateway inspect`, interfaces, flags de forwarding
 
 ### 4.2 — Scénario de laboratoire et référence initiale
 
-État : préparation livrée et premier scénario Linux virtuel validé en exécution native ICMP/TCP, avec inventaire complet dans cet espace. Des séries synthétiques sans/avec transfert sont validées dans ce laboratoire ; la topologie du foyer, les seuils et les références WAN restent à confirmer.
+État : laboratoire Linux virtuel validé en ICMP/TCP, avec inventaire complet, transfert synthétique, séries sans/avec transfert et contrôles séparés du superviseur. Les paramètres et critères du futur goulot virtuel sont définis ; son implémentation reste à réaliser. La topologie du foyer, ses seuils et les références WAN restent à confirmer.
 
 À partir d'un inventaire réel, choisir la plateforme et décrire le chemin du trafic à couvrir. Consigner la configuration initiale, les mesures au repos/sous charge, les seuils d'acceptation et le mécanisme de restauration à développer et tester avant une première modification. La comparaison doit distinguer le moteur configuré manuellement et le pilotage Coopace.
 
@@ -125,9 +125,9 @@ Livrés pour la préparation : `coopace-gateway inspect --json`, valeurs indispo
 
 Un outil de comparaison hors ligne est aussi livré : `coopace latency compare --idle FICHIER --loaded FICHIER`. Il valide les rapports TCP locaux v1, recalcule leurs statistiques et affiche les différences descriptives avec les échecs. Les tests sur données contrôlées ne remplacent pas la référence réelle et ne démontrent aucun bénéfice réseau.
 
-Un premier [scénario Linux virtuel](VIRTUAL_LAB.md) est maintenant défini : client, passerelle et serveur dans des espaces réseau neufs, routes spécifiques et sondes ICMP pour vérifier le passage IPv4. `scripts/lab-network.sh plan` le prévisualise ; `run` crée le laboratoire et tente de supprimer ses ressources avant de publier l'inventaire. `run-tcp` prépare cinq tentatives d'établissement TCP avec l'agent et une cible temporaire bornée, sans charge de saturation. Les tests de cycle de vie utilisent des outils simulés et le serveur TCP est testé en mémoire ; son essai en boucle locale peut être ignoré faute de permissions. Le [premier essai natif du 29 octobre](VALIDATION_VIRTUAL_LAB_2026-10-29.md) confirme les contrôles ICMP, cinq connexions TCP réussies sans échec et le nettoyage normal. Les mesures sous charge et la restauration d'une passerelle réelle restent à valider.
+Un premier [scénario Linux virtuel](VIRTUAL_LAB.md) est maintenant défini : client, passerelle et serveur dans des espaces réseau neufs, routes spécifiques et sondes ICMP pour vérifier le passage IPv4. `scripts/lab-network.sh plan` le prévisualise ; `run` crée le laboratoire et tente de supprimer ses ressources avant de publier l'inventaire. `run-tcp` prépare cinq tentatives d'établissement TCP avec l'agent et une cible temporaire bornée, sans charge de saturation. Les tests de cycle de vie utilisent des outils simulés et le serveur TCP est testé en mémoire ; son essai en boucle locale peut être ignoré faute de permissions. Le [premier essai natif du 29 octobre](VALIDATION_VIRTUAL_LAB_2026-10-29.md) confirme les contrôles ICMP, cinq connexions TCP réussies sans échec et le nettoyage normal. Les références WAN sous charge et la restauration d'une passerelle réelle restent à valider.
 
-La [revue du 29 octobre 2026](REVIEW_2026-10-29.md) confirme la cohérence du démarrage après correction d'une fenêtre d'interruption du nettoyage. L'essai natif ICMP/TCP est désormais consigné ; la prochaine activité est de préparer une charge contrôlée et des séries répétées. Cette validation de connectivité ne clôture pas l'étape 4.2.
+La [revue du 29 octobre 2026](REVIEW_2026-10-29.md) consigne la correction d'une fenêtre d'interruption du nettoyage avant les essais natifs. Les transferts et séries décrits ci-dessous ont ensuite été réalisés ; ce bilan historique ne remplace pas l'état courant de l'étape 4.2.
 
 Un [premier flux synthétique borné](VIRTUAL_LOAD.md) est maintenant préparé avec `run-load` : un transfert client → serveur de 8 Mio, plafond moyen applicatif de 1 Mio/s, délais de 12s en émission et 15s en réception. Les tests en mémoire et simulés couvrent volumes, cadence, erreurs et nettoyage. Un [premier transfert natif](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) a envoyé et reçu les 8 Mio en environ huit secondes avec nettoyage normal ; le code de sortie exact `0` est également conservé. Il n'applique pas de politique de files et ne garantit pas une congestion du réseau virtuel.
 
@@ -135,7 +135,7 @@ Le mode [`run-series`](VIRTUAL_SERIES.md) associe maintenant trois paires sans/a
 
 Le [protocole de goulot virtuel v1](VIRTUAL_BOTTLENECK.md) fixe maintenant le point d'application, TBF/FIFO à 4 Mbit/s, les paramètres de collecte et les critères distincts de validité technique et de congestion. Il définit le périmètre jetable du nettoyage et les essais de panne requis. Le goulot reste au stade de conception : cycle de vie de la file, statistiques et rapport de réception restent à implémenter et valider. La référence CAKE manuelle viendra après la qualification du goulot.
 
-Le [premier superviseur indépendant](LAB_GUARD.md) prépare maintenant deux contrôles sans file : fin normale et mort forcée du pilote, avec récupération de son descendant avant retrait des espaces possédés. Les tests emploient des espaces simulés et de vrais processus/signaux. Les [deux contrôles natifs du 29 octobre](VALIDATION_LAB_GUARD_2026-10-29.md) sont validés : sortie `0`, un descendant récupéré par contrôle, espaces et réservations retirés. La prochaine sous-étape intègre ce superviseur au cycle de vie de la file ; aucune nouvelle campagne de débit ou latence n'est encore lancée.
+Le [premier superviseur indépendant](LAB_GUARD.md) fournit deux contrôles sans file : fin normale et mort forcée du pilote, avec récupération de son descendant avant retrait des espaces possédés. Les tests emploient des espaces simulés et de vrais processus/signaux. Les [deux contrôles natifs du 29 octobre](VALIDATION_LAB_GUARD_2026-10-29.md) sont validés : sortie `0`, un descendant récupéré par contrôle, espaces et réservations retirés. La prochaine sous-étape intègre ce superviseur au cycle de vie de la file ; aucune campagne de débit ou latence avec file n'est encore lancée.
 
 ## Étape 5 — Décisions coopératives
 

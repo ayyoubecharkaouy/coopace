@@ -8,25 +8,20 @@ Le [périmètre produit](docs/PRODUCT.md) décrit le résultat visé, l'état r�
 
 ## État du projet
 
-**Étape 4.2 en cours : premier laboratoire Linux validé en ICMP et TCP.** La commande dédiée `coopace-gateway inspect` inventorie les informations visibles et leurs limites, sans intervention réseau. L'agent conserve l'échange TLS de l'étape 3.4, testé en mémoire ; son essai TCP réel reste à confirmer. Les exécutables compilent pour Windows ; le diagnostic, les compteurs et le stockage privé d'identité Windows restent à implémenter, et l'exécution native à valider. Aucun moteur de gestion du trafic ni gain d'optimisation réseau n'est démontré.
+**Étape 4.2 en cours : premiers essais natifs du laboratoire Linux validés, gestion des files encore à développer.**
 
-Les [choix techniques](docs/TECH_STACK.md) détaillent les raisons, les limites et les décisions différées.
+| Partie | État vérifié |
+| --- | --- |
+| Agent Linux | État local, compteurs, mesure d'établissement TCP, export/comparaison, identité et consentement persistés. |
+| Groupe à deux pairs | Échange TLS mutuel testé en mémoire ; [essai TCP réel du groupe](docs/GROUP_EXCHANGE.md) encore à confirmer. |
+| Diagnostic passerelle | Lecture seule ; [inventaire complet dans la passerelle virtuelle](docs/VALIDATION_VIRTUAL_LAB_2026-10-29.md), sans validation du réseau du foyer. |
+| Transfert et séries synthétiques | [8 Mio transférés](docs/VALIDATION_VIRTUAL_LOAD_2026-10-29.md), puis [trois paires de séries et 60 connexions réussies](docs/VALIDATION_VIRTUAL_SERIES_2026-10-29.md), sans goulot configuré. |
+| Superviseur de laboratoire | [Fin normale et mort forcée du pilote validées](docs/VALIDATION_LAB_GUARD_2026-10-29.md) ; intégration aux scénarios de mesure encore à réaliser. |
+| Autres plateformes et interfaces | Compilation Windows amd64 vérifiée, exécution native en attente ; Android, tableau de bord et ML non implémentés. |
 
-La [revue du démarrage du 26 octobre 2026](docs/REVIEW_2026-10-26.md) consigne le bilan avant l'étape 4.1. Le [diagnostic de passerelle](docs/GATEWAY_DIAGNOSTIC.md) prépare désormais le scénario de laboratoire, les mesures de référence et la restauration.
+La prochaine sous-étape est le cycle de vie de la file virtuelle sous le [superviseur indépendant](docs/LAB_GUARD.md), selon le [protocole du goulot à 4 Mbit/s](docs/VIRTUAL_BOTTLENECK.md). Aucun mode actuel n'applique de file TBF/CAKE. Les références WAN, la restauration d'une passerelle réelle et tout gain d'optimisation restent à démontrer.
 
-La [préparation de l’étape 4.2](docs/GATEWAY_BASELINE.md) ajoute `coopace-gateway inspect --json` et un modèle d’expérience. Un premier scénario Linux virtuel est validé ; la plateforme du foyer, la topologie réelle et les mesures de référence restent à confirmer avant de clôturer cette étape.
-
-Un [laboratoire Linux virtuel](docs/VIRTUAL_LAB.md) prépare désormais un scénario client → passerelle → serveur, sans raccorder le réseau du foyer. `sh scripts/lab-network.sh plan` permet de le prévisualiser ; `run-tcp` prépare cinq mesures d'établissement TCP vers une cible temporaire bornée. Le cycle de vie est testé avec des outils simulés. Un [premier essai natif du 29 octobre](docs/VALIDATION_VIRTUAL_LAB_2026-10-29.md) confirme les contrôles ICMP, cinq connexions TCP réussies sans échec et le nettoyage normal, sans charge de saturation.
-
-La [revue du 29 octobre 2026](docs/REVIEW_2026-10-29.md) revérifie le socle et consigne le correctif de nettoyage après interruption apporté avant ces essais natifs.
-
-La préparation des essais sous charge ajoute un [transfert synthétique borné](docs/VIRTUAL_LOAD.md) : `run-load` envoie 8 Mio avec un plafond moyen applicatif de 1 Mio/s et exige la réception complète avant nettoyage. Ses tests simulés passent et un [premier transfert natif](docs/VALIDATION_VIRTUAL_LOAD_2026-10-29.md) a envoyé et reçu les 8 Mio en environ huit secondes, avec nettoyage normal. Le code de sortie `0` est conservé.
-
-Le mode [`run-series`](docs/VIRTUAL_SERIES.md) prépare désormais trois paires de séries sans et avec ce trafic, dix tentatives TCP par série. Il vérifie la fenêtre d'écritures de charge, conserve les échecs et utilise le comparateur strict existant. Un [premier essai natif](docs/VALIDATION_VIRTUAL_SERIES_2026-10-29.md) confirme les six séries, 60 connexions réussies sans échec, trois transferts complets et le nettoyage. Ces résultats restent descriptifs, sans saturation ni gain d'optimisation démontré.
-
-La prochaine expérience est définie dans le [protocole de goulot virtuel](docs/VIRTUAL_BOTTLENECK.md) : limitation TBF/FIFO à 4 Mbit/s, critères fixés avant collecte et périmètre de nettoyage. Son implémentation commencera par le nettoyage indépendant et le cycle de vie de la file, avant les mesures. Les modes actuels n'appliquent aucune file.
-
-Un [premier superviseur indépendant](docs/LAB_GUARD.md) prépare le nettoyage après fin normale ou mort forcée du pilote. Il est testé avec de vrais processus et des espaces simulés ; les [deux premiers contrôles natifs](docs/VALIDATION_LAB_GUARD_2026-10-29.md) sont validés, avec récupération des descendants et nettoyage des espaces. L'intégration d'une file de trafic reste à développer.
+Le [périmètre produit](docs/PRODUCT.md) détaille les fonctions et limites ; la [feuille de route](docs/ROADMAP.md) fixe les validations restantes. Les protocoles et comptes rendus sont regroupés dans l'[index documentaire](docs/README.md).
 
 ## Organisation
 
@@ -83,7 +78,7 @@ Les [instructions de développement](docs/DEVELOPMENT.md) détaillent l'installa
 
 La [mesure TCP et le protocole de référence](docs/LATENCY.md) expliquent `coopace latency --target IP:port`, l'export JSON et les comparaisons au repos/sous charge.
 
-`coopace latency compare --idle FICHIER --loaded FICHIER` compare désormais deux rapports TCP locaux, sans lancer de mesure. Il affiche des différences descriptives et conserve les valeurs indisponibles ; les séries réelles au repos/sous charge restent à recueillir.
+`coopace latency compare --idle FICHIER --loaded FICHIER` compare deux rapports TCP locaux, sans lancer de mesure. Il affiche des différences descriptives et conserve les valeurs indisponibles. Des séries synthétiques sont validées dans le laboratoire ; les références WAN et les comparaisons après intervention restent à recueillir.
 
 L'[identité locale et les contrats du groupe](docs/IDENTITY_AND_GROUP.md) décrivent les permissions et les messages. La [procédure du premier échange TLS](docs/GROUP_EXCHANGE.md) explique comment tester deux instances sur un PC Linux avec `identity export-cert` et `group configure/listen/exchange/revoke`. Les compteurs et le stockage privé Windows restent indisponibles.
 
