@@ -150,6 +150,8 @@ Le [superviseur indépendant](LAB_GUARD.md) dispose maintenant de contrôles `ch
 
 Le [cycle de vie d'une file TBF](LAB_QUEUE.md) ajoute `python3 -I scripts/lab-guard.py plan-queue`, également sans privilèges. `check-queue` et `check-queue-crash` exigent en plus `tc`, créent une file dans la passerelle neuve sur un lien désactivé, puis nettoient. Ils utilisent le module voisin `lab_queue.py` ; leurs [premiers contrôles natifs](VALIDATION_LAB_QUEUE_2026-10-29.md) sont validés avec ceux sans file sur la même révision. Les commandes `lab-network.sh` gardent leurs paramètres et leur cycle de vie.
 
+L'[instrumentation du goulot](LAB_INSTRUMENTATION.md) ajoute `coopace-lab-load receive --json` et les modes `check-queue-stats` / `check-queue-stats-crash`. Le test Go `TestLoopbackSyntheticTransfer` vérifie désormais aussi la sortie JSON de réception et doit passer sans SKIP pour sa validation native. Les tests Python couvrent les compteurs et jauges ; leur validation avec `tc` réel reste à consigner. La collecte périodique et la campagne avec goulot actif restent à développer.
+
 ## Sous Windows
 
 Un exécutable Windows x64 est disponible dans `.local/bin/coopace-windows-amd64.exe`, accompagné de son empreinte SHA-256. La [procédure Windows](WINDOWS_VALIDATION.md) explique comment le compiler depuis Linux et le tester sur un PC Windows sans installer Go.

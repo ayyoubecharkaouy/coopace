@@ -37,6 +37,8 @@ Le [superviseur indépendant du laboratoire](LAB_GUARD.md) prépare ce nettoyage
 
 Le [cycle de vie de la file TBF](LAB_QUEUE.md) est implémenté sous ce superviseur : prévisualisation, création et relecture sur lien désactivé, puis nettoyage après fin normale ou mort forcée du pilote. Les [premiers contrôles natifs](VALIDATION_LAB_QUEUE_2026-10-29.md) sont validés, avec revérification des modes sans file et paramètres TBF effectifs conformes. La campagne avec trafic et goulot n'est pas encore implémentée.
 
+L'[instrumentation de réception et de file](LAB_INSTRUMENTATION.md) définit le JSON optionnel du récepteur, les compteurs cumulés, les jauges instantanées et les différences indisponibles. Le code et les tests en mémoire ou simulés sont livrés ; leur validation native reste à consigner avant intégration à la campagne active.
+
 ## Bilans datés
 
 La [revue du 29 octobre 2026](REVIEW_2026-10-29.md) revérifie le projet depuis le démarrage, consigne le correctif de nettoyage du laboratoire et définit les validations nécessaires pour poursuivre l'étape 4.2.

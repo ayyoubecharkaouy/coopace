@@ -28,6 +28,13 @@ def raw(value):
     return json.dumps(value).encode()
 
 
+def statistics_row():
+    value = tbf()
+    value[0].update({"bytes": 12345, "packets": 15, "drops": 2, "overlimits": 100,
+                     "requeues": 3, "backlog": 4096, "qlen": 4})
+    return value
+
+
 class Owner:
     def __init__(self, timeout=2):
         self.deadline = time.monotonic() + timeout
@@ -39,6 +46,40 @@ class Owner:
 
 
 class QueueParsingTests(unittest.TestCase):
+    def test_statistics_keep_counters_and_instantaneous_gauges_distinct(self):
+        value = queue.statistics(raw(statistics_row()))
+        self.assertEqual(value, {"counters": {"bytes": 12345, "packets": 15, "drops": 2,
+                                               "overlimits": 100, "requeues": 3},
+                                 "backlog_bytes": 4096, "queued_packets": 4})
+        later = deepcopy(statistics_row())
+        later[0]["bytes"] += 10
+        later[0]["backlog"] = 0
+        delta = queue.statistics_delta(value, queue.statistics(raw(later)))
+        self.assertTrue(delta["available"])
+        self.assertEqual(delta["counters"]["bytes"], 10)
+        self.assertNotIn("backlog_bytes", delta["counters"])
+
+    def test_missing_negative_fractional_or_oversized_statistics_are_rejected(self):
+        for field in (*queue.COUNTERS, "backlog", "qlen"):
+            for invalid in (None, False, -1, 1.5, 2**64):
+                with self.subTest(field=field, invalid=invalid):
+                    value = statistics_row()
+                    value[0][field] = invalid
+                    with self.assertRaises(queue.QueueError):
+                        queue.statistics(raw(value))
+            value = statistics_row()
+            del value[0][field]
+            with self.assertRaises(queue.QueueError):
+                queue.statistics(raw(value))
+
+    def test_counter_decrease_is_unavailable_without_wrapping_or_zeroing(self):
+        initial = queue.statistics(raw(statistics_row()))
+        for field in queue.COUNTERS:
+            with self.subTest(field=field):
+                later = deepcopy(initial)
+                later["counters"][field] -= 1
+                result = queue.statistics_delta(initial, later)
+                self.assertEqual(result, {"available": False, "reason": "counter_decreased", "counters": None})
     def test_noqueue_only_on_expected_root(self):
         valid = [{"kind": "noqueue", "handle": "0:", "root": True}]
         self.assertEqual(queue.initial_qdisc(raw(valid)), valid)

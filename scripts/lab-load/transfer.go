@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"net"
 	"runtime"
@@ -127,47 +126,4 @@ func send(ctx context.Context, o options, dial func(context.Context, string, str
 	report.ElapsedMS = float64(finished.Sub(started)) / float64(time.Millisecond)
 	report.AverageBytesPerSecond = float64(report.WrittenBytes) / finished.Sub(started).Seconds()
 	return report, nil
-}
-
-// receive accepts one connection, discards at most expected+1 synthetic bytes,
-// and requires EOF with exactly the expected length. It stores no payload.
-func receive(ctx context.Context, o options, listen func(context.Context, string, string) (net.Listener, error), ready func(string) error) (int64, error) {
-	if err := o.validate(false); err != nil {
-		return 0, err
-	}
-	if err := ctx.Err(); err != nil {
-		return 0, err
-	}
-	listener, err := listen(ctx, "tcp4", o.address)
-	if err != nil {
-		return 0, err
-	}
-	defer listener.Close()
-	stopListener := context.AfterFunc(ctx, func() { listener.Close() })
-	defer stopListener()
-	if err := ready(listener.Addr().String()); err != nil {
-		return 0, err
-	}
-	connection, err := listener.Accept()
-	if err != nil {
-		return 0, err
-	}
-	defer connection.Close()
-	listener.Close()
-	stop, err := closeOnCancel(ctx, connection)
-	if err != nil {
-		return 0, err
-	}
-	defer stop()
-	received, err := io.Copy(io.Discard, io.LimitReader(connection, o.bytes+1))
-	if err != nil {
-		return received, err
-	}
-	if err := ctx.Err(); err != nil {
-		return received, err
-	}
-	if received != o.bytes {
-		return received, fmt.Errorf("volume reçu %d, attendu %d", received, o.bytes)
-	}
-	return received, nil
 }

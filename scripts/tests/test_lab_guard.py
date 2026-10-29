@@ -38,6 +38,7 @@ class FakeNamespaces(guard.Namespaces):
         self.links_created = False
         self.queue_active = False
         self.queue_calls = []
+        self.statistic_reads = 0
 
     def identity(self, name):
         path = self.directory / name
@@ -119,7 +120,8 @@ class FakeNamespaces(guard.Namespaces):
             self.links_created = True
             return b""
         assert args[:5] == [self.ip, "netns", "exec", gateway, "unused-tc"]
-        if args[5:] == ["-j", "-r", "qdisc", "show", "dev", "wan"]:
+        with_statistics = args[5:] == ["-j", "-s", "-r", "qdisc", "show", "dev", "wan"]
+        if args[5:] == ["-j", "-r", "qdisc", "show", "dev", "wan"] or with_statistics:
             if not self.queue_active:
                 rows = ([{"kind": "fq_codel", "handle": "0:", "root": True}]
                         if scenario == "queue_bad_initial" else [])
@@ -129,6 +131,21 @@ class FakeNamespaces(guard.Namespaces):
                 rows = [{"kind": "tbf", "handle": "10:", "root": True,
                          "options": {"rate": 999 if scenario == "queue_wrong_rate" else 500000,
                                      "burst": 65536, "limit": 131072}}]
+                if with_statistics:
+                    self.statistic_reads += 1
+                    rows[0].update({"bytes": 0, "packets": 0, "drops": 0, "overlimits": 0,
+                                    "requeues": 0, "backlog": 0, "qlen": 0})
+                    if scenario in ("statistics_positive", "statistics_reset"):
+                        rows[0].update({"bytes": 4096*self.statistic_reads,
+                                        "packets": 4*self.statistic_reads,
+                                        "overlimits": 8*self.statistic_reads,
+                                        "backlog": 100//self.statistic_reads, "qlen": 1})
+                    if scenario == "statistics_reset" and self.statistic_reads == 2:
+                        rows[0]["bytes"] = 1
+                    if scenario == "statistics_missing":
+                        rows[0].pop("drops")
+                    if scenario == "statistics_invalid":
+                        rows[0]["packets"] = False
             return json.dumps(rows).encode()
         assert args[5:] == ["qdisc", "add", "dev", "wan", "root", "handle", "10:",
                             "tbf", "rate", "4mbit", "burst", "65536", "limit", "131072"]
@@ -144,7 +161,7 @@ class FakeNamespaces(guard.Namespaces):
 backend = FakeNamespaces()
 try:
     timeout = 0.7 if scenario in ("deadline", "no_readiness") else 5
-    queue = guard.lab_queue.QueueCheck(backend, "unused-tc") if mode.startswith("check-queue") else None
+    queue = guard.lab_queue.QueueCheck(backend, "unused-tc", collect_statistics="stats" in mode) if mode.startswith("check-queue") else None
     result = guard.run_check(mode, backend, timeout=timeout, tempdir=root, queue_check=queue)
     print(json.dumps(result))
 except guard.Interrupted as error:
@@ -391,6 +408,46 @@ class GuardTests(unittest.TestCase):
                     self.assertFalse(any("tbf" in args for args in calls))
                 for record in (directory / "proc").glob("*"):
                     self.assertFalse(Path("/proc", record.name).exists(), result.stderr)
+
+    def test_statistics_snapshots_preserve_gauges_and_counter_resets(self):
+        for scenario, mode in (("complete", "check-queue-stats-crash"),
+                               ("statistics_positive", "check-queue-stats"),
+                               ("statistics_reset", "check-queue-stats")):
+            with self.subTest(scenario=scenario):
+                directory = self.root/scenario
+                directory.mkdir()
+                result = subprocess.run([sys.executable, "-I", "-c", HARNESS,
+                                         str(SOURCE), str(directory), scenario, mode],
+                                        capture_output=True, text=True, timeout=8)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                report = json.loads(result.stdout)
+                self.assertEqual(report["kind"], "lab_queue_statistics_check")
+                readings = report["queue"]
+                before, after = readings["after_add"], readings["after_driver_exit"]
+                self.assertGreaterEqual(after["elapsed_since_start_ms"], before["elapsed_since_start_ms"])
+                self.assertGreaterEqual(before["read_duration_ms"], 0)
+                self.assertEqual(readings["statistics_delta"]["available"], scenario != "statistics_reset")
+                if scenario == "statistics_positive":
+                    self.assertEqual(readings["statistics_delta"]["counters"]["bytes"], 4096)
+                    self.assertEqual(after["statistics"]["backlog_bytes"], 50)
+                if scenario == "statistics_reset":
+                    self.assertIsNone(readings["statistics_delta"]["counters"])
+                    self.assertEqual(after["statistics"]["counters"]["bytes"], 1)
+                self.assertEqual(list((directory/"namespaces").iterdir()), [])
+                for record in (directory/"proc").glob("*"):
+                    self.assertFalse(Path("/proc", record.name).exists())
+
+    def test_missing_or_invalid_statistics_stop_with_cleanup(self):
+        for scenario in ("statistics_missing", "statistics_invalid"):
+            with self.subTest(scenario=scenario):
+                directory = self.root/scenario
+                directory.mkdir()
+                result = subprocess.run([sys.executable, "-I", "-c", HARNESS,
+                                         str(SOURCE), str(directory), scenario, "check-queue-stats"],
+                                        capture_output=True, text=True, timeout=8)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertEqual(result.stdout, "")
+                self.assertEqual(list((directory/"namespaces").iterdir()), [])
 
 
 if __name__ == "__main__":

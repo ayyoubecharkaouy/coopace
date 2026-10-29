@@ -69,6 +69,7 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer, transport
 	}
 	o := options{}
 	announceStart := false
+	receiveJSON := false
 	flags := flag.NewFlagSet(args[0], flag.ContinueOnError)
 	flags.SetOutput(stderr)
 	flags.Int64Var(&o.bytes, "bytes", defaultBytes, "volume synthétique exact, de 1 à 33554432 octets")
@@ -78,6 +79,7 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer, transport
 		flags.Int64Var(&o.rate, "rate", defaultRate, "plafond applicatif en octets/s, de 65536 à 4194304")
 		flags.DurationVar(&o.duration, "duration", 12*time.Second, "durée maximale, de 1s à 30s")
 	} else {
+		flags.BoolVar(&receiveJSON, "json", false, "publier le rapport de réception après READY et réception complète")
 		flags.StringVar(&o.address, "listen", "", "écoute IPv4:port privée ou de boucle locale, obligatoire")
 		flags.DurationVar(&o.duration, "duration", 15*time.Second, "durée maximale, de 1s à 30s")
 	}
@@ -114,15 +116,18 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer, transport
 		}
 		return 0
 	}
-	received, err := receive(ctx, o, transport.listen, func(address string) error {
+	report, err := receive(ctx, o, transport.listen, func(address string) error {
 		_, err := fmt.Fprintf(stdout, "READY %s\n", address)
 		return err
 	})
+	if err == nil && receiveJSON {
+		err = json.NewEncoder(stdout).Encode(report)
+	}
 	if err != nil {
-		fmt.Fprintf(stderr, "Échec de la réception synthétique (%d octets lus) : %v\n", received, err)
+		fmt.Fprintf(stderr, "Échec de la réception synthétique (%d octets lus) : %v\n", report.ReceivedBytes, err)
 		return 1
 	}
-	fmt.Fprintf(stderr, "Réception synthétique terminée : %d octets reçus.\n", received)
+	fmt.Fprintf(stderr, "Réception synthétique terminée : %d octets reçus.\n", report.ReceivedBytes)
 	return 0
 }
 

@@ -12,6 +12,7 @@ LIMIT = 64 * 1024
 RATE = 500_000  # tc JSON reports bytes/s; requested 4mbit is 4,000,000 bits/s.
 BURST = 65_536
 QUEUE_LIMIT = 131_072
+COUNTERS = ("bytes", "packets", "drops", "overlimits", "requeues")
 
 
 class QueueError(Exception):
@@ -133,12 +134,35 @@ def configured_qdisc(raw):
     return rows
 
 
+def statistics(raw):
+    row = configured_qdisc(raw)[0]
+    for field in (*COUNTERS, "backlog", "qlen"):
+        value = row.get(field)
+        if type(value) is not int or not 0 <= value <= 2**64 - 1:
+            raise QueueError(f"Statistique TBF {field} absente ou invalide.")
+    return {"counters": {field: row[field] for field in COUNTERS},
+            "backlog_bytes": row["backlog"], "queued_packets": row["qlen"]}
+
+
+def statistics_delta(before, after):
+    # Called only for two validated readings of the same owned TBF, with no
+    # replacement between them. A decreasing counter invalidates the window;
+    # backlog/qlen are instantaneous gauges and may decrease normally.
+    if any(after["counters"][field] < before["counters"][field] for field in COUNTERS):
+        return {"available": False, "reason": "counter_decreased", "counters": None}
+    return {"available": True, "reason": None,
+            "counters": {field: after["counters"][field] - before["counters"][field]
+                         for field in COUNTERS}}
+
+
 class QueueCheck:
-    def __init__(self, namespaces, tc):
+    def __init__(self, namespaces, tc, collect_statistics=False):
         self.namespaces, self.tc = namespaces, tc
         self.owner = None
         self.gateway = None
         self.server = None
+        self.collect_statistics = collect_statistics
+        self.statistics_started_ns = None
 
     def execute(self, args):
         self.owner.check()
@@ -150,13 +174,21 @@ class QueueCheck:
         self.owner.check()
         return value
 
-    def read(self):
+    def read(self, include_statistics=False):
         # -r is intentional: TBF omits limit without raw output. Avoid -d,
         # which turns burst into a formatted size/cell string on some versions.
+        flags = ["-j", "-s", "-r"] if include_statistics else ["-j", "-r"]
+        started_ns = time.monotonic_ns()
         raw = self.execute([self.namespaces.ip, "netns", "exec", self.gateway,
-                            self.tc, "-j", "-r", "qdisc", "show", "dev", "wan"])
-        return {"collected_at": datetime.now(timezone.utc).isoformat(),
-                "qdiscs": document(raw)}
+                            self.tc, *flags, "qdisc", "show", "dev", "wan"])
+        finished_ns = time.monotonic_ns()
+        result = {"collected_at": datetime.now(timezone.utc).isoformat(),
+                  "qdiscs": document(raw)}
+        if include_statistics:
+            result["statistics"] = statistics(raw)
+            result["elapsed_since_start_ms"] = (finished_ns - self.statistics_started_ns) / 1_000_000
+            result["read_duration_ms"] = (finished_ns - started_ns) / 1_000_000
+        return result
 
     def links(self, namespace):
         return document(self.execute([self.namespaces.ip, "-n", namespace,
@@ -164,6 +196,7 @@ class QueueCheck:
 
     def prepare(self, owner):
         self.owner = owner
+        self.statistics_started_ns = time.monotonic_ns()
         self.gateway, self.server = owner.owned[1][0], owner.owned[2][0]
         for namespace in (self.gateway, self.server):
             rows = self.links(namespace)
@@ -194,9 +227,12 @@ class QueueCheck:
         self.verify("after_add")
 
     def verify(self, label):
-        reading = self.read()
+        reading = self.read(self.collect_statistics)
         configured_qdisc(json.dumps(reading["qdiscs"]).encode())
         self.report[label] = reading
+        if self.collect_statistics and label == "after_driver_exit":
+            self.report["statistics_delta"] = statistics_delta(
+                self.report["after_add"]["statistics"], reading["statistics"])
         self.owner.journal("queue_verified")
 
 
@@ -205,6 +241,7 @@ def plan():
             "Un lien veth wan -> eth0 du serveur, laissé DOWN, sans adresse ni route.\n"
             "Lire l'état initial vide ou noqueue, ajouter TBF 10: à 4mbit, burst 65536, limit 131072.\n"
             "check-queue : fin normale ; check-queue-crash : SIGKILL du pilote.\n"
+            "check-queue-stats / check-queue-stats-crash ajoutent deux lectures de statistiques et leurs différences.\n"
             "Relire TBF après fin du pilote, récupérer les processus, puis supprimer les espaces.\n"
             "Aucun trafic de mesure ; aucune modification du réseau physique.\n"
             "Le mode plan-queue ne crée aucune ressource et n'exige aucun privilège.")

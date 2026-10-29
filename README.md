@@ -21,6 +21,8 @@ Le [périmètre produit](docs/PRODUCT.md) décrit le résultat visé, l'état r�
 
 Le [cycle de vie de la file virtuelle](docs/LAB_QUEUE.md) est implémenté sous le superviseur : création et relecture de TBF à 4 Mbit/s sur un lien désactivé, puis nettoyage après fin normale ou mort forcée du pilote. Les [quatre contrôles natifs](docs/VALIDATION_LAB_QUEUE_2026-10-29.md) sont validés. Les scénarios de mesure existants restent sans file ; les références WAN, la restauration d'une passerelle réelle et tout gain d'optimisation restent à démontrer.
 
+L'[instrumentation du débit reçu et des statistiques TBF](docs/LAB_INSTRUMENTATION.md) est maintenant implémentée et testée en mémoire ou avec des outils simulés. Sa validation native précède l'intégration au chemin actif et la campagne avec goulot.
+
 Le [périmètre produit](docs/PRODUCT.md) détaille les fonctions et limites ; la [feuille de route](docs/ROADMAP.md) fixe les validations restantes. Les protocoles et comptes rendus sont regroupés dans l'[index documentaire](docs/README.md).
 
 ## Organisation

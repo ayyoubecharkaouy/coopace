@@ -14,12 +14,15 @@ sh scripts/go.sh build -o .local/bin/coopace-lab-load ./scripts/lab-load
 | `send --rate` | Plafond moyen applicatif de 65 536 à 4 194 304 octets/s ; défaut : 1 048 576 (1 Mio/s). |
 | `--duration` | Délai de 1s à 30s ; défaut : 12s en émission et 15s en réception. |
 | `send --announce-start` | Option du pilote de séries : annonce une ligne `STARTED` après la première écriture, avant le rapport JSON final. Désactivée par défaut. |
+| `receive --json` | Après READY et réception exacte suivie d'EOF, publier le rapport local `synthetic_tcp_receive`. Désactivée par défaut. |
 
 Le volume divisé par le débit demandé doit être strictement inférieur au délai d'émission. Le délai couvre la connexion, les écritures et leur cadence ; en réception, il couvre aussi l'attente du premier client et de la fin du flux. SIGINT, SIGTERM et SIGHUP annulent le contexte et ferment les sockets. Ce délai applicatif ne constitue pas un superviseur indépendant.
 
 Le bloc synthétique fait au plus 16 Kio. L'émetteur cadence les écritures selon leur cumul et attend aussi après le dernier bloc. Le premier bloc peut partir immédiatement ; un retard de traitement peut être suivi d'écritures rapprochées. Le plafond porte sur la moyenne des écritures et pauses, sans garantir un plafond instantané sur le lien. Le noyau peut tamponner les données ; les en-têtes réseau ne sont pas comptés. Cet outil ne configure pas les files de la passerelle.
 
 Le récepteur annonce `READY IP:port` sur stdout après ouverture de l'écoute. Il ferme l'écoute après la première connexion et lit au plus le volume attendu plus un octet, ce qui permet de rejeter un dépassement. Un volume incomplet, un dépassement, une erreur ou une expiration retourne `1`. Après réception exacte et fin du flux, il retourne `0` et inscrit le comptage sur stderr. Une annonce de disponibilité peut donc précéder un échec ultérieur.
+
+Avec `receive --json`, un rapport de réception est ajouté après la ligne READY ; une erreur ne publie pas de JSON de réussite. Il conserve le volume, les premières/dernières lectures, la fin EOF et deux durées monotones : durée totale et fenêtre première lecture → EOF. Le débit utile reçu utilise cette seconde fenêtre et reste `null` si elle est nulle. Le format, les limites de précision et la validation native encore à consigner sont détaillés dans [LAB_INSTRUMENTATION.md](../../docs/LAB_INSTRUMENTATION.md). Le code du récepteur est séparé dans `receive.go` ; les outils existants gardent le format par défaut sans cette option.
 
 L'émetteur publie un objet JSON local v1 seulement si son envoi a abouti. Le format `synthetic_tcp_send` contient la cible, les versions et plateforme, le volume demandé et écrit, le plafond demandé, la taille du bloc, le délai, les horodatages UTC, la durée monotone en millisecondes et la moyenne en octets/s. Ce rapport décrit les écritures côté émetteur ; il ne prouve pas à lui seul la réception distante. Une erreur réseau retourne `1`, sans JSON de réussite ; des arguments invalides retournent `2` sans accès réseau. Les erreurs et détails vont sur stderr.
 

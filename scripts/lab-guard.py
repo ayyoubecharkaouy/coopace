@@ -333,7 +333,7 @@ def run_check(mode, namespaces, *, timeout=180, tempdir=None, queue_check=None):
                 "workspace": str(guard.workspace), "cleanup_verified": True,
                 "queue_applied": queue_check is not None, "traffic_generated": False}
         if queue_check is not None:
-            result["kind"] = "lab_queue_check"
+            result["kind"] = "lab_queue_statistics_check" if queue_check.collect_statistics else "lab_queue_check"
             result["queue"] = guard.queue_report
         return result
     finally:
@@ -359,7 +359,8 @@ def preflight():
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", nargs="?",
-                        choices=("plan", "check", "check-crash", "plan-queue", "check-queue", "check-queue-crash"),
+                        choices=("plan", "check", "check-crash", "plan-queue", "check-queue", "check-queue-crash",
+                                 "check-queue-stats", "check-queue-stats-crash"),
                         default="plan")
     args = parser.parse_args(argv)
     if args.mode == "plan":
@@ -375,11 +376,11 @@ def main(argv=None):
     try:
         namespaces = preflight()
         queue_check = None
-        if args.mode in ("check-queue", "check-queue-crash"):
+        if args.mode.startswith("check-queue"):
             tc = shutil.which("tc")
             if not tc:
                 raise GuardError("Outil tc absent ; aucun espace créé.")
-            queue_check = lab_queue.QueueCheck(namespaces, tc)
+            queue_check = lab_queue.QueueCheck(namespaces, tc, collect_statistics="stats" in args.mode)
         result = run_check(args.mode, namespaces, queue_check=queue_check)
         print(json.dumps(result, ensure_ascii=False))
         return 0

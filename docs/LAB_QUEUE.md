@@ -63,4 +63,6 @@ Chaque contrôle avec file doit sortir avec `0` et publier un unique JSON local 
 
 ## Suite
 
-Le [premier contrôle natif du cycle de vie](VALIDATION_LAB_QUEUE_2026-10-29.md) est validé. La prochaine sous-étape prépare le rapport du récepteur et les statistiques de file. L'intégration à la topologie active, le contrôle ICMP, les séries avec goulot puis la référence CAKE manuelle restent à réaliser. L'étape 4.2 reste ouverte ; aucun bénéfice réseau ni restauration de passerelle réelle n'est revendiqué.
+Le [premier contrôle natif du cycle de vie](VALIDATION_LAB_QUEUE_2026-10-29.md) est validé. Le [rapport optionnel de réception et les statistiques de file](LAB_INSTRUMENTATION.md) sont maintenant implémentés et testés en mémoire ou avec des outils simulés ; leur validation native reste à consigner. Les nouveaux modes `check-queue-stats` et `check-queue-stats-crash` ajoutent deux lectures `tc -j -s -r` et des différences de compteurs, avec un type de rapport distinct. Les contrôles sans statistiques gardent leur sortie précédente.
+
+L'intégration à la topologie active, le contrôle ICMP, la collecte périodique, les séries avec goulot puis la référence CAKE manuelle restent à réaliser. L'étape 4.2 reste ouverte ; aucun bénéfice réseau ni restauration de passerelle réelle n'est revendiqué.

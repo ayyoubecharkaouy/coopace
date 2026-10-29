@@ -120,8 +120,8 @@ func TestReceiverRequiresExactVolumeAndEOF(t *testing.T) {
 			received, err := receive(ctx, o,
 				func(context.Context, string, string) (net.Listener, error) { return listener, nil },
 				func(address string) error { ready = address; return nil })
-			if received != int64(size) || (err == nil) != (size == 257) || ready != o.address {
-				t.Fatalf("received=%d err=%v ready=%q", received, err, ready)
+			if received.ReceivedBytes != int64(size) || (err == nil) != (size == 257) || ready != o.address {
+				t.Fatalf("received=%d err=%v ready=%q", received.ReceivedBytes, err, ready)
 			}
 			select {
 			case <-listener.closed:
@@ -223,6 +223,7 @@ func TestCLIRejectsInvalidOptionsBeforeNetworkIO(t *testing.T) {
 		{"send", "--target", "127.0.0.1:46002", "--duration", "8s"},
 		{"receive", "--listen", "127.0.0.1:46002", "--duration", "31s"},
 		{"send", "--target", "127.0.0.1:46002", "extra"},
+		{"send", "--target", "127.0.0.1:46002", "--json"},
 	} {
 		var stdout, stderr bytes.Buffer
 		transport := network{
@@ -303,9 +304,15 @@ func TestLoopbackSyntheticTransfer(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 	done := make(chan error, 1)
+	var receiverOutput, receiverErrors bytes.Buffer
 	go func() {
-		_, err := receive(ctx, o, func(context.Context, string, string) (net.Listener, error) { return listener, nil }, func(string) error { return nil })
-		done <- err
+		code := run(ctx, []string{"receive", "--listen", o.address, "--bytes", strconv.FormatInt(o.bytes, 10), "--duration", "2s", "--json"},
+			&receiverOutput, &receiverErrors, network{listen: func(context.Context, string, string) (net.Listener, error) { return listener, nil }})
+		if code != 0 {
+			done <- errors.New(receiverErrors.String())
+		} else {
+			done <- nil
+		}
 	}()
 	report, err := send(ctx, o, (&net.Dialer{}).DialContext, nil)
 	if err != nil || report.WrittenBytes != o.bytes {
@@ -316,6 +323,12 @@ func TestLoopbackSyntheticTransfer(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+		receipt := assertReceiptJSON(t, receiverOutput.String(), o.address, o.bytes)
+		raw, err := json.Marshal(receipt)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Logf("RECEIVE_REPORT %s", raw)
 	case <-ctx.Done():
 		t.Fatal("receiver did not complete")
 	}
