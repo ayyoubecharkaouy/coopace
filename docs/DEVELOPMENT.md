@@ -144,6 +144,8 @@ Le mode [`run-load`](VIRTUAL_LOAD.md) demande les mêmes privilèges et le binai
 
 Le mode [`run-series`](VIRTUAL_SERIES.md) prépare maintenant la collecte simultanée et répétée, avec Python 3 en exécution pour ce seul pilote de laboratoire. Recompiler les trois binaires `coopace`, `coopace-lab-tcp` et `coopace-lab-load` avant l'essai, selon le protocole. La suite Python vérifie l'ordre, la conservation des échecs, le recouvrement temporel et les processus locaux sans réseau. Un [premier essai natif](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) est consigné, avec 60 connexions réussies sans échec et les trois recouvrements vérifiés. Le JSON groupé contient les six exports de latence et trois rapports de charge ; il n'est pas une entrée directe de `latency compare`.
 
+Le [protocole de goulot virtuel](VIRTUAL_BOTTLENECK.md) prépare l'expérience suivante, avec une file TBF/FIFO à 4 Mbit/s et des critères fixés avant collecte. Ce document n'est pas une configuration exécutable. Les futurs délais allongés ne doivent pas modifier les paramètres des modes existants ; le nettoyage indépendant et les tests du cycle de vie de la file précèdent cette nouvelle collecte.
+
 ## Sous Windows
 
 Un exécutable Windows x64 est disponible dans `.local/bin/coopace-windows-amd64.exe`, accompagné de son empreinte SHA-256. La [procédure Windows](WINDOWS_VALIDATION.md) explique comment le compiler depuis Linux et le tester sur un PC Windows sans installer Go.

@@ -24,6 +24,8 @@ La préparation des essais sous charge ajoute un [transfert synthétique borné]
 
 Le mode [`run-series`](docs/VIRTUAL_SERIES.md) prépare désormais trois paires de séries sans et avec ce trafic, dix tentatives TCP par série. Il vérifie la fenêtre d'écritures de charge, conserve les échecs et utilise le comparateur strict existant. Un [premier essai natif](docs/VALIDATION_VIRTUAL_SERIES_2026-10-29.md) confirme les six séries, 60 connexions réussies sans échec, trois transferts complets et le nettoyage. Ces résultats restent descriptifs, sans saturation ni gain d'optimisation démontré.
 
+La prochaine expérience est définie dans le [protocole de goulot virtuel](docs/VIRTUAL_BOTTLENECK.md) : limitation TBF/FIFO à 4 Mbit/s, critères fixés avant collecte et périmètre de nettoyage. Son implémentation commencera par le nettoyage indépendant et le cycle de vie de la file, avant les mesures. Les modes actuels n'appliquent aucune file.
+
 ## Organisation
 
 ```text

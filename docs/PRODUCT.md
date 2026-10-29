@@ -71,6 +71,8 @@ Le [laboratoire virtuel de développement](VIRTUAL_LAB.md) prépare un chemin IP
 
 Le [générateur de trafic synthétique](VIRTUAL_LOAD.md) prépare ensuite un transfert de 8 Mio, limité en débit moyen et en durée. Un [premier transfert natif](VALIDATION_VIRTUAL_LOAD_2026-10-29.md) confirme les 8 Mio envoyés et reçus et le nettoyage normal ; le code de sortie exact `0` est conservé dans le compte rendu local. Le mode [`run-series`](VIRTUAL_SERIES.md) prépare la mesure de latence simultanée et trois paires de séries, avec contrôle du recouvrement et conservation des échecs. Un [premier essai natif](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) confirme 60 réussites sans échec, les trois transferts, le recouvrement et le nettoyage normal. Ce trafic de laboratoire ne constitue pas une référence WAN ni une saturation démontrée.
 
+Le [protocole du prochain goulot virtuel](VIRTUAL_BOTTLENECK.md) définit TBF/FIFO à 4 Mbit/s, les critères de congestion et le nettoyage à développer. Il n'ajoute pas encore de gestion du trafic au produit : implémentation, collecte avec file puis référence CAKE manuelle restent à valider.
+
 ## Références et mesures indispensables
 
 | Expérience | Comparaisons nécessaires |

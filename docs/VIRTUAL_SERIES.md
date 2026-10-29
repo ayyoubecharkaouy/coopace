@@ -89,4 +89,4 @@ python3 -B -m unittest discover -s scripts/tests -p 'test_*.py' -v
 sh scripts/go.sh test -count=1 -v ./scripts/lab-load
 ```
 
-La [feuille de route](ROADMAP.md) garde l'étape 4.2 ouverte. Le premier essai natif et son analyse descriptive sont [consignés](VALIDATION_VIRTUAL_SERIES_2026-10-29.md). Une référence avec goulot contrôlé, les critères pertinents et une restauration indépendante restent nécessaires avant de piloter une politique de files.
+La [feuille de route](ROADMAP.md) garde l'étape 4.2 ouverte. Le premier essai natif et son analyse descriptive sont [consignés](VALIDATION_VIRTUAL_SERIES_2026-10-29.md). Le [protocole de goulot contrôlé](VIRTUAL_BOTTLENECK.md) définit maintenant la prochaine référence et ses critères ; son implémentation, sa collecte et le nettoyage indépendant restent à réaliser avant de piloter une politique de files.

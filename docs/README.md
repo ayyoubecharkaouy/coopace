@@ -31,6 +31,8 @@ Le [premier transfert synthétique borné](VIRTUAL_LOAD.md) définit ensuite `ru
 
 Les [séries sans et avec transfert](VIRTUAL_SERIES.md) définissent `run-series`, trois paires de mesures, leur ordre, le contrôle du recouvrement et le rapport groupé. Un [premier essai natif et son analyse descriptive](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) sont consignés : 60 réussites sans échec, trois transferts complets et recouvrement conforme.
 
+Le [protocole de goulot virtuel contrôlé](VIRTUAL_BOTTLENECK.md) fixe la prochaine expérience : TBF/FIFO à 4 Mbit/s dans la passerelle neuve, critères de congestion, mesures à compléter et nettoyage indépendant à développer. Il s'agit d'une conception ; aucune file n'est encore appliquée.
+
 ## Bilans datés
 
 La [revue du 29 octobre 2026](REVIEW_2026-10-29.md) revérifie le projet depuis le démarrage, consigne le correctif de nettoyage du laboratoire et définit les validations nécessaires pour poursuivre l'étape 4.2.
