@@ -19,7 +19,7 @@ Le [périmètre produit](docs/PRODUCT.md) décrit le résultat visé, l'état r�
 | Superviseur de laboratoire | [Fin normale et mort forcée du pilote validées](docs/VALIDATION_LAB_GUARD_2026-10-29.md) ; intégration aux scénarios de mesure encore à réaliser. |
 | Autres plateformes et interfaces | Compilation Windows amd64 vérifiée, exécution native en attente ; Android, tableau de bord et ML non implémentés. |
 
-Le [cycle de vie de la file virtuelle](docs/LAB_QUEUE.md) est maintenant implémenté et testé avec des outils simulés sous le superviseur : création et relecture de TBF à 4 Mbit/s sur un lien désactivé, puis nettoyage après fin normale ou mort forcée du pilote. Sa validation native reste à effectuer. Les scénarios de mesure existants restent sans file ; les références WAN, la restauration d'une passerelle réelle et tout gain d'optimisation restent à démontrer.
+Le [cycle de vie de la file virtuelle](docs/LAB_QUEUE.md) est implémenté sous le superviseur : création et relecture de TBF à 4 Mbit/s sur un lien désactivé, puis nettoyage après fin normale ou mort forcée du pilote. Les [quatre contrôles natifs](docs/VALIDATION_LAB_QUEUE_2026-10-29.md) sont validés. Les scénarios de mesure existants restent sans file ; les références WAN, la restauration d'une passerelle réelle et tout gain d'optimisation restent à démontrer.
 
 Le [périmètre produit](docs/PRODUCT.md) détaille les fonctions et limites ; la [feuille de route](docs/ROADMAP.md) fixe les validations restantes. Les protocoles et comptes rendus sont regroupés dans l'[index documentaire](docs/README.md).
 

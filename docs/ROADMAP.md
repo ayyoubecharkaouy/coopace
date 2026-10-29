@@ -137,7 +137,7 @@ Le [protocole de goulot virtuel v1](VIRTUAL_BOTTLENECK.md) fixe maintenant le po
 
 Le [premier superviseur indépendant](LAB_GUARD.md) fournit deux contrôles sans file : fin normale et mort forcée du pilote, avec récupération de son descendant avant retrait des espaces possédés. Les tests emploient des espaces simulés et de vrais processus/signaux. Les [deux contrôles natifs du 29 octobre](VALIDATION_LAB_GUARD_2026-10-29.md) sont validés : sortie `0`, un descendant récupéré par contrôle, espaces et réservations retirés.
 
-Le [cycle de vie de la file TBF](LAB_QUEUE.md) ajoute maintenant `plan-queue`, `check-queue` et `check-queue-crash` au superviseur, avec un module de configuration/relecture séparé. Le lien reste désactivé, sans adresse, route ou mesure de trafic. Les tests simulés couvrent les erreurs d'ajout/relecture et le nettoyage après mort forcée ; les contrôles natifs sont à effectuer avant d'étendre l'instrumentation. Aucune campagne de débit ou latence avec file n'est encore lancée.
+Le [cycle de vie de la file TBF](LAB_QUEUE.md) ajoute `plan-queue`, `check-queue` et `check-queue-crash` au superviseur, avec un module de configuration/relecture séparé. Le lien reste désactivé, sans adresse, route ou mesure de trafic. Les [quatre contrôles natifs du 29 octobre](VALIDATION_LAB_QUEUE_2026-10-29.md) sont validés : deux sans file et deux avec TBF, paramètres effectifs conformes après fin normale ou mort forcée et nettoyage vérifié. Les erreurs d'ajout/relecture restent couvertes par les tests simulés. La prochaine sous-étape prépare le rapport du récepteur et les statistiques de file ; aucune campagne de débit ou latence avec file n'est encore lancée.
 
 ## Étape 5 — Décisions coopératives
 

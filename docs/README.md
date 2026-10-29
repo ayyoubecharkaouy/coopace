@@ -33,9 +33,9 @@ Les [séries sans et avec transfert](VIRTUAL_SERIES.md) définissent `run-series
 
 Le [protocole de goulot virtuel contrôlé](VIRTUAL_BOTTLENECK.md) fixe la prochaine expérience : TBF/FIFO à 4 Mbit/s dans la passerelle neuve, critères de congestion, mesures à compléter et périmètre de nettoyage. La campagne avec trafic reste à implémenter ; le contrôle préalable de la file est décrit ci-dessous.
 
-Le [superviseur indépendant du laboratoire](LAB_GUARD.md) prépare ce nettoyage avec deux contrôles ciblés : fin normale et mort forcée du pilote. Les tests utilisent des espaces simulés et de vrais processus ; les [deux premiers contrôles natifs sont validés](VALIDATION_LAB_GUARD_2026-10-29.md). L'intégration au futur scénario avec file reste à effectuer.
+Le [superviseur indépendant du laboratoire](LAB_GUARD.md) prépare ce nettoyage avec deux contrôles ciblés : fin normale et mort forcée du pilote. Les tests utilisent des espaces simulés et de vrais processus ; les [deux premiers contrôles natifs sont validés](VALIDATION_LAB_GUARD_2026-10-29.md). L'intégration à la campagne de mesures avec file active reste à effectuer.
 
-Le [cycle de vie de la file TBF](LAB_QUEUE.md) est maintenant préparé sous ce superviseur : prévisualisation, création et relecture sur lien désactivé, puis nettoyage après fin normale ou mort forcée du pilote. Les tests simulés passent ; les contrôles natifs avec file restent à effectuer. La campagne avec trafic et goulot n'est pas encore implémentée.
+Le [cycle de vie de la file TBF](LAB_QUEUE.md) est implémenté sous ce superviseur : prévisualisation, création et relecture sur lien désactivé, puis nettoyage après fin normale ou mort forcée du pilote. Les [premiers contrôles natifs](VALIDATION_LAB_QUEUE_2026-10-29.md) sont validés, avec revérification des modes sans file et paramètres TBF effectifs conformes. La campagne avec trafic et goulot n'est pas encore implémentée.
 
 ## Bilans datés
 

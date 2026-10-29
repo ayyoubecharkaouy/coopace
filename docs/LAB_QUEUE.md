@@ -2,7 +2,7 @@
 
 ## État et objectif
 
-Le code et les tests simulés du cycle de vie sont livrés. **Les contrôles natifs avec file restent à effectuer.** Les [contrôles natifs précédents](VALIDATION_LAB_GUARD_2026-10-29.md) concernent le superviseur sans file, au commit qui y est consigné.
+Le code et les tests simulés du cycle de vie sont livrés. **Les premiers contrôles natifs avec file sont validés**, ainsi que les deux contrôles sans file sur la même révision. Le [compte rendu](VALIDATION_LAB_QUEUE_2026-10-29.md) conserve les valeurs effectives et les preuves de nettoyage. Les [contrôles natifs précédents](VALIDATION_LAB_GUARD_2026-10-29.md) concernent le superviseur sans file, au commit qui y est consigné.
 
 Cette sous-étape vérifie la configuration d'une file TBF, sa présence après fin normale ou mort forcée d'un pilote, puis son retrait avec les ressources possédées. Elle prépare le [goulot expérimental](VIRTUAL_BOTTLENECK.md), sans activer de chemin de trafic ni lancer la campagne de latence/débit.
 
@@ -44,7 +44,7 @@ python3 -B -m unittest discover -s scripts/tests -p 'test_lab_[gq]*.py' -v
 
 Les tests de parseurs vérifient les unités, valeurs effectives, faibles écarts de représentation et refus des options incompatibles. Les tests de cycle de vie simulent `ip`/`tc` et les espaces, avec de vrais pilotes, descendants et signaux. Ils couvrent fin normale, mort forcée, interruption après ajout, état initial inattendu, erreur d'ajout/relecture, perte de possession et nettoyage refusé. Les tests de commandes vérifient sortie bornée, timeout, annulation et récupération du processus. Aucun réseau réel n'est créé par cette suite.
 
-## Contrôles natifs à consigner
+## Reproduire les contrôles natifs
 
 Linux, Python 3, `ip`, `tc`, UID 0, `CAP_NET_ADMIN` et `CAP_SYS_ADMIN` sont requis avant création des ressources. Aucun binaire Go n'est nécessaire. Conserver les deux fichiers Python `lab-guard.py` et `lab_queue.py` ensemble depuis la même révision ; le superviseur charge son module voisin par chemin explicite.
 
@@ -63,4 +63,4 @@ Chaque contrôle avec file doit sortir avec `0` et publier un unique JSON local 
 
 ## Suite
 
-Après validation native du cycle de vie, préparer le rapport du récepteur et les statistiques de file. L'intégration à la topologie active, le contrôle ICMP, les séries avec goulot puis la référence CAKE manuelle restent à réaliser. L'étape 4.2 reste ouverte ; aucun bénéfice réseau ni restauration de passerelle réelle n'est revendiqué.
+Le [premier contrôle natif du cycle de vie](VALIDATION_LAB_QUEUE_2026-10-29.md) est validé. La prochaine sous-étape prépare le rapport du récepteur et les statistiques de file. L'intégration à la topologie active, le contrôle ICMP, les séries avec goulot puis la référence CAKE manuelle restent à réaliser. L'étape 4.2 reste ouverte ; aucun bénéfice réseau ni restauration de passerelle réelle n'est revendiqué.

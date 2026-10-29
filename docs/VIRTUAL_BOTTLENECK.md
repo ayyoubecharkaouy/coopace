@@ -2,7 +2,7 @@
 
 ## État et question
 
-**La campagne avec goulot actif reste à développer.** Le [cycle de vie d'une file TBF sur lien désactivé](LAB_QUEUE.md) est implémenté et testé avec des outils simulés ; sa validation native reste à effectuer. Les [premières séries natives sans goulot](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) valident la collecte et son recouvrement avec un transfert, sans démontrer de congestion.
+**La campagne avec goulot actif reste à développer.** Le [cycle de vie d'une file TBF sur lien désactivé](LAB_QUEUE.md) est implémenté, testé avec des outils simulés et [validé en natif](VALIDATION_LAB_QUEUE_2026-10-29.md). Les [premières séries natives sans goulot](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) valident la collecte et son recouvrement avec un transfert, sans démontrer de congestion.
 
 La prochaine expérience doit répondre à cette question : une limitation connue sur la sortie de la passerelle produit-elle une file observable et une augmentation répétée de la durée d'établissement TCP sous charge ? Elle prépare ensuite une référence CAKE manuelle, avant tout pilotage Coopace.
 
@@ -85,7 +85,7 @@ Avant d'exécuter le nouveau scénario, préparer et vérifier :
 4. Des vérifications explicites de disparition des noms et de la réservation temporaire, puis la publication du rapport final seulement si le nettoyage réussit. Conserver les données intermédiaires dans le dossier de l'expérience pour diagnostiquer un échec.
 5. Des tests simulés d'échec de création/relecture de file, d'interruption, de mort du pilote et d'échec de nettoyage. Valider ensuite en exécution native le succès normal et la mort forcée du pilote, avant la campagne de mesures.
 
-Un [premier superviseur indépendant](LAB_GUARD.md) est maintenant implémenté pour deux contrôles ciblés sans file : fin normale et mort forcée du pilote, avec récupération du descendant. Les tests de processus et d'espaces simulés sont disponibles, et les [deux premiers contrôles natifs sont validés](VALIDATION_LAB_GUARD_2026-10-29.md). Son intégration au futur scénario avec file et les tests d'erreurs propres à cette file restent à réaliser. Il ne promet pas de survivre à sa propre destruction, à celle de tous les processus ou à une panne de l'hôte. Ces cas pourront laisser des ressources et nécessiter une récupération ciblée à partir du journal. Ce nettoyage jetable ne valide pas la restauration indépendante d'une passerelle réelle avec IPv4, IPv6 et DNS, toujours requise par le [protocole passerelle](GATEWAY_BASELINE.md).
+Un [premier superviseur indépendant](LAB_GUARD.md) est implémenté pour les contrôles de fin normale et de mort forcée du pilote, avec récupération du descendant. Ses premiers essais sans file puis le [cycle de vie TBF sur lien désactivé](VALIDATION_LAB_QUEUE_2026-10-29.md) sont validés en natif ; les erreurs d'ajout/relecture sont couvertes par les tests simulés. Son intégration à la campagne de mesures avec goulot actif reste à réaliser. Il ne promet pas de survivre à sa propre destruction, à celle de tous les processus ou à une panne de l'hôte. Ces cas pourront laisser des ressources et nécessiter une récupération ciblée à partir du journal. Ce nettoyage jetable ne valide pas la restauration indépendante d'une passerelle réelle avec IPv4, IPv6 et DNS, toujours requise par le [protocole passerelle](GATEWAY_BASELINE.md).
 
 ## Comparaisons ultérieures et ordre de développement
 
@@ -93,4 +93,4 @@ La référence suivante sera CAKE statique, configuré explicitement au même d�
 
 Comparer TBF/FIFO à CAKE au même débit étudiera ces deux configurations de files. Cela ne simulera pas une liaison physique indépendante de CAKE et ne démontrera pas un bénéfice propre à Coopace. Le pilotage Coopace viendra seulement après cette référence manuelle. Équité entre hôtes, ressources, trafic descendant, UDP/QUIC, IPv6 et DNS resteront à évaluer séparément.
 
-Les deux premiers contrôles natifs du superviseur sans file sont validés. Le [cycle de vie de la file](LAB_QUEUE.md) dispose maintenant d'une prévisualisation et de tests simulés sous ce superviseur, sur un lien désactivé. Ses contrôles natifs précèdent le rapport du récepteur, les statistiques de file et l'intégration au chemin actif. La campagne avec goulot nécessitera un nouveau dossier d'essai avec protocole, commit et empreintes figés. L'étape 4.2 reste ouverte.
+Les contrôles natifs du superviseur sans file et du [cycle de vie de la file sur lien désactivé](VALIDATION_LAB_QUEUE_2026-10-29.md) sont validés. La prochaine sous-étape prépare le rapport du récepteur et les statistiques de file, avant l'intégration au chemin actif. La campagne avec goulot nécessitera un nouveau dossier d'essai avec protocole, commit et empreintes figés. L'étape 4.2 reste ouverte.
