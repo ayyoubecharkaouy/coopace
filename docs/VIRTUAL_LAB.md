@@ -4,7 +4,7 @@
 
 Le scénario utilise un hôte Linux et trois espaces réseau neufs : client, passerelle et serveur. Il prépare la vérification d'un point de passage logiciel sans raccorder les appareils du foyer. Linux est ici une plateforme de laboratoire, sans imposer ce système au produit final.
 
-Le script, la cible TCP bornée et les tests simulés sont livrés. **La création réelle du laboratoire n'est pas encore validée.** Les capacités nécessaires sont absentes dans l'environnement isolé de développement ; aucun essai privilégié n'y est lancé. Le test du serveur en boucle locale est également ignoré lorsque les sockets sont interdites. Aucun résultat de performance n'est revendiqué.
+Le script, la cible TCP bornée et les tests simulés sont livrés. **Un premier essai natif ICMP/TCP est validé sur le PC Linux de l'utilisateur le 29 octobre 2026** : deux codes de sortie `0`, inventaire complet dans la passerelle virtuelle, cinq connexions TCP réussies sans échec et nettoyage normal. Le [compte rendu](VALIDATION_VIRTUAL_LAB_2026-10-29.md) conserve les preuves et limites. Les essais privilégiés sont lancés depuis le terminal utilisateur ; l'environnement isolé de développement conserve ses restrictions. Aucun gain de performance n'est revendiqué.
 
 ```mermaid
 flowchart LR
@@ -106,4 +106,4 @@ python3 -B -m unittest discover -s scripts/tests -p 'test_*.py' -v
 sh scripts/go.sh test -count=1 -v ./scripts/lab-tcp
 ```
 
-Les essais natifs ICMP et TCP restent à exécuter et à consigner. Ensuite pourra être préparée une charge contrôlée dans ce chemin. La [référence initiale](GATEWAY_BASELINE.md), les mesures au repos/sous charge et la restauration réelle restent nécessaires pour poursuivre et clôturer l'étape 4.2.
+Le premier essai natif ICMP/TCP et son nettoyage normal sont [consignés](VALIDATION_VIRTUAL_LAB_2026-10-29.md). La prochaine activité est de préparer une charge contrôlée et des séries répétées dans ce chemin. Les tests natifs d'interruption ou de panne ne sont pas encore effectués. La [référence initiale](GATEWAY_BASELINE.md), les mesures au repos/sous charge et la restauration réelle restent nécessaires pour poursuivre et clôturer l'étape 4.2.

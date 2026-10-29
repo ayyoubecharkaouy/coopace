@@ -8,17 +8,17 @@ Le [périmètre produit](docs/PRODUCT.md) décrit le résultat visé, l'état r�
 
 ## État du projet
 
-**Étape 4.1 : diagnostic de passerelle en lecture seule disponible sous Linux.** La commande dédiée `coopace-gateway inspect` inventorie les informations visibles et leurs limites, sans intervention réseau. L'agent conserve l'échange TLS de l'étape 3.4, testé en mémoire ; son essai TCP réel reste à confirmer. Les exécutables compilent pour Windows ; le diagnostic, les compteurs et le stockage privé d'identité Windows restent à implémenter, et l'exécution native à valider. Aucun moteur de gestion du trafic ni gain d'optimisation réseau n'est démontré.
+**Étape 4.2 en cours : premier laboratoire Linux validé en ICMP et TCP.** La commande dédiée `coopace-gateway inspect` inventorie les informations visibles et leurs limites, sans intervention réseau. L'agent conserve l'échange TLS de l'étape 3.4, testé en mémoire ; son essai TCP réel reste à confirmer. Les exécutables compilent pour Windows ; le diagnostic, les compteurs et le stockage privé d'identité Windows restent à implémenter, et l'exécution native à valider. Aucun moteur de gestion du trafic ni gain d'optimisation réseau n'est démontré.
 
 Les [choix techniques](docs/TECH_STACK.md) détaillent les raisons, les limites et les décisions différées.
 
 La [revue du démarrage du 26 octobre 2026](docs/REVIEW_2026-10-26.md) consigne le bilan avant l'étape 4.1. Le [diagnostic de passerelle](docs/GATEWAY_DIAGNOSTIC.md) prépare désormais le scénario de laboratoire, les mesures de référence et la restauration.
 
-La [préparation de l’étape 4.2](docs/GATEWAY_BASELINE.md) ajoute `coopace-gateway inspect --json` et un modèle d’expérience. Un scénario de laboratoire Linux virtuel est maintenant défini ; la plateforme du foyer, la topologie réelle et les mesures de référence restent à confirmer avant de clôturer cette étape.
+La [préparation de l’étape 4.2](docs/GATEWAY_BASELINE.md) ajoute `coopace-gateway inspect --json` et un modèle d’expérience. Un premier scénario Linux virtuel est validé ; la plateforme du foyer, la topologie réelle et les mesures de référence restent à confirmer avant de clôturer cette étape.
 
-Un [laboratoire Linux virtuel](docs/VIRTUAL_LAB.md) prépare désormais un scénario client → passerelle → serveur, sans raccorder le réseau du foyer. `sh scripts/lab-network.sh plan` permet de le prévisualiser ; `run-tcp` prépare cinq mesures d'établissement TCP vers une cible temporaire bornée. Le cycle de vie est testé avec des outils simulés, avec exécution native encore à confirmer et sans charge de saturation.
+Un [laboratoire Linux virtuel](docs/VIRTUAL_LAB.md) prépare désormais un scénario client → passerelle → serveur, sans raccorder le réseau du foyer. `sh scripts/lab-network.sh plan` permet de le prévisualiser ; `run-tcp` prépare cinq mesures d'établissement TCP vers une cible temporaire bornée. Le cycle de vie est testé avec des outils simulés. Un [premier essai natif du 29 octobre](docs/VALIDATION_VIRTUAL_LAB_2026-10-29.md) confirme les contrôles ICMP, cinq connexions TCP réussies sans échec et le nettoyage normal, sans charge de saturation.
 
-La [revue du 29 octobre 2026](docs/REVIEW_2026-10-29.md) revérifie le socle, corrige un défaut de nettoyage après interruption et précise la suite : valider le laboratoire en exécution native avant les essais sous charge.
+La [revue du 29 octobre 2026](docs/REVIEW_2026-10-29.md) revérifie le socle et consigne le correctif de nettoyage après interruption apporté avant ces essais natifs.
 
 ## Organisation
 
@@ -75,7 +75,7 @@ Les [instructions de développement](docs/DEVELOPMENT.md) détaillent l'installa
 
 La [mesure TCP et le protocole de référence](docs/LATENCY.md) expliquent `coopace latency --target IP:port`, l'export JSON et les comparaisons au repos/sous charge.
 
-`coopace latency compare --idle FICHIER --loaded FICHIER` compare désormais deux rapports TCP locaux, sans lancer de mesure. Il affiche des différences descriptives et conserve les valeurs indisponibles ; les mesures réelles et le scénario de laboratoire restent à confirmer.
+`coopace latency compare --idle FICHIER --loaded FICHIER` compare désormais deux rapports TCP locaux, sans lancer de mesure. Il affiche des différences descriptives et conserve les valeurs indisponibles ; les séries réelles au repos/sous charge restent à recueillir.
 
 L'[identité locale et les contrats du groupe](docs/IDENTITY_AND_GROUP.md) décrivent les permissions et les messages. La [procédure du premier échange TLS](docs/GROUP_EXCHANGE.md) explique comment tester deux instances sur un PC Linux avec `identity export-cert` et `group configure/listen/exchange/revoke`. Les compteurs et le stockage privé Windows restent indisponibles.
 

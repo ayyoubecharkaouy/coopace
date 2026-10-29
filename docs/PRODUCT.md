@@ -32,7 +32,7 @@ Un PC Linux n'est pas obligatoire parmi les membres du groupe. Les capacités de
 | Agent local Windows | Compilation Windows amd64 validée ; exécution native non vérifiée, collecte des compteurs et stockage protégé de clé non implémentés. |
 | Application Android | Prévue ; aucun APK ni intégration native disponible. |
 | Groupe coopératif | Prototype Linux à deux pairs : approbation et consentement persistés, TLS mutuel et observations facultatives. Tests en mémoire validés, TCP réel à confirmer ; coordination avancée non implémentée. |
-| Passerelle Linux/OpenWrt | Diagnostic Linux en lecture seule implémenté ; inventaire réel partiel dans l'environnement isolé. Gestion de trafic et restauration non implémentées ; OpenWrt non validé. |
+| Passerelle Linux/OpenWrt | Diagnostic Linux en lecture seule implémenté ; inventaire partiel dans l'environnement isolé et complet dans la passerelle virtuelle lors du premier essai natif ICMP/TCP. Gestion de trafic et restauration non implémentées ; OpenWrt non validé. |
 | Passerelle Windows | Cible à étudier ; moteur et performances non validés. |
 | Tableau de bord et relais | Prévus ; aucune implémentation. |
 | ML | Périmètre documenté ; aucun dataset ni modèle entraîné dans ce dépôt. |
@@ -63,11 +63,11 @@ Il devra permettre de :
 
 Un groupe minimal de mesure peut préparer cette évaluation. La coordination avancée, une interface complète, les relais automatiques et le ML attendront ce premier résultat. L'absence de groupe complet ne doit pas bloquer l'évaluation du moteur de passerelle.
 
-La [préparation de l’étape 4.2](GATEWAY_BASELINE.md) ajoute un export JSON local d’inventaire et un modèle de protocole. La plateforme, la topologie, les seuils et les mesures réelles restent à confirmer ; aucun résultat sous charge n’est déduit de ces outils.
+La [préparation de l’étape 4.2](GATEWAY_BASELINE.md) ajoute un export JSON local d’inventaire et un modèle de protocole. La plateforme et la topologie du foyer, les seuils et les mesures au repos/sous charge restent à confirmer ; aucun résultat sous charge n’est déduit de ces outils.
 
 La comparaison hors ligne des rapports TCP au repos/sous charge est disponible via `latency compare`. Elle vérifie les paramètres et les statistiques, sans vérifier le contexte réel ni attribuer un gain à Coopace. L'étape expérimentale reste ouverte.
 
-Le [laboratoire virtuel de développement](VIRTUAL_LAB.md) prépare un chemin IPv4 contrôlé entre des espaces réseau Linux neufs. Le mode `run-tcp` ajoute cinq tentatives TCP vers une cible temporaire bornée, sans générer de charge de saturation. Le script ne raccorde aucun appareil du foyer et n'applique pas de politique de files. Ses tests simulés ne valident pas encore son exécution native, un moteur de passerelle ou une performance réseau.
+Le [laboratoire virtuel de développement](VIRTUAL_LAB.md) prépare un chemin IPv4 contrôlé entre des espaces réseau Linux neufs. Le mode `run-tcp` ajoute cinq tentatives TCP vers une cible temporaire bornée, sans générer de charge de saturation. Le script ne raccorde aucun appareil du foyer et n'applique pas de politique de files. Un [premier essai natif Linux](VALIDATION_VIRTUAL_LAB_2026-10-29.md) confirme le passage ICMP/TCP et le nettoyage normal. Il ne valide pas un moteur de files ni un gain de performance réseau.
 
 ## Références et mesures indispensables
 

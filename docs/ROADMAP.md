@@ -109,7 +109,7 @@ Validation : couverture mesurée, latence sous charge, débit utile, équité et
 
 ### 4.1 — Diagnostic de la passerelle en lecture seule
 
-État : inventaire Linux implémenté et testé ; lancement réel partiel dans l'environnement isolé, lecture complète sur le PC utilisateur à confirmer. Adaptateur Windows non implémenté.
+État : inventaire Linux implémenté et testé ; rapport partiel dans l'environnement isolé et premier inventaire complet dans la passerelle virtuelle sur le PC utilisateur. L'inventaire du réseau du foyer reste à consigner. Adaptateur Windows non implémenté.
 
 Préciser la plateforme candidate et le chemin du trafic, inventorier les interfaces, le moteur réseau et les permissions, puis indiquer ce qui est effectivement observable ou indisponible. Définir les mesures de référence et les exigences de restauration avant de modifier les files ou le routage. L'essai TCP réel de l'étape 3.4 reste à confirmer séparément ; un groupe complet n'est pas un prérequis à ce diagnostic.
 
@@ -117,7 +117,7 @@ Livrés : application `coopace-gateway inspect`, interfaces, flags de forwarding
 
 ### 4.2 — Scénario de laboratoire et référence initiale
 
-État : préparation livrée avec export d’inventaire JSON local v1 et modèle de protocole. Plateforme, inventaire réel, topologie, seuils et séries de référence restent à confirmer ; aucune expérience sous charge n’est validée.
+État : préparation livrée et premier scénario Linux virtuel validé en exécution native ICMP/TCP, avec inventaire complet dans cet espace. La topologie du foyer, les seuils et les séries de référence restent à confirmer ; aucune expérience sous charge n’est validée.
 
 À partir d'un inventaire réel, choisir la plateforme et décrire le chemin du trafic à couvrir. Consigner la configuration initiale, les mesures au repos/sous charge, les seuils d'acceptation et le mécanisme de restauration à développer et tester avant une première modification. La comparaison doit distinguer le moteur configuré manuellement et le pilotage Coopace.
 
@@ -125,9 +125,9 @@ Livrés pour la préparation : `coopace-gateway inspect --json`, valeurs indispo
 
 Un outil de comparaison hors ligne est aussi livré : `coopace latency compare --idle FICHIER --loaded FICHIER`. Il valide les rapports TCP locaux v1, recalcule leurs statistiques et affiche les différences descriptives avec les échecs. Les tests sur données contrôlées ne remplacent pas la référence réelle et ne démontrent aucun bénéfice réseau.
 
-Un premier [scénario Linux virtuel](VIRTUAL_LAB.md) est maintenant défini : client, passerelle et serveur dans des espaces réseau neufs, routes spécifiques et sondes ICMP pour vérifier le passage IPv4. `scripts/lab-network.sh plan` le prévisualise ; `run` crée le laboratoire et tente de supprimer ses ressources avant de publier l'inventaire. `run-tcp` prépare cinq tentatives d'établissement TCP avec l'agent et une cible temporaire bornée, sans charge de saturation. Les tests de cycle de vie utilisent des outils simulés et le serveur TCP est testé en mémoire ; son essai en boucle locale peut être ignoré faute de permissions. L'exécution réelle ICMP/TCP, les mesures sous charge et la restauration d'une passerelle réelle restent à valider.
+Un premier [scénario Linux virtuel](VIRTUAL_LAB.md) est maintenant défini : client, passerelle et serveur dans des espaces réseau neufs, routes spécifiques et sondes ICMP pour vérifier le passage IPv4. `scripts/lab-network.sh plan` le prévisualise ; `run` crée le laboratoire et tente de supprimer ses ressources avant de publier l'inventaire. `run-tcp` prépare cinq tentatives d'établissement TCP avec l'agent et une cible temporaire bornée, sans charge de saturation. Les tests de cycle de vie utilisent des outils simulés et le serveur TCP est testé en mémoire ; son essai en boucle locale peut être ignoré faute de permissions. Le [premier essai natif du 29 octobre](VALIDATION_VIRTUAL_LAB_2026-10-29.md) confirme les contrôles ICMP, cinq connexions TCP réussies sans échec et le nettoyage normal. Les mesures sous charge et la restauration d'une passerelle réelle restent à valider.
 
-La [revue du 29 octobre 2026](REVIEW_2026-10-29.md) confirme la cohérence du démarrage après correction d'une fenêtre d'interruption du nettoyage. La prochaine activité est l'essai natif ICMP/TCP du laboratoire, puis sa préparation pour des séries sous charge. Les tests simulés ne clôturent pas cette étape.
+La [revue du 29 octobre 2026](REVIEW_2026-10-29.md) confirme la cohérence du démarrage après correction d'une fenêtre d'interruption du nettoyage. L'essai natif ICMP/TCP est désormais consigné ; la prochaine activité est de préparer une charge contrôlée et des séries répétées. Cette validation de connectivité ne clôture pas l'étape 4.2.
 
 ## Étape 5 — Décisions coopératives
 

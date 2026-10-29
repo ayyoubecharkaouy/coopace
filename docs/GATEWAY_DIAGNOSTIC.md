@@ -91,7 +91,7 @@ Les noms d'interfaces et les chemins des outils restent des métadonnées locale
 
 Les tests utilisent des données contrôlées pour vérifier les valeurs manquantes, les sorties JSON, les tables multiples et les routes non résolues. Ils vérifient les requêtes en lecture seule, l'absence d'exécution d'un outil manquant, l'annulation d'une commande bloquée et le refus des sorties trop grandes. Les tests de CLI couvrent aide, arguments invalides, rapport partiel et erreurs d'affichage.
 
-Le lancement Linux réel a produit un rapport partiel dans l'environnement isolé : flags IPv4/IPv6 et capacité effective lus, outils détectés, mais interfaces, routes et files indisponibles car Netlink y est interdit. Une lecture complète sur le PC Linux utilisateur reste à consigner. La compilation et l'analyse statique Windows ne valident pas une collecte Windows ni une passerelle Windows.
+Le lancement Linux réel a produit un rapport partiel dans l'environnement isolé : flags IPv4/IPv6 et capacité effective lus, outils détectés, mais interfaces, routes et files indisponibles car Netlink y est interdit. Un [premier inventaire complet](VALIDATION_VIRTUAL_LAB_2026-10-29.md) est désormais consigné dans la passerelle virtuelle exécutée depuis le terminal utilisateur. Il ne décrit pas le réseau du foyer. La compilation et l'analyse statique Windows ne valident pas une collecte Windows ni une passerelle Windows.
 
 ```sh
 sh scripts/go.sh test ./apps/gateway/... ./platforms/linux

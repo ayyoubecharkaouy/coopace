@@ -2,9 +2,9 @@
 
 ## État actuel
 
-Cette étape prépare une expérience reproductible : un export local d'inventaire est disponible et un modèle de protocole peut être complété. Un premier scénario Linux virtuel est défini ; la plateforme du foyer, le chemin réel du trafic et les seuils restent à confirmer. Aucune référence WAN au repos/sous charge, aucune intervention et aucun résultat d'optimisation ne sont revendiqués.
+Cette étape prépare une expérience reproductible : un export local d'inventaire est disponible et un modèle de protocole peut être complété. Un premier scénario Linux virtuel est défini ; la plateforme du foyer, le chemin réel du trafic et les seuils restent à confirmer. Aucune référence WAN au repos/sous charge, aucune intervention sur le trafic du foyer et aucun résultat d'optimisation ne sont revendiqués.
 
-Pour avancer sans détourner le trafic du foyer, un [scénario Linux virtuel](VIRTUAL_LAB.md) est défini et son script est prêt pour un essai natif. Il utilise des ressources réseau neuves et des sondes IPv4 synthétiques, avec nettoyage. Son cycle de vie est testé avec des outils simulés ; aucune exécution privilégiée réelle ni référence sous charge n'est encore validée. Ce choix de laboratoire ne fixe pas la plateforme d'une future passerelle du foyer.
+Pour avancer sans détourner le trafic du foyer, un [scénario Linux virtuel](VIRTUAL_LAB.md) utilise des ressources réseau neuves et des sondes IPv4 synthétiques, avec nettoyage. Un [premier essai natif ICMP/TCP](VALIDATION_VIRTUAL_LAB_2026-10-29.md) a réussi sur le PC Linux utilisateur, avec inventaire complet dans cet espace, cinq connexions réussies sans échec et nettoyage normal. Les références sous charge restent à recueillir. Ce choix de laboratoire ne fixe pas la plateforme d'une future passerelle du foyer.
 
 Le diagnostic reste implémenté sous Linux uniquement. Le choix de cette plateforme pour le prototype n'impose pas Linux au produit final ; une passerelle Windows exige son diagnostic et son moteur spécifiques. Le [périmètre produit](PRODUCT.md) reste la référence.
 

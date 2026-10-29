@@ -22,4 +22,4 @@ Les tests utilisent `net.Pipe` et une écoute simulée pour vérifier les fermet
 sh scripts/go.sh test -count=1 -v ./scripts/lab-tcp
 ```
 
-Voir le [scénario du laboratoire](../../docs/VIRTUAL_LAB.md) pour l'exécution à travers la passerelle et la validation native encore nécessaire.
+Voir le [scénario du laboratoire](../../docs/VIRTUAL_LAB.md) pour l'exécution à travers la passerelle. Un [premier essai natif routé](../../docs/VALIDATION_VIRTUAL_LAB_2026-10-29.md) a réussi ; il n'ajoute aucun résultat natif au test Go de boucle locale lorsqu'il est ignoré dans l'environnement isolé.
