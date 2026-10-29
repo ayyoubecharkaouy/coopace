@@ -181,6 +181,8 @@ La collecte des compteurs est orchestrée dans `apps/agent/internal/observe`, av
 
 La mesure TCP et l'export local sont dans `apps/agent/internal/latency`, avec les statistiques pures dans `packages/core/latency.go`. La commande impose une cible explicite et ne dépend pas d'un outil `ping` externe.
 
+La comparaison des exports locaux est dans les fichiers `latency/read.go` et `latency/compare.go`, avec une commande dédiée dans `cli/latency_compare.go`. Le contrôle syntaxique JSON commun est dans `internal/strictjson` ; les schémas de rapport et de protocole restent séparés. Voir [LATENCY.md](LATENCY.md#comparer-les-rapports-au-repos-et-sous-charge) pour la comparaison sans connexion.
+
 L'état d'identité est géré par `apps/agent/internal/identity` ; son stockage est activé sous Linux uniquement. `packages/protocol` n'ouvre aucune connexion. `apps/agent/internal/group` convertit les contrats vers le noyau et orchestre profil, consentement persisté, transport TLS et échange borné. Le cadrage et la validation restent dans `packages/protocol`, sans sockets ni stockage.
 
 Le point d'entrée passerelle est `apps/gateway/cmd/coopace-gateway`, avec CLI et orchestration dans ses propres paquets `internal`. Les types d'inventaire sont dans `packages/core/gateway.go` ; les lectures Linux et leurs parseurs sont dans `platforms/linux/gateway*.go`. Cette séparation ne dépend pas des paquets internes de l'agent.

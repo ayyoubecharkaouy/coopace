@@ -123,6 +123,8 @@ Livrés : application `coopace-gateway inspect`, interfaces, flags de forwarding
 
 Livrés pour la préparation : `coopace-gateway inspect --json`, valeurs indisponibles explicites, provenance de compilation lorsqu’elle est disponible et [protocole de référence initiale](GATEWAY_BASELINE.md) avec [modèle d’expérience](templates/GATEWAY_EXPERIMENT.md). Ces fichiers ne sont pas une configuration exécutable ni une sauvegarde restaurable. La clôture de l’étape nécessite encore un scénario réel complété et ses mesures ; elle ne peut pas être déduite des tests d’export.
 
+Un outil de comparaison hors ligne est aussi livré : `coopace latency compare --idle FICHIER --loaded FICHIER`. Il valide les rapports TCP locaux v1, recalcule leurs statistiques et affiche les différences descriptives avec les échecs. Les tests sur données contrôlées ne remplacent pas la référence réelle et ne démontrent aucun bénéfice réseau.
+
 ## Étape 5 — Décisions coopératives
 
 État : à faire.

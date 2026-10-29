@@ -16,7 +16,7 @@ const usage = `Utilisation : coopace <commande>
 Commandes :
   status    Afficher la version, le système et l'état local de l'agent.
   observe   Observer le trafic local par interface pendant environ une seconde (Linux).
-  latency   Mesurer l'établissement TCP vers --target IP:port (options : latency --help).
+  latency   Mesurer l'établissement TCP ou comparer des rapports locaux (latency --help).
   identity  Initialiser ou afficher l'identité locale (identity --help).
   group     Approuver un pair et effectuer un échange TLS borné (group --help).
   help      Afficher cette aide.

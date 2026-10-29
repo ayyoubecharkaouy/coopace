@@ -43,6 +43,8 @@ Le binaire accepte `status`, `observe`, `latency`, `identity`, `group`, `help`, 
 
 La commande `latency` exige une cible IP:port et réalise des connexions actives, sans envoyer de données applicatives. Elle distingue les échecs des durées calculables et peut émettre un JSON local versionné. La méthode, les limites et les conditions de référence sont décrites dans [LATENCY.md](../../docs/LATENCY.md).
 
+La sous-commande `latency compare --idle FICHIER --loaded FICHIER` lit les rapports JSON locaux v1 sans lancer de connexion. La validation et le recalcul sont dans `internal/latency/read.go` et `compare.go` ; l'affichage est dans `internal/cli/latency_compare.go`. Ses codes de sortie concernent la comparaison, sans diagnostic automatique d'amélioration réseau.
+
 `identity init/show --state-dir DOSSIER` gère une identité persistante sous Linux et n'affiche que sa partie publique. Les [contrats, consentements et limites du stockage](../../docs/IDENTITY_AND_GROUP.md) décrivent les fondations. `identity export-cert` exporte seulement le certificat public ; la [procédure d'échange](../../docs/GROUP_EXCHANGE.md) détaille `group configure/show/revoke/listen/exchange`, la limite de 30 secondes et le partage facultatif.
 
 La compilation et les instructions détaillées sont dans [DEVELOPMENT.md](../../docs/DEVELOPMENT.md). Le binaire Windows x64 et les essais natifs restant à effectuer sont décrits dans [WINDOWS_VALIDATION.md](../../docs/WINDOWS_VALIDATION.md).

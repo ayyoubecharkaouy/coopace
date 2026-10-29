@@ -96,6 +96,8 @@ Le code attendu est `0`. Le lancement sans cible (`latency` seul) doit retourner
 
 État actuel : **non effectué**.
 
+La comparaison `latency compare --idle FICHIER --loaded FICHIER` compile également pour Windows et utilise seulement des fichiers locaux. Ses tests sont exécutés sous Linux ; son lancement natif Windows reste à vérifier. Elle ne dépend ni du stockage d'identité ni du diagnostic Linux.
+
 Pour chaque PC testé, noter la version de Windows, l'architecture, l'empreinte du binaire et les résultats des commandes avec leurs codes de sortie. Si le SDK Go et les sources sont disponibles sur ce PC, `go test ./...` et `go vet ./...` peuvent compléter ce contrôle ; leur résultat doit être distingué du simple lancement de l'exécutable.
 
 Mettre ensuite à jour cette section, l'[état produit](PRODUCT.md) et la [feuille de route](ROADMAP.md). Les instructions générales sont dans [DEVELOPMENT.md](DEVELOPMENT.md).

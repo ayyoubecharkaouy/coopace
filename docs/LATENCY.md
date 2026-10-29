@@ -71,7 +71,27 @@ Un rapport complet est émis même si toutes les connexions échouent, avec un c
 4. Comparer les séries sur la même méthode, cible et configuration, en examinant les échecs aussi bien que les durées. Une baisse des percentiles accompagnée de plus d'échecs n'est pas une preuve d'amélioration.
 5. Conserver les paramètres, données individuelles et limites. Les comparaisons après intervention et face aux moteurs existants appartiennent à l'étape passerelle.
 
-Cette version fournit la collecte et l'export ; elle ne charge pas encore deux fichiers pour calculer automatiquement un gain. Les mesures TCP, les compteurs d'interfaces et les futurs essais applicatifs restent des observations complémentaires.
+La comparaison hors ligne décrite ci-dessous charge désormais deux rapports pour présenter leurs différences. Elle ne calcule pas de gain causal d'optimisation. Les mesures TCP, les compteurs d'interfaces et les futurs essais applicatifs restent des observations complémentaires.
+
+## Comparer les rapports au repos et sous charge
+
+Une fois les rapports réellement recueillis avec la même cible et les mêmes paramètres :
+
+```sh
+sh scripts/go.sh run ./apps/agent/cmd/coopace latency compare --idle .local/baselines/idle.json --loaded .local/baselines/loaded.json
+```
+
+Cette sous-commande lit uniquement ces deux fichiers. Elle n'appelle pas la mesure TCP et ne lance aucune charge. Les deux chemins doivent désigner des fichiers ordinaires sans lien symbolique, limités chacun à 256 Kio. L'aide est disponible avec `latency compare --help`.
+
+Le lecteur attend les exports locaux v1 de méthode `tcp_connect`, avec conditions déclarées `idle` et `loaded`. Il refuse les champs inconnus ou requis manquants, doublons, variantes de casse, alias Unicode de clés, valeurs invalides, séries incomplètes et horodatages incohérents. Les durées en millisecondes sont converties à la nanoseconde la plus proche, puis les comptages et percentiles sont recalculés à partir des essais ; ils doivent correspondre au résumé importé.
+
+La cible doit être textuellement identique, ainsi que le nombre d'essais demandé, le timeout, l'intervalle, la version Coopace, la version Go, le système et l'architecture déclarés. Ces vérifications sont conservatrices : elles ne prouvent ni le même appareil, ni le même commit derrière `dev`, ni le même chemin ou la même charge. Ces éléments restent à consigner dans le [protocole de laboratoire](GATEWAY_BASELINE.md).
+
+L'affichage présente les réussites, les échecs, les distributions et l'écart signé **charge moins repos**, en millisecondes. Les distributions utilisent les seules réussites. Si une série n'a aucune réussite, sa distribution et l'écart correspondant restent indisponibles. Une différence négative accompagnée de plus d'échecs ne prouve pas une amélioration ; aucun diagnostic de congestion ni bénéfice Coopace n'est déduit.
+
+Le code de sortie est `0` si la comparaison descriptive a été produite, même lorsqu'une distribution est indisponible ; `1` pour une erreur de fichier, de validation ou d'affichage ; `2` pour des arguments invalides ; `130` après annulation détectée. Les lectures de fichiers locaux ne sont pas interruptibles individuellement ; l'annulation est contrôlée avant la lecture et avant l'affichage. Le code `0` ne signifie pas que les connexions étaient réussies ni que le réseau s'est amélioré.
+
+Les tests de comparaison utilisent des données contrôlées, y compris des séries sans réussite et des durées à zéro. Aucune référence WAN réelle ni comparaison sous charge n'est validée par ces tests.
 
 ## Validation et limites actuelles
 

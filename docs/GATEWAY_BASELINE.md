@@ -66,6 +66,8 @@ Ne pas assimiler ces durées d'établissement TCP à un RTT ICMP, à une perte d
 
 Le diagnostic `inspect --json` ne lance pas ces séries ni une charge de saturation. Aucun serveur, appareil de test ou outil de charge n'est sélectionné automatiquement à cette étape.
 
+Après une collecte réelle, `coopace latency compare --idle FICHIER --loaded FICHIER` permet de comparer hors ligne les exports TCP v1. La sous-commande recalcule les statistiques, refuse les paramètres incompatibles et conserve les échecs et valeurs indisponibles ; voir [LATENCY.md](LATENCY.md#comparer-les-rapports-au-repos-et-sous-charge). Elle n'effectue aucune collecte et ne permet pas de clôturer l'étape 4.2 sans un scénario renseigné et des mesures réelles.
+
 ## Comparaison et restauration à préparer ensuite
 
 L'expérience distinguera la configuration initiale, le moteur configuré manuellement et le pilotage Coopace sans ML. Les règles d'acceptation doivent être définies avant de comparer. Conserver les répétitions, les dégradations et les cas sans bénéfice ; ne pas sélectionner uniquement les meilleurs résultats.

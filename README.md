@@ -32,6 +32,7 @@ coopace/
 │   ├── windows/          # Intégrations Windows
 │   └── android/          # Intégrations Android pour l'agent
 ├── scripts/              # Installation locale de Go et commandes de développement
+├── internal/strictjson/  # Contrôles JSON partagés, privés au module Go
 ├── ml/                   # Futur module ML : recherche, entraînement et évaluation
 └── docs/                 # Architecture, progression et procédures
     └── README.md         # Index de la documentation
@@ -69,6 +70,8 @@ sh scripts/go.sh test ./...
 Les [instructions de développement](docs/DEVELOPMENT.md) détaillent l'installation, la compilation du binaire, l'aide et les vérifications. Les [observations locales](docs/OBSERVATIONS.md) précisent les sources, les unités et les limites. La [procédure Windows](docs/WINDOWS_VALIDATION.md) décrit la compilation et les essais natifs encore à effectuer. L'application Android reste à développer.
 
 La [mesure TCP et le protocole de référence](docs/LATENCY.md) expliquent `coopace latency --target IP:port`, l'export JSON et les comparaisons au repos/sous charge.
+
+`coopace latency compare --idle FICHIER --loaded FICHIER` compare désormais deux rapports TCP locaux, sans lancer de mesure. Il affiche des différences descriptives et conserve les valeurs indisponibles ; les mesures réelles et le scénario de laboratoire restent à confirmer.
 
 L'[identité locale et les contrats du groupe](docs/IDENTITY_AND_GROUP.md) décrivent les permissions et les messages. La [procédure du premier échange TLS](docs/GROUP_EXCHANGE.md) explique comment tester deux instances sur un PC Linux avec `identity export-cert` et `group configure/listen/exchange/revoke`. Les compteurs et le stockage privé Windows restent indisponibles.
 

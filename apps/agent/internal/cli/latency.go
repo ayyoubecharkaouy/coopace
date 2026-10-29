@@ -12,6 +12,9 @@ import (
 )
 
 func runLatency(ctx context.Context, args []string, version string, stdout, stderr io.Writer, measure func(context.Context, latency.Options) (latency.Report, error)) int {
+	if len(args) > 0 && args[0] == "compare" {
+		return runLatencyCompare(ctx, args[1:], stdout, stderr)
+	}
 	options := latency.Options{}
 	jsonOutput := false
 	flags := flag.NewFlagSet("latency", flag.ContinueOnError)
@@ -22,6 +25,10 @@ func runLatency(ctx context.Context, args []string, version string, stdout, stde
 	flags.DurationVar(&options.Interval, "interval", 250*time.Millisecond, "pause entre essais, de 0 à 5s")
 	flags.StringVar(&options.Condition, "condition", "unspecified", "condition déclarée : unspecified, idle ou loaded")
 	flags.BoolVar(&jsonOutput, "json", false, "émettre le rapport local JSON v1 sur la sortie standard")
+	flags.Usage = func() {
+		fmt.Fprintln(stderr, "Utilisation : coopace latency --target IP:port [options]\nComparaison hors ligne : coopace latency compare --idle FICHIER --loaded FICHIER")
+		flags.PrintDefaults()
+	}
 	if err := flags.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			return 0

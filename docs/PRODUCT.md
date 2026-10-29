@@ -65,6 +65,8 @@ Un groupe minimal de mesure peut préparer cette évaluation. La coordination av
 
 La [préparation de l’étape 4.2](GATEWAY_BASELINE.md) ajoute un export JSON local d’inventaire et un modèle de protocole. La plateforme, la topologie, les seuils et les mesures réelles restent à confirmer ; aucun résultat sous charge n’est déduit de ces outils.
 
+La comparaison hors ligne des rapports TCP au repos/sous charge est disponible via `latency compare`. Elle vérifie les paramètres et les statistiques, sans vérifier le contexte réel ni attribuer un gain à Coopace. L'étape expérimentale reste ouverte.
+
 ## Références et mesures indispensables
 
 | Expérience | Comparaisons nécessaires |

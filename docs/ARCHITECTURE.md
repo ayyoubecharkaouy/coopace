@@ -41,6 +41,7 @@ Les composants de l'arborescence sont des unités de responsabilité. Côté Go,
 | Emplacement | Dépendances et limites |
 | --- | --- |
 | `packages/core` | Ne dépend ni des applications, ni du protocole réseau, ni des adaptations système. |
+| `internal/strictjson` | Contrôles JSON partagés en Go, avec la bibliothèque standard seule ; aucun format métier ni accès système. |
 | `packages/protocol` | Définit les messages échangés. Ne dépend ni des applications ni des adaptations système. |
 | `platforms/<système>` | Implémente les opérations du système derrière les contrats définis côté noyau. Ne dépend ni des applications ni des adaptations d'un autre système. |
 | `apps/agent`, `apps/gateway` | Assemblent le noyau, le protocole et les adaptations compatibles avec le système courant. |
@@ -60,6 +61,8 @@ Le découpage des fichiers suit aussi les responsabilités :
 - L'inventaire Linux sépare `gateway.go` pour la collecte, `gateway_parse.go` pour le décodage pur et `gateway_linux.go` pour les accès système et processus externes. Les tests correspondants restent à côté de ces fichiers ; les suffixes et contraintes de compilation distinguent les sources natives.
 
 Le préfixe commun des fichiers regroupe une fonctionnalité dans son paquet. Créer un sous-paquet seulement lorsqu'une responsabilité ou une dépendance distincte le justifie ; les modèles, parseurs et rapports n'ont pas besoin d'un dossier global commun. Les fichiers générés et états locaux restent dans les emplacements exclus de Git, notamment `.local/` et `.cache/`.
+
+Le contrôle des clés JSON et des limites est factorisé dans `internal/strictjson`, partagé par le protocole et la lecture des rapports TCP. Les schémas, leurs champs requis et les conversions restent dans leurs composants respectifs. Le comparateur de rapports appartient à `apps/agent/internal/latency` et sa commande à la CLI de l'agent ; il n'ouvre aucune connexion.
 
 Les futurs services privilégiés et clients mobiles pourront nécessiter leurs propres points d'entrée ou paquets. Leur découpage sera décidé avec le packaging ; les dossiers actuels décrivent les responsabilités, pas un nombre imposé de processus ou d'installateurs.
 
