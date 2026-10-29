@@ -13,6 +13,8 @@ Exécuter les commandes ci-dessous depuis la racine du dépôt ; les scripts `.s
 | `lab-network.sh run-series` | Recueillir trois paires de séries sans/avec le flux, vérifier le recouvrement et comparer les rapports complets. |
 | `lab-guard.py plan` | Prévisualiser le contrôle du nettoyage indépendant, sans création de ressource. |
 | `lab-guard.py check` / `check-crash` | Contrôler la récupération des processus et espaces neufs après fin normale ou mort forcée du pilote. |
+| `lab-guard.py plan-queue` | Prévisualiser la création et la relecture d'une file TBF dans le laboratoire. |
+| `lab-guard.py check-queue` / `check-queue-crash` | Vérifier TBF sur un lien désactivé, puis nettoyer après fin normale ou mort forcée du pilote. |
 
 Le mode `run` exige les privilèges documentés et le binaire passerelle construit au préalable avec le compte habituel. Il est réservé au laboratoire et n'est pas lancé automatiquement. Voir [VIRTUAL_LAB.md](../docs/VIRTUAL_LAB.md) pour le scénario, les limites et le premier résultat natif ICMP/TCP consigné.
 
@@ -22,7 +24,7 @@ Le mode `run` exige les privilèges documentés et le binaire passerelle constru
 
 `run-series` exige Python 3 et les trois binaires `coopace`, `coopace-lab-tcp` et `coopace-lab-load`. Le shell appelle `lab-series.py` avec ses propres noms d'espaces et sa réservation privée ; ce pilote de développement possède ses processus et utilise la CLI existante. Voir [VIRTUAL_SERIES.md](../docs/VIRTUAL_SERIES.md) pour les paramètres et le premier essai natif consigné.
 
-Le nouveau superviseur se lance avec `python3 -I scripts/lab-guard.py plan`. Ses modes natifs exigent les privilèges documentés dans [LAB_GUARD.md](../docs/LAB_GUARD.md), sans binaire Go. Ils ne configurent aucune file et ne modifient pas les modes de `lab-network.sh` ; les [deux premiers contrôles natifs](../docs/VALIDATION_LAB_GUARD_2026-10-29.md) sont validés.
+Le superviseur se lance avec `python3 -I scripts/lab-guard.py plan`. Ses contrôles sans file exigent les privilèges documentés dans [LAB_GUARD.md](../docs/LAB_GUARD.md), sans binaire Go ; leurs [premiers essais natifs](../docs/VALIDATION_LAB_GUARD_2026-10-29.md) sont validés. Les nouveaux contrôles avec file exigent aussi `tc` et utilisent le module voisin `lab_queue.py`, chargé par chemin explicite. Voir [LAB_QUEUE.md](../docs/LAB_QUEUE.md) pour leur périmètre sur lien désactivé et la validation native encore à effectuer. Aucun de ces modes ne modifie les commandes de `lab-network.sh`.
 
 Les tests Python de `tests/` utilisent des outils simulés et des fichiers temporaires. Ils n'installent pas de SDK réel et ne créent aucun réseau :
 

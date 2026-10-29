@@ -2,7 +2,7 @@
 
 ## État et question
 
-**Conception seulement : aucun goulot n'est encore implémenté ou exécuté.** Les [premières séries natives](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) valident la collecte et son recouvrement avec un transfert. Elles ne démontrent pas de congestion.
+**La campagne avec goulot actif reste à développer.** Le [cycle de vie d'une file TBF sur lien désactivé](LAB_QUEUE.md) est implémenté et testé avec des outils simulés ; sa validation native reste à effectuer. Les [premières séries natives sans goulot](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) valident la collecte et son recouvrement avec un transfert, sans démontrer de congestion.
 
 La prochaine expérience doit répondre à cette question : une limitation connue sur la sortie de la passerelle produit-elle une file observable et une augmentation répétée de la durée d'établissement TCP sous charge ? Elle prépare ensuite une référence CAKE manuelle, avant tout pilotage Coopace.
 
@@ -93,4 +93,4 @@ La référence suivante sera CAKE statique, configuré explicitement au même d�
 
 Comparer TBF/FIFO à CAKE au même débit étudiera ces deux configurations de files. Cela ne simulera pas une liaison physique indépendante de CAKE et ne démontrera pas un bénéfice propre à Coopace. Le pilotage Coopace viendra seulement après cette référence manuelle. Équité entre hôtes, ressources, trafic descendant, UDP/QUIC, IPv6 et DNS resteront à évaluer séparément.
 
-Les deux contrôles natifs du superviseur sont validés. La prochaine sous-étape est le **cycle de vie de la file dans le laboratoire**, avec prévisualisation et tests simulés, puis le rapport du récepteur et les statistiques de file. La campagne avec goulot nécessitera un nouveau dossier d'essai avec protocole, commit et empreintes figés. L'étape 4.2 reste ouverte.
+Les deux premiers contrôles natifs du superviseur sans file sont validés. Le [cycle de vie de la file](LAB_QUEUE.md) dispose maintenant d'une prévisualisation et de tests simulés sous ce superviseur, sur un lien désactivé. Ses contrôles natifs précèdent le rapport du récepteur, les statistiques de file et l'intégration au chemin actif. La campagne avec goulot nécessitera un nouveau dossier d'essai avec protocole, commit et empreintes figés. L'étape 4.2 reste ouverte.

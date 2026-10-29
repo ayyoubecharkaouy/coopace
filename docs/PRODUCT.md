@@ -73,7 +73,7 @@ Le [générateur de trafic synthétique](VIRTUAL_LOAD.md) prépare ensuite un tr
 
 Le [superviseur indépendant du laboratoire](LAB_GUARD.md) dispose de deux [contrôles natifs validés](VALIDATION_LAB_GUARD_2026-10-29.md) : fin normale et mort forcée du pilote, avec récupération des descendants et retrait des espaces possédés. Il s'agit d'un outil de développement distinct de l'application passerelle ; il n'est pas encore intégré aux séries de mesure et ne restaure pas la configuration d'un réseau existant.
 
-Le [protocole du prochain goulot virtuel](VIRTUAL_BOTTLENECK.md) définit TBF/FIFO à 4 Mbit/s et ses critères de congestion. Le cycle de vie de la file, l'intégration du superviseur et l'instrumentation complémentaire restent à développer. La collecte avec file puis la référence CAKE manuelle restent à valider avant de revendiquer une gestion du trafic dans le produit.
+Le [protocole du prochain goulot virtuel](VIRTUAL_BOTTLENECK.md) définit TBF/FIFO à 4 Mbit/s et ses critères de congestion. Le [contrôle du cycle de vie de la file](LAB_QUEUE.md) est implémenté sous le superviseur et testé avec des outils simulés, sur un lien désactivé ; sa validation native reste à effectuer. L'intégration à une topologie active, l'instrumentation complémentaire, la collecte avec file puis la référence CAKE manuelle restent à valider avant de revendiquer une gestion du trafic dans le produit.
 
 ## Références et mesures indispensables
 

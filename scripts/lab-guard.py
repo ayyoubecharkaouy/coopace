@@ -2,6 +2,7 @@
 
 import argparse
 import ctypes
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -13,6 +14,11 @@ import subprocess
 import sys
 import tempfile
 import time
+
+
+_queue_spec = importlib.util.spec_from_file_location("lab_queue", Path(__file__).with_name("lab_queue.py"))
+lab_queue = importlib.util.module_from_spec(_queue_spec)
+_queue_spec.loader.exec_module(lab_queue)
 
 
 LIMIT = 4096
@@ -76,6 +82,9 @@ class Namespaces:
         return [self.ip, "netns", "exec", gateway,
                 sys.executable, "-I", "-c", WORKER, mode]
 
+    def execute(self, args, owner):
+        return lab_queue.run_command(args, owner)
+
 
 class Guard:
     def __init__(self, namespaces, *, timeout=180, cleanup_timeout=10, tempdir=None):
@@ -95,6 +104,8 @@ class Guard:
         self.driver_code = None
         self.reaped_descendants = 0
         self.closed = False
+        self.queue_report = None
+        self.command_child = None
 
     def check(self):
         if self.interruption:
@@ -109,6 +120,8 @@ class Guard:
                                     for name, identity in self.owned],
                      "uncertain_names": self.uncertain,
                      "driver_pid": self.child.pid if self.child else None}
+            if self.queue_report is not None:
+                value["queue"] = self.queue_report
             (self.workspace / "owner.json").write_text(json.dumps(value) + "\n")
 
     def create(self):
@@ -233,17 +246,29 @@ class Guard:
         finally:
             child.stdout.close()
 
+    def stop_command(self, deadline):
+        child = self.command_child
+        if child is not None:
+            try:
+                if child.poll() is None:
+                    child.kill()
+                child.wait(timeout=max(0.001, deadline - time.monotonic()))
+                self.command_child = None
+            finally:
+                child.stdout.close()
+
     def close(self):
         if self.closed:
             return
         self.closed = True
         deadline = time.monotonic() + self.cleanup_timeout
         errors = []
-        try:
-            self.stop_group(deadline)
-        except (OSError, GuardError, subprocess.SubprocessError) as error:
-            # Preserve namespaces if a process may still hold them alive.
-            errors.append(f"arrêt des processus : {error}")
+        for stop in (self.stop_command, self.stop_group):
+            try:
+                stop(deadline)
+            except (OSError, GuardError, subprocess.SubprocessError) as error:
+                # Preserve namespaces if a process may still hold them alive.
+                errors.append(f"arrêt des processus : {error}")
         processes_stopped = not errors
         if processes_stopped:
             for name, expected in reversed(self.owned):
@@ -274,7 +299,7 @@ class Guard:
         print("Processus récupérés et espaces du contrôle supprimés.", file=sys.stderr, flush=True)
 
 
-def run_check(mode, namespaces, *, timeout=180, tempdir=None):
+def run_check(mode, namespaces, *, timeout=180, tempdir=None, queue_check=None):
     enable_subreaper()
     guard = Guard(namespaces, timeout=timeout, tempdir=tempdir)
     previous = {}
@@ -287,21 +312,30 @@ def run_check(mode, namespaces, *, timeout=180, tempdir=None):
     try:
         try:
             guard.create()
-            guard.start(namespaces.worker_args(guard.owned[1][0], mode))
-            guard.monitor(mode)
+            if queue_check is not None:
+                queue_check.prepare(guard)
+            worker_mode = "check-crash" if mode.endswith("-crash") else "check"
+            guard.start(namespaces.worker_args(guard.owned[1][0], worker_mode))
+            guard.monitor(worker_mode)
+            if queue_check is not None:
+                queue_check.verify("after_driver_exit")
         finally:
             guard.close()
         guard.check()
-        expected = -signal.SIGKILL if mode == "check-crash" else 0
+        expected = -signal.SIGKILL if mode.endswith("-crash") else 0
         if guard.driver_code != expected or guard.reaped_descendants != 1:
             raise GuardError("Arrêt du pilote ou récupération du descendant non conforme.")
-        return {"schema_version": 1, "kind": "lab_guard_check", "mode": mode,
+        result = {"schema_version": 1, "kind": "lab_guard_check", "mode": mode,
                 "driver_exit_code": guard.driver_code,
                 "reaped_descendants": guard.reaped_descendants,
                 "driver_pid": guard.child.pid, "descendant_pid": guard.descendant,
                 "namespaces": [name for name, _identity in guard.owned],
                 "workspace": str(guard.workspace), "cleanup_verified": True,
-                "queue_applied": False, "traffic_generated": False}
+                "queue_applied": queue_check is not None, "traffic_generated": False}
+        if queue_check is not None:
+            result["kind"] = "lab_queue_check"
+            result["queue"] = guard.queue_report
+        return result
     finally:
         for signum, handler in previous.items():
             signal.signal(signum, handler)
@@ -324,7 +358,9 @@ def preflight():
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", nargs="?", choices=("plan", "check", "check-crash"), default="plan")
+    parser.add_argument("mode", nargs="?",
+                        choices=("plan", "check", "check-crash", "plan-queue", "check-queue", "check-queue-crash"),
+                        default="plan")
     args = parser.parse_args(argv)
     if args.mode == "plan":
         print("Contrôle prévu : trois espaces Linux neufs, un pilote et un descendant temporaire.\n"
@@ -333,14 +369,24 @@ def main(argv=None):
               "Aucune file, route, adresse, interface physique ou sonde n'est configurée.\n"
               "Le mode plan ne crée aucune ressource et n'exige aucun privilège.")
         return 0
+    if args.mode == "plan-queue":
+        print(lab_queue.plan())
+        return 0
     try:
-        result = run_check(args.mode, preflight())
+        namespaces = preflight()
+        queue_check = None
+        if args.mode in ("check-queue", "check-queue-crash"):
+            tc = shutil.which("tc")
+            if not tc:
+                raise GuardError("Outil tc absent ; aucun espace créé.")
+            queue_check = lab_queue.QueueCheck(namespaces, tc)
+        result = run_check(args.mode, namespaces, queue_check=queue_check)
         print(json.dumps(result, ensure_ascii=False))
         return 0
     except Interrupted as error:
         print(str(error), file=sys.stderr)
         return error.code
-    except (OSError, GuardError, subprocess.SubprocessError) as error:
+    except (OSError, GuardError, lab_queue.QueueError, subprocess.SubprocessError) as error:
         print(str(error), file=sys.stderr)
         return 1
 

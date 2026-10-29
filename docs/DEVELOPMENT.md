@@ -148,6 +148,8 @@ Le [protocole de goulot virtuel](VIRTUAL_BOTTLENECK.md) prépare l'expérience s
 
 Le [superviseur indépendant](LAB_GUARD.md) dispose maintenant de contrôles `check` et `check-crash`, sans file ni trafic. Les tests Python lancent et récupèrent de vrais processus avec des espaces simulés. `python3 -I scripts/lab-guard.py plan` reste sans privilèges ; les [deux premiers contrôles natifs](VALIDATION_LAB_GUARD_2026-10-29.md) sont validés séparément de la suite automatique.
 
+Le [cycle de vie d'une file TBF](LAB_QUEUE.md) ajoute `python3 -I scripts/lab-guard.py plan-queue`, également sans privilèges. `check-queue` et `check-queue-crash` exigent en plus `tc`, créent une file dans la passerelle neuve sur un lien désactivé, puis nettoient. Ils utilisent le module voisin `lab_queue.py` et sont testés avec des outils simulés ; leur validation native reste à consigner. Les commandes `lab-network.sh` gardent leurs paramètres et leur cycle de vie.
+
 ## Sous Windows
 
 Un exécutable Windows x64 est disponible dans `.local/bin/coopace-windows-amd64.exe`, accompagné de son empreinte SHA-256. La [procédure Windows](WINDOWS_VALIDATION.md) explique comment le compiler depuis Linux et le tester sur un PC Windows sans installer Go.

@@ -4,7 +4,7 @@
 
 `scripts/lab-guard.py` prépare le nettoyage indépendant requis par le [protocole du goulot virtuel](VIRTUAL_BOTTLENECK.md). Le superviseur crée et possède trois espaces neufs, reste extérieur au groupe de processus du pilote, puis récupère ses processus avant de supprimer les espaces. **Les deux premiers contrôles natifs sont validés**, après fin normale et mort forcée du pilote. Le [compte rendu](VALIDATION_LAB_GUARD_2026-10-29.md) conserve les preuves et limites ; les tests avec espaces simulés restent disponibles.
 
-Cette sous-étape livre uniquement le contrôle du cycle de vie. Elle ne configure aucune file TBF/CAKE, adresse, route ou interface physique et ne génère aucun trafic. Les commandes existantes de `lab-network.sh` conservent leur implémentation et leurs limites ; elles ne bénéficient pas encore de ce nouveau superviseur.
+Les modes `check` et `check-crash` contrôlent la supervision sans configurer de file TBF/CAKE, adresse, route ou interface physique, ni générer de trafic. Les nouveaux modes distincts `check-queue` et `check-queue-crash` préparent le [cycle de vie d'une file TBF sur lien désactivé](LAB_QUEUE.md) ; leurs contrôles natifs restent à effectuer. Les commandes existantes de `lab-network.sh` conservent leur implémentation et leurs limites ; elles ne bénéficient pas encore de ce nouveau superviseur.
 
 Le contrôle utilise Python 3 et sa bibliothèque standard, avec l'appel Linux `prctl` via `ctypes`. Il reste un outil de développement ; les applications du produit restent en Go/Kotlin.
 
@@ -66,4 +66,4 @@ Le superviseur doit rester vivant. Sa destruction, une panne de l'hôte ou l'int
 
 La récupération vérifiée concerne les processus possédés. Elle n'établit pas l'absence de références détenues par un processus étranger entré dans l'espace réseau, ni la restauration du routage d'un foyer. Les dossiers et espaces résiduels nécessitent une inspection ciblée à partir du journal, sans nettoyage global.
 
-Les [deux premiers contrôles natifs](VALIDATION_LAB_GUARD_2026-10-29.md) sont validés. La prochaine sous-étape consiste à intégrer le superviseur au futur cycle de vie de la file et tester ses erreurs de création/relecture. Le rapport du récepteur, les statistiques de file et la campagne avec goulot restent à développer. L'étape 4.2 reste ouverte.
+Les [deux premiers contrôles natifs sans file](VALIDATION_LAB_GUARD_2026-10-29.md) sont validés. Le [contrôle du cycle de vie de la file](LAB_QUEUE.md) est maintenant intégré au superviseur et testé avec des outils simulés ; sa validation native reste à effectuer. Le rapport du récepteur, les statistiques de file et la campagne avec goulot actif restent à développer. L'étape 4.2 reste ouverte.
