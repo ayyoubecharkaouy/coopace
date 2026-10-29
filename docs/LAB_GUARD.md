@@ -2,7 +2,7 @@
 
 ## État et périmètre
 
-`scripts/lab-guard.py` prépare le nettoyage indépendant requis par le [protocole du goulot virtuel](VIRTUAL_BOTTLENECK.md). Le superviseur crée et possède trois espaces neufs, reste extérieur au groupe de processus du pilote, puis récupère ses processus avant de supprimer les espaces. **Les tests avec espaces simulés sont disponibles ; la validation native reste à effectuer.**
+`scripts/lab-guard.py` prépare le nettoyage indépendant requis par le [protocole du goulot virtuel](VIRTUAL_BOTTLENECK.md). Le superviseur crée et possède trois espaces neufs, reste extérieur au groupe de processus du pilote, puis récupère ses processus avant de supprimer les espaces. **Les deux premiers contrôles natifs sont validés**, après fin normale et mort forcée du pilote. Le [compte rendu](VALIDATION_LAB_GUARD_2026-10-29.md) conserve les preuves et limites ; les tests avec espaces simulés restent disponibles.
 
 Cette sous-étape livre uniquement le contrôle du cycle de vie. Elle ne configure aucune file TBF/CAKE, adresse, route ou interface physique et ne génère aucun trafic. Les commandes existantes de `lab-network.sh` conservent leur implémentation et leurs limites ; elles ne bénéficient pas encore de ce nouveau superviseur.
 
@@ -43,7 +43,7 @@ python3 -B -m unittest discover -s scripts/tests -p 'test_lab_guard.py' -v
 
 Les tests utilisent des dossiers temporaires à la place des espaces réseau. Ils lancent de vrais pilotes et descendants dans des processus dédiés, puis vérifient leur récupération avant toute suppression simulée, y compris après mort forcée, expiration et signal. Ils couvrent aussi les collisions, identités changées, créations ambiguës, erreurs de suppression, sorties excessives et préservation des objets inconnus. Aucun accès réseau ni privilège système n'est utilisé.
 
-## Essai natif à consigner
+## Reproduire les contrôles natifs
 
 Les modes `check` et `check-crash` exigent Linux, Python 3, `ip`, UID 0, `CAP_NET_ADMIN` et `CAP_SYS_ADMIN`. Le précontrôle les vérifie avant de réserver des ressources ; aucun binaire Go n'est requis. Les arguments n'acceptent ni nom d'espace existant ni commande arbitraire à exécuter.
 
@@ -66,4 +66,4 @@ Le superviseur doit rester vivant. Sa destruction, une panne de l'hôte ou l'int
 
 La récupération vérifiée concerne les processus possédés. Elle n'établit pas l'absence de références détenues par un processus étranger entré dans l'espace réseau, ni la restauration du routage d'un foyer. Les dossiers et espaces résiduels nécessitent une inspection ciblée à partir du journal, sans nettoyage global.
 
-Après validation native de ces deux contrôles, intégrer le superviseur au futur cycle de vie de la file et tester ses erreurs de création/relecture. Le rapport du récepteur, les statistiques de file et la campagne avec goulot restent à développer. L'étape 4.2 reste ouverte.
+Les [deux premiers contrôles natifs](VALIDATION_LAB_GUARD_2026-10-29.md) sont validés. La prochaine sous-étape consiste à intégrer le superviseur au futur cycle de vie de la file et tester ses erreurs de création/relecture. Le rapport du récepteur, les statistiques de file et la campagne avec goulot restent à développer. L'étape 4.2 reste ouverte.

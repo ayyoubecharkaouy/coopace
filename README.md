@@ -26,7 +26,7 @@ Le mode [`run-series`](docs/VIRTUAL_SERIES.md) prépare désormais trois paires 
 
 La prochaine expérience est définie dans le [protocole de goulot virtuel](docs/VIRTUAL_BOTTLENECK.md) : limitation TBF/FIFO à 4 Mbit/s, critères fixés avant collecte et périmètre de nettoyage. Son implémentation commencera par le nettoyage indépendant et le cycle de vie de la file, avant les mesures. Les modes actuels n'appliquent aucune file.
 
-Un [premier superviseur indépendant](docs/LAB_GUARD.md) prépare le nettoyage après fin normale ou mort forcée du pilote. Il est testé avec de vrais processus et des espaces simulés ; les deux contrôles natifs restent à valider avant l'intégration d'une file de trafic.
+Un [premier superviseur indépendant](docs/LAB_GUARD.md) prépare le nettoyage après fin normale ou mort forcée du pilote. Il est testé avec de vrais processus et des espaces simulés ; les [deux premiers contrôles natifs](docs/VALIDATION_LAB_GUARD_2026-10-29.md) sont validés, avec récupération des descendants et nettoyage des espaces. L'intégration d'une file de trafic reste à développer.
 
 ## Organisation
 

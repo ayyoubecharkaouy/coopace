@@ -22,7 +22,7 @@ Le mode `run` exige les privilèges documentés et le binaire passerelle constru
 
 `run-series` exige Python 3 et les trois binaires `coopace`, `coopace-lab-tcp` et `coopace-lab-load`. Le shell appelle `lab-series.py` avec ses propres noms d'espaces et sa réservation privée ; ce pilote de développement possède ses processus et utilise la CLI existante. Voir [VIRTUAL_SERIES.md](../docs/VIRTUAL_SERIES.md) pour les paramètres et le premier essai natif consigné.
 
-Le nouveau superviseur se lance avec `python3 -I scripts/lab-guard.py plan`. Ses modes natifs exigent les privilèges documentés dans [LAB_GUARD.md](../docs/LAB_GUARD.md), sans binaire Go. Ils ne configurent aucune file et ne modifient pas les modes de `lab-network.sh` ; leur validation native reste à effectuer.
+Le nouveau superviseur se lance avec `python3 -I scripts/lab-guard.py plan`. Ses modes natifs exigent les privilèges documentés dans [LAB_GUARD.md](../docs/LAB_GUARD.md), sans binaire Go. Ils ne configurent aucune file et ne modifient pas les modes de `lab-network.sh` ; les [deux premiers contrôles natifs](../docs/VALIDATION_LAB_GUARD_2026-10-29.md) sont validés.
 
 Les tests Python de `tests/` utilisent des outils simulés et des fichiers temporaires. Ils n'installent pas de SDK réel et ne créent aucun réseau :
 

@@ -31,9 +31,9 @@ Le [premier transfert synthétique borné](VIRTUAL_LOAD.md) définit ensuite `ru
 
 Les [séries sans et avec transfert](VIRTUAL_SERIES.md) définissent `run-series`, trois paires de mesures, leur ordre, le contrôle du recouvrement et le rapport groupé. Un [premier essai natif et son analyse descriptive](VALIDATION_VIRTUAL_SERIES_2026-10-29.md) sont consignés : 60 réussites sans échec, trois transferts complets et recouvrement conforme.
 
-Le [protocole de goulot virtuel contrôlé](VIRTUAL_BOTTLENECK.md) fixe la prochaine expérience : TBF/FIFO à 4 Mbit/s dans la passerelle neuve, critères de congestion, mesures à compléter et nettoyage indépendant à développer. Il s'agit d'une conception ; aucune file n'est encore appliquée.
+Le [protocole de goulot virtuel contrôlé](VIRTUAL_BOTTLENECK.md) fixe la prochaine expérience : TBF/FIFO à 4 Mbit/s dans la passerelle neuve, critères de congestion, mesures à compléter et périmètre de nettoyage. Le goulot reste au stade de conception ; aucune file n'est encore appliquée.
 
-Le [superviseur indépendant du laboratoire](LAB_GUARD.md) prépare ce nettoyage avec deux contrôles ciblés : fin normale et mort forcée du pilote. Les tests utilisent des espaces simulés et de vrais processus ; la validation native et l'intégration au futur scénario avec file restent à effectuer.
+Le [superviseur indépendant du laboratoire](LAB_GUARD.md) prépare ce nettoyage avec deux contrôles ciblés : fin normale et mort forcée du pilote. Les tests utilisent des espaces simulés et de vrais processus ; les [deux premiers contrôles natifs sont validés](VALIDATION_LAB_GUARD_2026-10-29.md). L'intégration au futur scénario avec file reste à effectuer.
 
 ## Bilans datés
 

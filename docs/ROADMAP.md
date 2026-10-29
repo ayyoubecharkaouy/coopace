@@ -135,7 +135,7 @@ Le mode [`run-series`](VIRTUAL_SERIES.md) associe maintenant trois paires sans/a
 
 Le [protocole de goulot virtuel v1](VIRTUAL_BOTTLENECK.md) fixe maintenant le point d'application, TBF/FIFO à 4 Mbit/s, les paramètres de collecte et les critères distincts de validité technique et de congestion. Il définit le périmètre jetable du nettoyage et les essais de panne requis. Le goulot reste au stade de conception : cycle de vie de la file, statistiques et rapport de réception restent à implémenter et valider. La référence CAKE manuelle viendra après la qualification du goulot.
 
-Le [premier superviseur indépendant](LAB_GUARD.md) prépare maintenant deux contrôles sans file : fin normale et mort forcée du pilote, avec récupération de son descendant avant retrait des espaces possédés. Les tests emploient des espaces simulés et de vrais processus/signaux. La validation native de ces contrôles puis l'intégration au cycle de vie de la file restent à effectuer ; aucune nouvelle campagne de débit ou latence n'est encore lancée.
+Le [premier superviseur indépendant](LAB_GUARD.md) prépare maintenant deux contrôles sans file : fin normale et mort forcée du pilote, avec récupération de son descendant avant retrait des espaces possédés. Les tests emploient des espaces simulés et de vrais processus/signaux. Les [deux contrôles natifs du 29 octobre](VALIDATION_LAB_GUARD_2026-10-29.md) sont validés : sortie `0`, un descendant récupéré par contrôle, espaces et réservations retirés. La prochaine sous-étape intègre ce superviseur au cycle de vie de la file ; aucune nouvelle campagne de débit ou latence n'est encore lancée.
 
 ## Étape 5 — Décisions coopératives
 
