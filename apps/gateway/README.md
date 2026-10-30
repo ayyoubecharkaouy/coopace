@@ -25,3 +25,5 @@ Cette commande ne démarre aucun service et ne modifie aucune configuration. Les
 Les outils de `scripts/` ont leur propre cycle de vie : connectivité, transfert, séries synthétiques et [supervision indépendante](../../docs/LAB_GUARD.md). Leurs validations ne changent pas les capacités de cette application et ne constituent pas une restauration de passerelle réelle.
 
 Le moteur réseau dépendra du système : CAKE/SQM est envisagé sous Linux ; une passerelle Windows exige une intégration et une validation spécifiques. Les privilèges et leur séparation restent à définir.
+
+La [première planification CAKE statique hors ligne](../../docs/STATIC_CAKE_PLANNING.md) est implémentée et testée dans le noyau Go. Son raccordement à cette application sera une sous-étape distincte : scénario local et simulation sur stdout, avant un éventuel exécuteur supervisé. La CLI actuelle conserve uniquement `inspect`.

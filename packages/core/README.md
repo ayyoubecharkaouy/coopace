@@ -1,8 +1,8 @@
 # Noyau métier
 
-État : modèles d'appareils, observations, statistiques TCP, empreinte de clé publique, consentement et données d'inventaire utilisés jusqu'à l'étape 4.1 sous Linux x86_64 avec Go 1.27.3. Le formatage, les tests, l'analyse statique et la compilation passent. L'exécution sur les autres systèmes reste à vérifier.
+État : modèles d’appareils, observations, statistiques TCP, identité, consentement et inventaire ; première planification CAKE hors ligne ajoutée à la préparation de l’étape 4.2 sous Linux x86_64 avec Go 1.27.3. Le formatage, les tests, l'analyse statique et la compilation passent. L'exécution sur les autres systèmes reste à vérifier.
 
-Ce module accueille les modèles et règles communs : appareils, rôles, capacités, consentements et premières mesures. Les autres mesures et les décisions seront ajoutées progressivement.
+Ce module accueille les modèles et règles communs : appareils, rôles, capacités, consentements et premières mesures. Une première planification CAKE statique hors ligne est maintenant ajoutée ; les autres décisions restent à développer.
 
 Les modèles `LatencySample`, `LatencySummary` et `LatencyDistribution` ajoutent les statistiques des durées d'établissement TCP. Le calcul des percentiles reste indépendant du mécanisme de mesure et ne déduit aucun diagnostic de congestion.
 
@@ -65,3 +65,9 @@ Le calcul d'empreinte est dans [identity.go](identity.go), et le modèle de cons
 `GatewayReading` conserve explicitement la disponibilité d'une valeur : une donnée inaccessible ne devient pas un booléen faux ou une liste vide. `GatewayInventory` regroupe interfaces, flags de forwarding, capacité observée, outils, routes par défaut et files. Ces types ne détectent ni une interface WAN ni l'aptitude à gérer le réseau ; ils n'effectuent aucun I/O et ne constituent pas une autorisation.
 
 La collecte appartient à l'adaptation Linux, et son affichage à l'application passerelle. Voir [GATEWAY_DIAGNOSTIC.md](../../docs/GATEWAY_DIAGNOSTIC.md).
+
+## Planification CAKE statique hors ligne
+
+`PlanStaticCake` évalue un `CakePlanningInput` et retourne un `CakePlan` : abstention, conservation de la référence déjà conforme ou proposition du profil fixe `cake-ipv4-lab-4mbit-v1`. La proposition exige le laboratoire IPv4 jetable, une file déclarée non configurée et six prérequis confirmés. Une passerelle existante reste hors périmètre ; une file inconnue ou différente n'est jamais remplacée.
+
+Les hypothèses d'entrée ne sont pas des preuves ni des autorisations. La fonction ne collecte rien, ne déduit pas une capacité WAN, ne réalise aucun I/O et ne modifie pas l'entrée. Les modèles ne définissent aucun JSON ; le raccordement à la CLI et l'exécution restent à développer. Voir le [contrat, la référence et les limites](../../docs/STATIC_CAKE_PLANNING.md).

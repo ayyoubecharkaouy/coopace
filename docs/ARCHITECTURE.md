@@ -84,6 +84,8 @@ La [comparaison des six campagnes](LAB_COMPARISON_RUN.md) sépare `lab_compariso
 
 À l'étape 4.1, `apps/gateway/cmd/coopace-gateway` fournit une commande distincte de l'agent : `inspect`, en lecture seule sous Linux. Ses paquets internes orchestrent les lectures de `platforms/linux` et utilisent les modèles d'inventaire du noyau. Aucun paquet interne d'une application n'est importé par l'autre. Ce découpage prépare les rôles ; il ne démarre pas un service privilégié et ne fixe pas le nombre d'installateurs du produit final. Voir [GATEWAY_DIAGNOSTIC.md](GATEWAY_DIAGNOSTIC.md).
 
+La [planification CAKE statique hors ligne](STATIC_CAKE_PLANNING.md) reste dans `packages/core/cake_plan.go`, avec ses tests et ses types sans JSON. Elle dépend uniquement d’hypothèses métier fournies explicitement et retourne proposition, conservation ou abstention. Elle n’importe ni l’inventaire applicatif, ni les pilotes Python, ni les adaptations réseau ; elle ne crée aucune opération privilégiée. Sa conversion vers un scénario local et une commande de simulation appartiendra à la passerelle.
+
 La première observation suit ce découpage : compteurs lus par l'adaptation Linux, différences calculées dans le noyau sans accès système, puis orchestration et affichage par l'agent. Les modèles et horodatages locaux sont convertis vers les contrats réseau par l’agent. Voir [OBSERVATIONS.md](OBSERVATIONS.md).
 
 La mesure TCP de l'étape 3.2 utilise la bibliothèque réseau portable de Go dans l'agent, vers une cible explicite. Les statistiques restent pures dans le noyau. Son JSON versionné est un format local de conservation, distinct du protocole du groupe. Voir [LATENCY.md](LATENCY.md).
