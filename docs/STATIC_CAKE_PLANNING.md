@@ -4,7 +4,7 @@
 
 `packages/core/cake_plan.go` fournit `PlanStaticCake`, une fonction Go pure, testée sans réseau. Elle transforme des hypothèses explicites en recommandation : proposer la référence du laboratoire, conserver une référence déjà conforme ou s'abstenir. Elle prépare l'intégration du moteur CAKE existant après la [comparaison native TBF/CAKE](VALIDATION_CAKE_COMPARISON_2026-10-30.md).
 
-Cette sous-étape appartient à la préparation de l'étape 4.2. La CLI passerelle conserve seulement `inspect` ; aucun exécuteur, nouvelle commande, réglage réseau ou contrôleur adaptatif n'est ajouté. L'étape 5 de coordination et le ML restent différés. Le gain d'une surcouche Coopace devra être évalué séparément de la référence CAKE.
+Cette sous-étape appartient à la préparation de l'étape 4.2. La [commande `plan` de simulation](GATEWAY_PLANNING.md) raccorde maintenant cette règle à un scénario local strictement validé, à côté de `inspect`. Aucun exécuteur, réglage réseau ou contrôleur adaptatif n’est ajouté. L'étape 5 de coordination et le ML restent différés. Le gain d'une surcouche Coopace devra être évalué séparément de la référence CAKE.
 
 ## Référence et périmètre
 
@@ -46,6 +46,6 @@ Les tests vérifient les valeurs par défaut, les six prérequis séparément, l
 
 ## Sous-étape suivante
 
-Raccorder ce planificateur à un scénario local explicitement déclaré dans l'application passerelle, avec lecture bornée, validation stricte, motifs et provenance sur stdout. Ce mode de simulation devra rester distinct d'un exécuteur privilégié et de l'inventaire en lecture seule. Il permettra d'examiner les propositions et abstentions avant de développer l'application du profil dans le laboratoire supervisé.
+Le [raccordement à un scénario local dans la CLI](GATEWAY_PLANNING.md) est maintenant implémenté et testé : lecture bornée, validation stricte, motifs et provenance sur stdout. La prochaine sous-étape définit le contrat d’un exécuteur pour le laboratoire supervisé, avec résolution exacte du profil, vérifications fraîches et relecture après ajout. La simulation reste indépendante de cet exécuteur et du diagnostic système.
 
 Avant tout réseau réel : définir le profil à partir de son scénario et de ses mesures, la couverture IPv4/IPv6/DNS, le consentement local persistant et révocable, les limites de durée et la restauration indépendante vérifiée. Les conditions du [produit](PRODUCT.md#conditions-de-poursuite) continuent de s'appliquer : garder une intégration simple si le moteur existant suffit et différer l'automatisation lorsque ces prérequis ne sont pas maîtrisés.

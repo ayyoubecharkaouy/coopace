@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ayyoubecharkaouy/coopace/apps/gateway/internal/buildinfo"
 	"github.com/ayyoubecharkaouy/coopace/packages/core"
 )
 
@@ -69,7 +70,7 @@ func TestInventoryJSONKeepsMissingFalseAndKnownEmptyDistinct(t *testing.T) {
 func TestCompleteInventoryDoesNotClaimCoverageOrRestoration(t *testing.T) {
 	known := core.GatewayReading[bool]{Available: true, Value: true}
 	modified := true
-	report := Report{Build: Build{GoVersion: "go-test", VCS: "git", Revision: "revision", Modified: &modified}, Inventory: core.GatewayInventory{
+	report := Report{Build: buildinfo.Info{GoVersion: "go-test", VCS: "git", Revision: "revision", Modified: &modified}, Inventory: core.GatewayInventory{
 		Interfaces:     core.GatewayReading[[]core.GatewayInterface]{Available: true, Value: []core.GatewayInterface{{Name: "eth0", Index: 2, MTU: 1500, Up: true}}},
 		IPv4Forwarding: known, IPv6Forwarding: known, NetAdmin: known,
 		IPv4Defaults: core.GatewayReading[[]core.GatewayDefaultRoute]{Available: true, Value: []core.GatewayDefaultRoute{{Table: "main", Kind: "unicast", Interfaces: []string{"eth0"}}}},

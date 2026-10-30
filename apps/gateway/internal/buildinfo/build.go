@@ -1,4 +1,5 @@
-package diagnostic
+// Package buildinfo reads executable provenance without collecting an inventory.
+package buildinfo
 
 import (
 	"runtime"
@@ -6,25 +7,25 @@ import (
 	"strconv"
 )
 
-// Build describes the executable at compilation time, not the current checkout.
+// Info describes the executable at compilation time, not the current checkout.
 // Missing VCS data is distinct from a known, clean working tree.
-type Build struct {
+type Info struct {
 	GoVersion string
 	VCS       string
 	Revision  string
 	Modified  *bool
 }
 
-func localBuild() Build {
+func Local() Info {
 	info, ok := debug.ReadBuildInfo()
 	if !ok {
-		return Build{GoVersion: runtime.Version()}
+		return Info{GoVersion: runtime.Version()}
 	}
 	return buildFromSettings(info.GoVersion, info.Settings)
 }
 
-func buildFromSettings(goVersion string, settings []debug.BuildSetting) Build {
-	result := Build{GoVersion: goVersion}
+func buildFromSettings(goVersion string, settings []debug.BuildSetting) Info {
+	result := Info{GoVersion: goVersion}
 	for _, setting := range settings {
 		switch setting.Key {
 		case "vcs":

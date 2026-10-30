@@ -10,6 +10,7 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Responsabilités des composants, dépendances et rangement du code. |
 | [ROADMAP.md](ROADMAP.md) | Progression par étapes et validations restantes. |
 | [STATIC_CAKE_PLANNING.md](STATIC_CAKE_PLANNING.md) | Première règle Go de planification hors ligne : périmètre, prérequis, décisions et limites avant intégration. |
+| [GATEWAY_PLANNING.md](GATEWAY_PLANNING.md) | Commande `plan`, scénario JSON local strict, motifs, provenance et exemples de simulation. |
 | [TECH_STACK.md](TECH_STACK.md) | Choix de Go et Kotlin, outils et décisions différées. |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | Installation locale, commandes, compilation et tests. |
 | [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md) | Compilation Windows et vérifications natives restant à effectuer. |

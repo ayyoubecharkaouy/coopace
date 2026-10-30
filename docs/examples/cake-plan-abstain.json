@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "kind": "static_cake_scenario",
+  "scope": "owned_ipv4_lab",
+  "queue": "unconfigured",
+  "checks": {
+    "reference_validated": false,
+    "local_consent": false,
+    "path_validated": false,
+    "ownership_validated": false,
+    "supervision_ready": false,
+    "permissions_checked": false
+  }
+}

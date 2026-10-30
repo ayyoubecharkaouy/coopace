@@ -202,3 +202,13 @@ La comparaison des exports locaux est dans les fichiers `latency/read.go` et `la
 L'état d'identité est géré par `apps/agent/internal/identity` ; son stockage est activé sous Linux uniquement. `packages/protocol` n'ouvre aucune connexion. `apps/agent/internal/group` convertit les contrats vers le noyau et orchestre profil, consentement persisté, transport TLS et échange borné. Le cadrage et la validation restent dans `packages/protocol`, sans sockets ni stockage.
 
 Le point d'entrée passerelle est `apps/gateway/cmd/coopace-gateway`, avec CLI et orchestration dans ses propres paquets `internal`. Les types d'inventaire sont dans `packages/core/gateway.go` ; les lectures Linux et leurs parseurs sont dans `platforms/linux/gateway*.go`. Cette séparation ne dépend pas des paquets internes de l'agent.
+
+## Simuler la planification CAKE
+
+La [commande de simulation](GATEWAY_PLANNING.md) lit un scénario local explicite, sans inventaire ni privilège :
+
+```sh
+sh scripts/go.sh run ./apps/gateway/cmd/coopace-gateway plan --scenario docs/examples/cake-plan-propose.json
+```
+
+Les exemples sont fictifs ; les hypothèses restent déclarées et aucune configuration réseau n’est appliquée. Le scénario strict et le rapport appartiennent à `apps/gateway/internal/planning`, la règle au noyau et la provenance du binaire à `internal/buildinfo`.

@@ -6,6 +6,7 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/ayyoubecharkaouy/coopace/apps/gateway/internal/buildinfo"
 	"github.com/ayyoubecharkaouy/coopace/packages/core"
 )
 
@@ -16,7 +17,7 @@ type Report struct {
 	Architecture string
 	CollectedAt  time.Time
 	Inventory    core.GatewayInventory
-	Build        Build
+	Build        buildinfo.Info
 }
 
 func Local(ctx context.Context, version string) (Report, error) {
@@ -26,5 +27,5 @@ func Local(ctx context.Context, version string) (Report, error) {
 	if err != nil {
 		return Report{}, err
 	}
-	return Report{Version: version, OS: runtime.GOOS, Architecture: runtime.GOARCH, CollectedAt: time.Now().UTC(), Inventory: inventory, Build: localBuild()}, nil
+	return Report{Version: version, OS: runtime.GOOS, Architecture: runtime.GOARCH, CollectedAt: time.Now().UTC(), Inventory: inventory, Build: buildinfo.Local()}, nil
 }

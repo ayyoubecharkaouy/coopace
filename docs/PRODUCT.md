@@ -77,7 +77,7 @@ Le [protocole du goulot virtuel](VIRTUAL_BOTTLENECK.md) définit TBF/FIFO à 4 M
 
 La [campagne CAKE de trois paires](LAB_CAKE_CAMPAIGN.md) est [validée en natif](VALIDATION_LAB_CAKE_CAMPAIGN_2026-10-30.md) : contrôles de passage, 60 connexions réussies, trois réceptions complètes, charge qualifiée et nettoyage confirmé. L’[orchestration des six campagnes et l’agrégateur comparatif](LAB_COMPARISON_RUN.md) sont [validés en natif](VALIDATION_CAKE_COMPARISON_2026-10-30.md) : amélioration de la configuration CAKE statique face à TBF selon v1 dans les trois blocs, débit et connexions préservés. Cette référence du moteur existant ne mesure pas encore un gain du pilotage Coopace ; couverture réelle, restauration et coût système restent à maîtriser avant automatisation.
 
-La [première planification statique hors ligne](STATIC_CAKE_PLANNING.md) est implémentée et testée dans le noyau Go. Elle recommande de proposer le profil du laboratoire, de conserver une référence conforme ou de s’abstenir selon des hypothèses explicites. Elle ne constitue pas une autorisation d’exécution ; le raccordement à la passerelle, les observations fraîches et l’application du profil restent à développer.
+La [première planification statique hors ligne](STATIC_CAKE_PLANNING.md) est implémentée et testée dans le noyau Go. Elle recommande de proposer le profil du laboratoire, de conserver une référence conforme ou de s’abstenir selon des hypothèses explicites. Elle ne constitue pas une autorisation d’exécution ; la [commande de simulation de la passerelle](GATEWAY_PLANNING.md) est maintenant disponible, avec scénario local validé, motifs et provenance. Les observations fraîches et l’application du profil restent à développer.
 
 ## Références et mesures indispensables
 
