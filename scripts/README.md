@@ -22,6 +22,8 @@ Exécuter les commandes ci-dessous depuis la racine du dépôt ; les scripts `.s
 | `lab-campaign.py run` / `check-crash` | Collecter six phases et qualifier la congestion, ou vérifier la récupération après mort forcée ; preuves conservées dans `--artifacts`. |
 | `lab-cake.py plan` | Prévisualiser le contrôle CAKE sur lien désactivé, sans création de ressource. |
 | `lab-cake.py check` / `check-crash` | Ajouter et relire CAKE/statistiques sur lien DOWN, puis récupérer pilote/descendant et supprimer les espaces possédés. |
+| `lab-cake-active.py plan` | Prévisualiser le contrôle fonctionnel CAKE avec transfert et sondes, sans création de ressource. |
+| `lab-cake-active.py check` / `check-crash` | Un transfert sous CAKE ou mort forcée du pilote, avec journal requis via `--evidence FICHIER_NEUF`. |
 
 Le mode `run` exige les privilèges documentés et le binaire passerelle construit au préalable avec le compte habituel. Il est réservé au laboratoire et n'est pas lancé automatiquement. Voir [VIRTUAL_LAB.md](../docs/VIRTUAL_LAB.md) pour le scénario, les limites et le premier résultat natif ICMP/TCP consigné.
 
@@ -46,3 +48,5 @@ Le [contrôle fonctionnel actif](../docs/LAB_ACTIVE.md) se lance séparément av
 La [campagne TBF](../docs/LAB_CAMPAIGN.md) utilise `python3 -I -B scripts/lab-campaign.py plan`, `run --artifacts DOSSIER` et `check-crash --artifacts DOSSIER`. Son module `lab_campaign.py` coordonne six phases sous le même superviseur et conserve les preuves intermédiaires. Elle requiert aussi `ping` et `CAP_NET_RAW` pour les contrôles de passage. Les tests avec commandes réseau simulées passent ; sa [première validation native](../docs/VALIDATION_VIRTUAL_BOTTLENECK_2026-10-30.md) confirme six phases, trois réceptions, congestion observée selon v1 et nettoyage après mort forcée.
 
 Le [contrôle CAKE DOWN](../docs/LAB_CAKE.md) utilise le module séparé `lab_cake.py`, le superviseur existant et une préparation commune du veth. Il exige le profil JSON identifié iproute2-6.1.0 ; options omises et statistiques indisponibles sont distinguées. Aucun binaire Go ni trafic de mesure n'est nécessaire. Les tests avec commandes réseau simulées et vrais processus passent ; sa [première validation native](../docs/VALIDATION_LAB_CAKE_2026-10-30.md) confirme configuration, statistiques et nettoyage dans les deux modes.
+
+Le [contrôle fonctionnel CAKE actif](../docs/LAB_CAKE_ACTIVE.md) utilise les trois binaires Go déjà employés par TBF, le même pilote de transfert et le superviseur. `lab_cake_active.py` conserve le validateur CAKE et les preuves séparément ; la topologie est activée par une fonction commune de `lab_active.py`. Les tests avec commandes réseau simulées passent ; sa première validation native reste à réaliser.

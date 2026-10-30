@@ -36,32 +36,37 @@ class ActiveQueue(queue.QueueCheck):
 
     def prepare(self, owner):
         super().prepare(owner)
-        client = owner.owned[0][0]
-        rows = self.links(client)
-        if len(rows) != 1 or rows[0].get("ifname") != "lo":
-            raise Error("Espace client neuf requis.")
-        ip = self.namespaces.ip
-        self.execute([ip, "-n", self.gateway, "link", "add", "lan", "type", "veth",
-                      "peer", "name", "eth0", "netns", client])
-        for namespace, interface, address in (
-                (client, "eth0", "10.203.0.2/30"), (self.gateway, "lan", "10.203.0.1/30"),
-                (self.gateway, "wan", "10.203.0.5/30"), (self.server, "eth0", "10.203.0.6/30")):
-            self.execute([ip, "-n", namespace, "address", "add", address, "dev", interface])
-            self.execute([ip, "-n", namespace, "link", "set", "dev", interface, "up"])
-        for namespace in (client, self.gateway, self.server):
-            self.execute([ip, "-n", namespace, "link", "set", "dev", "lo", "up"])
-        for namespace, network, via in ((client, "10.203.0.4/30", "10.203.0.1"),
-                                        (self.server, "10.203.0.0/30", "10.203.0.5")):
-            self.execute([ip, "-n", namespace, "route", "add", network, "via", via, "dev", "eth0"])
-        prefix = [ip, "netns", "exec", self.gateway, self.sysctl]
-        self.execute([*prefix, "-q", "-w", "net.ipv4.ip_forward=1"])
-        if self.execute([*prefix, "-n", "net.ipv4.ip_forward"]).strip() != b"1":
-            raise Error("Forwarding IPv4 de la passerelle non confirmé.")
-        wan = next((row for row in self.links(self.gateway) if row.get("ifname") == "wan"), {})
-        if "UP" not in wan.get("flags", []):
-            raise Error("Activation de wan non confirmée.")
-        self.report["link_state"] = "UP"
-        self.verify("after_activation")
+        activate(self, owner, self.sysctl)
+
+
+def activate(check, owner, sysctl):
+    """Activate the fixed lab topology after its scheduler has been verified."""
+    client = owner.owned[0][0]
+    rows = check.links(client)
+    if len(rows) != 1 or rows[0].get("ifname") != "lo":
+        raise Error("Espace client neuf requis.")
+    ip = check.namespaces.ip
+    check.execute([ip, "-n", check.gateway, "link", "add", "lan", "type", "veth",
+                  "peer", "name", "eth0", "netns", client])
+    for namespace, interface, address in (
+            (client, "eth0", "10.203.0.2/30"), (check.gateway, "lan", "10.203.0.1/30"),
+            (check.gateway, "wan", "10.203.0.5/30"), (check.server, "eth0", "10.203.0.6/30")):
+        check.execute([ip, "-n", namespace, "address", "add", address, "dev", interface])
+        check.execute([ip, "-n", namespace, "link", "set", "dev", interface, "up"])
+    for namespace in (client, check.gateway, check.server):
+        check.execute([ip, "-n", namespace, "link", "set", "dev", "lo", "up"])
+    for namespace, network, via in ((client, "10.203.0.4/30", "10.203.0.1"),
+                                    (check.server, "10.203.0.0/30", "10.203.0.5")):
+        check.execute([ip, "-n", namespace, "route", "add", network, "via", via, "dev", "eth0"])
+    prefix = [ip, "netns", "exec", check.gateway, sysctl]
+    check.execute([*prefix, "-q", "-w", "net.ipv4.ip_forward=1"])
+    if check.execute([*prefix, "-n", "net.ipv4.ip_forward"]).strip() != b"1":
+        raise Error("Forwarding IPv4 de la passerelle non confirmé.")
+    wan = next((row for row in check.links(check.gateway) if row.get("ifname") == "wan"), {})
+    if "UP" not in wan.get("flags", []):
+        raise Error("Activation de wan non confirmée.")
+    check.report["link_state"] = "UP"
+    check.verify("after_activation")
 
 
 def expected_fields(value, expected):
@@ -284,7 +289,7 @@ def monitor(owner, observation, crash):
         time.sleep(0.01)
 
 
-def run(mode, namespaces, tc, sysctl, binaries, *, tempdir=None, timeout=90):
+def run(mode, namespaces, tc, sysctl, binaries, *, tempdir=None, timeout=90, topology_factory=None):
     guard_module.enable_subreaper()
     owner = guard_module.Guard(namespaces, timeout=timeout, tempdir=tempdir)
     previous = {}
@@ -292,7 +297,7 @@ def run(mode, namespaces, tc, sysctl, binaries, *, tempdir=None, timeout=90):
         owner.interruption = owner.interruption or 128 + signum
     for signum in (signal.SIGHUP, signal.SIGINT, signal.SIGTERM):
         previous[signum] = signal.signal(signum, interrupted)
-    active = ActiveQueue(namespaces, tc, sysctl)
+    active = (topology_factory or ActiveQueue)(namespaces, tc, sysctl)
     observation = Observation(active)
     crash = mode == "check-crash"
     try:
@@ -328,7 +333,7 @@ def run(mode, namespaces, tc, sysctl, binaries, *, tempdir=None, timeout=90):
         if not monotone:
             delta = {"available": False, "reason": "counter_decreased", "counters": None}
         if not crash and (not delta["available"] or delta["counters"]["bytes"] <= 0):
-            raise Error("Progression des compteurs TBF non confirmée.")
+            raise Error("Progression des compteurs de file non confirmée.")
         return {"schema_version": 1, "kind": "lab_active_check", "mode": mode,
                 "driver_exit_code": owner.driver_code, "driver_pid": owner.child.pid,
                 "helper_pids": pids, "reaped_descendants": owner.reaped_descendants,

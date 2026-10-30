@@ -4,7 +4,7 @@
 
 `scripts/lab-cake.py` et le module `lab_cake.py` implémentent un premier contrôle CAKE : création, relecture des options/statistiques et nettoyage après fin normale ou mort forcée d'un pilote. Les tests utilisent des espaces et commandes réseau simulés, avec de vrais processus/signaux. **La première validation native est consignée** : les quatre contrôles TBF/CAKE ont réussi, avec options, statistiques et nettoyage conformes. Voir le [compte rendu du 30 octobre](VALIDATION_LAB_CAKE_2026-10-30.md).
 
-Le lien reste DOWN, sans adresse, route, forwarding ou transfert. Ce contrôle prépare le [protocole TBF/CAKE statique v1](CAKE_COMPARISON.md) ; il ne mesure ni débit réel, latence, isolation des flux ou bénéfice CAKE. Le [goulot TBF qualifié](VALIDATION_VIRTUAL_BOTTLENECK_2026-10-30.md) reste une expérience distincte. Le chemin actif CAKE et la comparaison des six campagnes ne sont pas encore implémentés.
+Le lien reste DOWN, sans adresse, route, forwarding ou transfert. Ce contrôle prépare le [protocole TBF/CAKE statique v1](CAKE_COMPARISON.md) ; il ne mesure ni débit réel, latence, isolation des flux ou bénéfice CAKE. Le [goulot TBF qualifié](VALIDATION_VIRTUAL_BOTTLENECK_2026-10-30.md) reste une expérience distincte. Le [contrôle fonctionnel CAKE actif](LAB_CAKE_ACTIVE.md) est maintenant implémenté et testé avec des commandes réseau simulées, en attente de validation native ; la comparaison des six campagnes reste à développer.
 
 ## Création et supervision
 
@@ -53,4 +53,4 @@ Le lancement natif exige Linux, Python 3, `ip`, tc avec le profil pris en charge
 
 Préparer un dossier neuf avec commit, empreintes, copie figée de ce protocole et prévisualisation. Le lanceur refuse d'écraser des résultats, conserve stdout/stderr/codes et peut commencer par les deux contrôles TBF de statistiques pour revérifier la préparation partagée, puis lancer `check` et `check-crash` avec `lab-cake.py`. Seuls ces contrôles appellent sudo. Un refus du noyau ou de tc arrête la séquence avec preuves conservées ; les résultats incomplets ne sont pas transformés en validation.
 
-Après les essais, vérifier les rapports, paramètres effectifs et journaux, puis la disparition des noms, réservations et processus consignés. Consigner une validation datée sans modifier les protocoles figés ni l'état historique de préparation. La prochaine sous-étape, après ce contrôle natif, raccordera CAKE au chemin actif avec transfert et supervision, avant les six campagnes comparatives.
+Après les essais, vérifier les rapports, paramètres effectifs et journaux, puis la disparition des noms, réservations et processus consignés. Consigner une validation datée sans modifier les protocoles figés ni l'état historique de préparation. Le contrôle CAKE actif avec transfert et supervision est maintenant implémenté et testé avec des commandes réseau simulées ; sa validation native précédera les six campagnes comparatives.
