@@ -2,7 +2,7 @@
 
 ## État et portée
 
-`scripts/lab-compare.py`, `lab_comparison_run.py` et `lab_comparison.py` implémentent les six campagnes et l'agrégation des neuf comparaisons du [protocole v1](CAKE_COMPARISON.md). **Les tests sont simulés ; la collecte comparative native reste à réaliser.** Les campagnes [TBF](VALIDATION_VIRTUAL_BOTTLENECK_2026-10-30.md) et [CAKE](VALIDATION_LAB_CAKE_CAMPAIGN_2026-10-30.md) sont déjà validées séparément, sans constituer les bras de cette nouvelle expérience.
+`scripts/lab-compare.py`, `lab_comparison_run.py` et `lab_comparison.py` implémentent les six campagnes et l'agrégation des neuf comparaisons du [protocole v1](CAKE_COMPARISON.md). **La première comparaison native est validée** : six campagnes, 360 connexions réussies, 18 réceptions complètes et décision `static_cake_improvement_v1` confirmée par relecture et calculs indépendants. Voir le [compte rendu](VALIDATION_CAKE_COMPARISON_2026-10-30.md). Les campagnes [TBF](VALIDATION_VIRTUAL_BOTTLENECK_2026-10-30.md) et [CAKE](VALIDATION_LAB_CAKE_CAMPAIGN_2026-10-30.md) sont déjà validées séparément, sans constituer les bras de cette nouvelle expérience.
 
 L'expérience compare deux configurations statiques existantes. Elle ne pilote pas les paramètres avec Coopace, n'utilise pas le ML et ne mesure pas le réseau du foyer. Les paramètres, ordres et seuils comparatifs v1 restent inchangés.
 
