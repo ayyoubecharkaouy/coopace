@@ -16,6 +16,8 @@ Exécuter les commandes ci-dessous depuis la racine du dépôt ; les scripts `.s
 | `lab-guard.py plan-queue` | Prévisualiser la création et la relecture d'une file TBF dans le laboratoire. |
 | `lab-guard.py check-queue` / `check-queue-crash` | Vérifier TBF sur un lien désactivé, puis nettoyer après fin normale ou mort forcée du pilote. |
 | `lab-guard.py check-queue-stats` / `check-queue-stats-crash` | Ajouter deux lectures de statistiques TBF, avec compteurs cumulés et jauges distincts. |
+| `lab-active.py plan` | Prévisualiser le contrôle fonctionnel du chemin actif sous TBF, sans création de ressource. |
+| `lab-active.py check` / `check-crash` | Un transfert et dix sondes sous TBF avec collecte périodique, ou mort forcée du pilote avec trois outils récupérés. |
 
 Le mode `run` exige les privilèges documentés et le binaire passerelle construit au préalable avec le compte habituel. Il est réservé au laboratoire et n'est pas lancé automatiquement. Voir [VIRTUAL_LAB.md](../docs/VIRTUAL_LAB.md) pour le scénario, les limites et le premier résultat natif ICMP/TCP consigné.
 
@@ -34,3 +36,5 @@ Les tests Python de `tests/` utilisent des outils simulés et des fichiers tempo
 ```sh
 python3 -B -m unittest discover -s scripts/tests -p 'test_*.py' -v
 ```
+
+Le [contrôle fonctionnel actif](../docs/LAB_ACTIVE.md) se lance séparément avec `python3 -I -B scripts/lab-active.py`. Il réutilise le superviseur, `lab_queue.py` et les outils de processus de `lab-series.py`, chargés par chemin explicite. Il exige aussi `sysctl` et les trois binaires Go déjà cités. Il est testé avec des commandes réseau simulées et de vrais processus ; sa validation native reste à réaliser. Il ne remplace pas la campagne de trois paires du protocole de goulot.
