@@ -27,7 +27,7 @@ Le mode `run` exige les privilèges documentés et le binaire passerelle constru
 
 Le superviseur se lance avec `python3 -I scripts/lab-guard.py plan`. Ses contrôles sans file exigent les privilèges documentés dans [LAB_GUARD.md](../docs/LAB_GUARD.md), sans binaire Go ; leurs [premiers essais natifs](../docs/VALIDATION_LAB_GUARD_2026-10-29.md) sont validés. Les contrôles avec file exigent aussi `tc` et utilisent le module voisin `lab_queue.py`, chargé par chemin explicite. Leur périmètre est décrit dans [LAB_QUEUE.md](../docs/LAB_QUEUE.md) et leurs [premiers essais natifs](../docs/VALIDATION_LAB_QUEUE_2026-10-29.md) sont validés, avec revérification des modes sans file. Aucun de ces modes ne modifie les commandes de `lab-network.sh`.
 
-L'[instrumentation de réception et de file](../docs/LAB_INSTRUMENTATION.md) ajoute `coopace-lab-load receive --json` et les contrôles TBF de statistiques. Les tests en mémoire et simulés sont disponibles ; leur validation native reste à consigner. Aucune campagne avec goulot actif n'est encore lancée.
+L'[instrumentation de réception et de file](../docs/LAB_INSTRUMENTATION.md) ajoute `coopace-lab-load receive --json` et les contrôles TBF de statistiques. Les tests en mémoire et simulés sont disponibles ; les [premiers contrôles natifs](../docs/VALIDATION_LAB_INSTRUMENTATION_2026-10-29.md) sont validés pour la réception locale et les statistiques sur liens désactivés. Aucune campagne avec goulot actif n'est encore lancée.
 
 Les tests Python de `tests/` utilisent des outils simulés et des fichiers temporaires. Ils n'installent pas de SDK réel et ne créent aucun réseau :
 

@@ -2,7 +2,7 @@
 
 ## État et périmètre
 
-Le rapport optionnel de réception et les lectures de statistiques TBF sont implémentés et testés en mémoire ou avec des outils simulés. **Leur validation native reste à consigner.** Le [cycle de vie TBF déjà validé](VALIDATION_LAB_QUEUE_2026-10-29.md) reste distinct de ces nouvelles mesures.
+Le rapport optionnel de réception et les lectures de statistiques TBF sont implémentés et testés en mémoire ou avec des outils simulés. **Leur première validation native est consignée** : réception TCP locale et statistiques à zéro sur liens TBF désactivés. Le [compte rendu](VALIDATION_LAB_INSTRUMENTATION_2026-10-29.md) conserve les résultats et leurs limites. Le [cycle de vie TBF déjà validé](VALIDATION_LAB_QUEUE_2026-10-29.md) reste distinct de ces nouvelles mesures.
 
 Cette sous-étape prépare les données du [protocole du goulot](VIRTUAL_BOTTLENECK.md). Elle n'intègre pas encore une topologie active, une collecte périodique à 250ms ou une campagne de latence avec file. Les modes existants de `lab-network.sh` et les contrôles TBF sans statistiques gardent leurs sorties et paramètres.
 
@@ -74,4 +74,4 @@ sudo python3 -I scripts/lab-guard.py check-queue-stats
 sudo python3 -I scripts/lab-guard.py check-queue-stats-crash
 ```
 
-Préparer un dossier neuf avec protocole, commit et empreintes figés. Le lanceur doit conserver le test local, les deux rapports de statistiques, les journaux et codes exacts, puis refuser un résultat SKIP ou tout écrasement. Après ces validations, intégrer ces mesures au chemin actif et préparer la campagne ; l'étape 4.2 reste ouverte.
+Préparer un dossier neuf avec protocole, commit et empreintes figés. Le lanceur doit conserver le test local, les deux rapports de statistiques, les journaux et codes exacts, puis refuser un résultat SKIP ou tout écrasement. Les [premiers contrôles natifs](VALIDATION_LAB_INSTRUMENTATION_2026-10-29.md) sont validés. La prochaine sous-étape intègre ces mesures au chemin actif et prépare la collecte périodique, avant la campagne ; l'étape 4.2 reste ouverte.
