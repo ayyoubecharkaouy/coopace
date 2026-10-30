@@ -2,7 +2,7 @@
 
 ## État et objectif
 
-`scripts/lab-cake-active.py` et `lab_cake_active.py` raccordent maintenant CAKE à la topologie client → passerelle → serveur. Les tests utilisent des commandes réseau simulées et de vrais processus/signaux. **La première validation native de ce chemin reste à réaliser.** Le [contrôle CAKE DOWN](VALIDATION_LAB_CAKE_2026-10-30.md) reste une preuve préalable distincte.
+`scripts/lab-cake-active.py` et `lab_cake_active.py` raccordent maintenant CAKE à la topologie client → passerelle → serveur. Les tests utilisent des commandes réseau simulées et de vrais processus/signaux. **La première validation native est consignée** : transfert complet, dix connexions réussies, relevés et preuves conservés, nettoyage normal ou après mort forcée. Voir le [compte rendu du 30 octobre](VALIDATION_LAB_CAKE_ACTIVE_2026-10-30.md). Le [contrôle CAKE DOWN](VALIDATION_LAB_CAKE_2026-10-30.md) reste une preuve préalable distincte.
 
 Ce contrôle porte sur un seul transfert et dix sondes. Il prépare la [comparaison TBF/CAKE](CAKE_COMPARISON.md), dont les six campagnes et l'agrégateur restent à développer. Les anciens résultats TBF ne servent pas ici de bras comparatif ; `congestion` reste `not_assessed`. Aucun bénéfice CAKE ou Coopace n'est qualifié par ce contrôle isolé.
 
