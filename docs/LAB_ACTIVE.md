@@ -4,7 +4,7 @@
 
 `scripts/lab-active.py` et son module `lab_active.py` raccordent maintenant le [superviseur indépendant](LAB_GUARD.md), la [file TBF](LAB_QUEUE.md) et l'[instrumentation](LAB_INSTRUMENTATION.md). Les tests emploient des commandes réseau simulées et de vrais processus/signaux. **La première validation native est consignée** : transfert complet, dix connexions réussies, statistiques périodiques et nettoyage après fin normale ou mort forcée. Voir le [compte rendu du 30 octobre](VALIDATION_LAB_ACTIVE_2026-10-30.md).
 
-Ce contrôle préalable porte sur un seul transfert. La [campagne de trois paires](LAB_CAMPAIGN.md), conforme aux [critères de congestion](VIRTUAL_BOTTLENECK.md), est maintenant implémentée et testée avec des commandes réseau simulées ; sa validation native reste à réaliser. Aucun résultat de ce contrôle ne clôt cette campagne ou l'étape 4.2.
+Ce contrôle préalable porte sur un seul transfert. La [campagne de trois paires](LAB_CAMPAIGN.md), conforme aux [critères de congestion](VIRTUAL_BOTTLENECK.md), est maintenant [validée en natif](VALIDATION_VIRTUAL_BOTTLENECK_2026-10-30.md), avec congestion observée selon v1. Ce contrôle isolé reste distinct de la campagne ; l'étape 4.2 reste ouverte.
 
 ## Périmètre fixé avant collecte
 
@@ -16,7 +16,7 @@ client eth0         passerelle                         serveur eth0
                    wan 10.203.0.5/30 [TBF 10:] -> 10.203.0.6/30
 ```
 
-Les deux paires veth sont créées directement dans les espaces du laboratoire. Deux routes spécifiques relient les sous-réseaux ; aucun NAT, route par défaut ou raccordement physique. Le forwarding IPv4 est activé et relu uniquement dans la passerelle neuve. Le passage complet est vérifié par le transfert TCP ; ce contrôle n'ajoute pas le contrôle négatif ICMP prévu pour la future campagne.
+Les deux paires veth sont créées directement dans les espaces du laboratoire. Deux routes spécifiques relient les sous-réseaux ; aucun NAT, route par défaut ou raccordement physique. Le forwarding IPv4 est activé et relu uniquement dans la passerelle neuve. Le passage complet est vérifié par le transfert TCP ; ce contrôle n'ajoute pas le contrôle négatif ICMP réalisé séparément dans la campagne.
 
 TBF est ajouté sur `wan` encore DOWN, sans remplacement : `rate 4mbit`, `burst 65536`, `limit 131072`. Les paramètres sont relus après ajout, après activation et après fin du pilote. Une configuration inattendue arrête le contrôle. L'activation peut générer du trafic IPv6 automatique ; le relevé juste avant lancement du pilote sert de départ à la différence de compteurs. Celle-ci inclut tout trafic observé dans cette fenêtre, pas uniquement les octets utiles du transfert.
 
@@ -38,7 +38,7 @@ Les commandes de disponibilité restent bornées à 5s par outil et les sondes �
 
 `check` attend la réception complète et EOF, valide les volumes, durées, débits applicatifs et dix tentatives, puis le vidage de la file. Aucun des cinq compteurs ne doit diminuer entre lectures ; au moins le compteur d'octets doit augmenter. Les compteurs autres que les octets peuvent rester constants. Le code `0` exige aussi une fin normale du pilote et le nettoyage confirmé.
 
-Les échecs TCP sont conservés, y compris dix échecs sur dix. Les champs `has_successful_probe` et `probe_window_inside_application_writes` indiquent séparément la réussite des sondes et leur recouvrement avec les écritures applicatives. Leur valeur `false` n'empêche pas de conserver une collecte fonctionnelle complète ; elle ne permet pas de qualifier une mesure loaded pour la future campagne. Aucun seuil de débit ou de latence ne qualifie une congestion ici.
+Les échecs TCP sont conservés, y compris dix échecs sur dix. Les champs `has_successful_probe` et `probe_window_inside_application_writes` indiquent séparément la réussite des sondes et leur recouvrement avec les écritures applicatives. Leur valeur `false` n'empêche pas de conserver une collecte fonctionnelle complète ; elle ne permet pas de qualifier une mesure loaded pour la campagne. Aucun seuil de débit ou de latence ne qualifie une congestion ici.
 
 `check-crash` attend que cible, récepteur et émetteur soient disponibles, puis tue **le pilote seulement** par SIGKILL après la première écriture. Le superviseur termine ensuite le groupe, récupère les trois outils orphelins et retire les espaces. Il exige une sortie du pilote `-9` et trois descendants récupérés. Ce contrôle n'attend pas de transfert complet ni de vidage préalable et ne publie aucun rapport de flux. Sa dernière lecture de file précède l'arrêt des outils ; elle ne représente pas un état après arrêt du trafic.
 

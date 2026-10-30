@@ -2,7 +2,7 @@
 
 ## État et périmètre
 
-`scripts/lab-campaign.py` et le module `lab_campaign.py` implémentent les trois paires du [protocole de goulot virtuel v1](VIRTUAL_BOTTLENECK.md). Les tests utilisent des commandes réseau simulées et de vrais processus/signaux. **La première validation native de cette campagne reste à réaliser.** Le [contrôle fonctionnel d'un transfert](VALIDATION_LAB_ACTIVE_2026-10-30.md) reste une preuve préalable distincte.
+`scripts/lab-campaign.py` et le module `lab_campaign.py` implémentent les trois paires du [protocole de goulot virtuel v1](VIRTUAL_BOTTLENECK.md). Les tests utilisent des commandes réseau simulées et de vrais processus/signaux. **La première validation native est consignée** : six phases, trois transferts complets, 60 connexions réussies et congestion observée selon v1. Le [compte rendu](VALIDATION_VIRTUAL_BOTTLENECK_2026-10-30.md) confirme aussi le contrôle de panne et le nettoyage. Le [contrôle fonctionnel d'un transfert](VALIDATION_LAB_ACTIVE_2026-10-30.md) reste une preuve préalable distincte.
 
 La campagne conserve une seule TBF à 4 Mbit/s, burst 65 536 et limit 131 072 octets, sur `wan` dans une passerelle neuve. Les six phases suivent exactement idle/loaded, loaded/idle, idle/loaded. Chaque phase mesure dix connexions TCP, timeout 1s et pause 250ms. Chaque phase loaded transfère 8 Mio avec les délais de 25s/28s et la stabilisation d'au moins 1s déjà déclarés. Les paramètres et seuils du protocole v1 restent inchangés.
 
