@@ -39,7 +39,8 @@ class Ledger:
         self.stream.flush()
 
 
-class Topology(active.ActiveQueue):
+class Passage:
+    """Forwarding checks shared by independently validated queue topologies."""
     def control(self, args, *, timeout=2, allowed=(0,)):
         self.owner.check()
         for name, identity in self.owner.owned:
@@ -67,6 +68,10 @@ class Topology(active.ActiveQueue):
         return {"without_forwarding_exit_code": 1, "with_forwarding_exit_code": 0,
                 "without_forwarding_stdout": negative.decode("utf-8"),
                 "with_forwarding_stdout": positive.decode("utf-8")}
+
+
+class Topology(Passage, active.ActiveQueue):
+    pass
 
 
 def emit(event, **fields):
@@ -318,7 +323,15 @@ class Campaign:
             time.sleep(0.01)
 
 
-def run(namespaces, tc, sysctl, ping, binaries, artifacts, *, crash=False, tempdir=None, timeout=180):
+def assess(phases, total_delta, crash):
+    decision = {"technical_valid": None, "congestion": "not_assessed"} if crash else qualify(phases)
+    if not crash and not total_delta["available"]:
+        decision.update(technical_valid=False, congestion="non_exploitable")
+    return decision
+
+
+def run(namespaces, tc, sysctl, ping, binaries, artifacts, *, crash=False, tempdir=None, timeout=180,
+        topology_factory=None, assessment=assess, kind="lab_bottleneck_campaign"):
     # Evidence belongs to the experiment, outside the disposable reservation.
     with exclusive(artifacts / "progress.jsonl") as stream:
         ledger = Ledger(stream)
@@ -329,7 +342,8 @@ def run(namespaces, tc, sysctl, ping, binaries, artifacts, *, crash=False, tempd
             owner.interruption = owner.interruption or 128 + signum
         for signum in (signal.SIGHUP, signal.SIGINT, signal.SIGTERM):
             previous[signum] = signal.signal(signum, interrupted)
-        topology = Topology(namespaces, tc, sysctl)
+        topology = (Topology(namespaces, tc, sysctl) if topology_factory is None else
+                    topology_factory(namespaces, tc, sysctl, ledger.write))
         campaign = Campaign(owner, topology, ledger, artifacts, binaries, crash=crash)
         try:
             try:
@@ -358,10 +372,8 @@ def run(namespaces, tc, sysctl, ping, binaries, artifacts, *, crash=False, tempd
                 readings.extend(campaign.current["samples"])
             readings.append(topology.report["after_driver_exit"])
             total_delta = delta(readings)
-            decision = {"technical_valid": None, "congestion": "not_assessed"} if crash else qualify(campaign.phases)
-            if not crash and not total_delta["available"]:
-                decision.update(technical_valid=False, congestion="non_exploitable")
-            result = {"schema_version": 1, "kind": "lab_bottleneck_campaign", "mode": "check-crash" if crash else "run",
+            decision = assessment(campaign.phases, total_delta, crash)
+            result = {"schema_version": 1, "kind": kind, "mode": "check-crash" if crash else "run",
                       "driver_pid": owner.child.pid, "driver_exit_code": owner.driver_code,
                       "reaped_descendants": owner.reaped_descendants, "helper_pids_at_last_ready": campaign.helper_pids,
                       "namespaces": [n for n, _ in owner.owned], "workspace": str(owner.workspace), "cleanup_verified": True,

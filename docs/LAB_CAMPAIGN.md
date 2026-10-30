@@ -57,3 +57,7 @@ python3 -B -m unittest discover -s scripts/tests -p 'test_lab_campaign.py' -v
 Les tests vérifient ordre des six phases, trois réceptions, comparaisons, données conservées, critères et seuils, interruptions, échéance, erreurs de statistiques/comparaison et récupération après mort forcée. Les commandes réseau et le comparateur sont simulés dans ces tests de processus ; ils ne prouvent pas une congestion native.
 
 Pour l'essai natif, préparer un dossier neuf contenant protocole figé, source, versions, empreintes, trois binaires compilés avec le compte habituel et deux sous-dossiers de preuves distincts pour `check-crash` et `run`. Le lanceur appelle `sudo` uniquement pour ces modes, vérifie les entrées et conserve stdout/stderr/codes. Il exige Linux, Python 3, `ip`, `tc`, `sysctl`, `ping`, `CAP_NET_ADMIN`, `CAP_SYS_ADMIN` et `CAP_NET_RAW`. Valider d'abord le contrôle de panne, puis lancer la campagne. Une collecte sans congestion démontrée doit être conservée autant qu'une collecte satisfaisant les critères.
+
+## Réutilisation par CAKE
+
+Le moteur de coordination expose une fabrique de topologie et une fonction de décision ; les valeurs par défaut restent TBF avec les critères v1 inchangés. La classe `Passage` est commune aux deux moteurs. La [campagne CAKE](LAB_CAKE_CAMPAIGN.md) utilise une entrée séparée et son validateur de paramètres/statistiques. Ses tests simulés passent ; sa validation native reste à réaliser. Elle ne qualifie pas la congestion avec les critères de backlog TBF.

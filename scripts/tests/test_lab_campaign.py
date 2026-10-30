@@ -185,7 +185,7 @@ class QualificationTests(unittest.TestCase):
 
 
 class CampaignProcessTests(unittest.TestCase):
-    def run_case(self,scenario):
+    def run_case(self,scenario,*,harness=HARNESS,cake_fixture=None):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory)
             for name in ("bin","pids","artifacts"):
@@ -194,6 +194,8 @@ class CampaignProcessTests(unittest.TestCase):
             values[2].update(os="linux",architecture="amd64",go_version="go1.27.3",coopace_version="test",
                              connect_ms={"min":1,"p50":1,"p95":1,"p99":1,"max":1})
             (root/"documents.json").write_text(json.dumps(values))
+            if cake_fixture is not None:
+                (root/"cake-fixture.json").write_text(json.dumps(cake_fixture))
             helper=HELPER.replace('print(json.dumps(docs[2]), flush=True)',
                 'value=docs[2]\n    value["declared_condition"]=sys.argv[sys.argv.index("--condition")+1]\n    print(json.dumps(value),flush=True)')
             for name in ("coopace","coopace-lab-tcp","coopace-lab-load"):
@@ -203,7 +205,7 @@ class CampaignProcessTests(unittest.TestCase):
             ip=root/"ip"
             ip.write_text("#!"+sys.executable+"\nimport os,sys\nassert sys.argv[1:3]==['netns','exec']\nos.execv(sys.argv[4],sys.argv[4:])\n")
             ip.chmod(0o700)
-            completed=subprocess.run([sys.executable,"-I","-B","-c",HARNESS,str(ACTIVE_SOURCE),directory,scenario],
+            completed=subprocess.run([sys.executable,"-I","-B","-c",harness,str(ACTIVE_SOURCE),directory,scenario],
                                      capture_output=True,timeout=50)
             self.assertEqual(list((root/"namespaces").iterdir()),[],completed.stderr.decode())
             self.assertEqual(list(root.glob("coopace-guard.*")),[],completed.stderr.decode())
