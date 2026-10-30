@@ -4,7 +4,7 @@
 
 `scripts/lab-cake-campaign.py` et `lab_cake_campaign.py` implémentent une campagne CAKE de trois paires, telle que définie avant collecte dans le [protocole comparatif v1](CAKE_COMPARISON.md). Les tests utilisent des commandes réseau simulées et de vrais processus/signaux. **La première validation native est consignée** : six phases, 60 connexions réussies, trois réceptions complètes, charge qualifiée et nettoyage normal ou après mort forcée. Voir le [compte rendu du 30 octobre](VALIDATION_LAB_CAKE_CAMPAIGN_2026-10-30.md). Le [contrôle fonctionnel CAKE actif](VALIDATION_LAB_CAKE_ACTIVE_2026-10-30.md) est déjà validé pour un transfert et le nettoyage après panne.
 
-Cette sous-étape prépare un bras CAKE isolé. L'orchestration des six campagnes neuves et l'agrégateur des neuf comparaisons TBF/CAKE restent à développer. Une ancienne campagne TBF ne devient pas le bras de comparaison de cet essai.
+Cette sous-étape prépare un bras CAKE isolé. L’[orchestration des six campagnes neuves et l’agrégateur des neuf comparaisons TBF/CAKE](LAB_COMPARISON_RUN.md) sont maintenant implémentés et testés avec des opérations simulées ; leur collecte native reste à réaliser. Une ancienne campagne TBF ne devient pas le bras de comparaison de cet essai.
 
 ## Configuration et coordination
 

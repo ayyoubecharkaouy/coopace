@@ -26,6 +26,9 @@ Exécuter les commandes ci-dessous depuis la racine du dépôt ; les scripts `.s
 | `lab-cake.py check` / `check-crash` | Ajouter et relire CAKE/statistiques sur lien DOWN, puis récupérer pilote/descendant et supprimer les espaces possédés. |
 | `lab-cake-active.py plan` | Prévisualiser le contrôle fonctionnel CAKE avec transfert et sondes, sans création de ressource. |
 | `lab-cake-active.py check` / `check-crash` | Un transfert sous CAKE ou mort forcée du pilote, avec journal requis via `--evidence FICHIER_NEUF`. |
+| `lab-compare.py plan` | Prévisualiser six campagnes TBF/CAKE neuves et les critères v1. |
+| `lab-compare.py run --artifacts DOSSIER` | Collecter les six campagnes sous supervision et agréger les neuf comparaisons. |
+| `lab-compare.py analyze --artifacts DOSSIER` | Revalider les preuves et reproduire le bilan sans opération réseau. |
 
 Le mode `run` exige les privilèges documentés et le binaire passerelle construit au préalable avec le compte habituel. Il est réservé au laboratoire et n'est pas lancé automatiquement. Voir [VIRTUAL_LAB.md](../docs/VIRTUAL_LAB.md) pour le scénario, les limites et le premier résultat natif ICMP/TCP consigné.
 
@@ -53,4 +56,4 @@ Le [contrôle CAKE DOWN](../docs/LAB_CAKE.md) utilise le module séparé `lab_ca
 
 Le [contrôle fonctionnel CAKE actif](../docs/LAB_CAKE_ACTIVE.md) utilise les trois binaires Go déjà employés par TBF, le même pilote de transfert et le superviseur. `lab_cake_active.py` conserve le validateur CAKE et les preuves séparément ; la topologie est activée par une fonction commune de `lab_active.py`. Les tests avec commandes réseau simulées passent ; sa [première validation native](../docs/VALIDATION_LAB_CAKE_ACTIVE_2026-10-30.md) confirme transfert complet, dix connexions, relevés conservés et récupération des trois outils après mort forcée.
 
-La [campagne CAKE](../docs/LAB_CAKE_CAMPAIGN.md) utilise `python3 -I -B scripts/lab-cake-campaign.py plan`, `run --artifacts DOSSIER` et `check-crash --artifacts DOSSIER`. Elle réutilise le pilote, les contrôles de passage et le nettoyage de la campagne TBF, avec le validateur CAKE et une qualification de charge propre. Les tests simulés passent ; sa [première validation native](../docs/VALIDATION_LAB_CAKE_CAMPAIGN_2026-10-30.md) confirme six phases, charge qualifiée et nettoyage normal ou après mort forcée. La comparaison des six campagnes n’est pas encore implémentée.
+La [campagne CAKE](../docs/LAB_CAKE_CAMPAIGN.md) utilise `python3 -I -B scripts/lab-cake-campaign.py plan`, `run --artifacts DOSSIER` et `check-crash --artifacts DOSSIER`. Elle réutilise le pilote, les contrôles de passage et le nettoyage de la campagne TBF, avec le validateur CAKE et une qualification de charge propre. Les tests simulés passent ; sa [première validation native](../docs/VALIDATION_LAB_CAKE_CAMPAIGN_2026-10-30.md) confirme six phases, charge qualifiée et nettoyage normal ou après mort forcée. La [comparaison des six campagnes](../docs/LAB_COMPARISON_RUN.md) est maintenant implémentée et testée avec des opérations simulées ; sa collecte native reste à réaliser.
