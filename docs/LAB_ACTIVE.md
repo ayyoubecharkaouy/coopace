@@ -2,7 +2,7 @@
 
 ## État et objectif
 
-`scripts/lab-active.py` et son module `lab_active.py` raccordent maintenant le [superviseur indépendant](LAB_GUARD.md), la [file TBF](LAB_QUEUE.md) et l'[instrumentation](LAB_INSTRUMENTATION.md). Les tests emploient des commandes réseau simulées et de vrais processus/signaux. **La validation native de ce nouveau chemin reste à réaliser.**
+`scripts/lab-active.py` et son module `lab_active.py` raccordent maintenant le [superviseur indépendant](LAB_GUARD.md), la [file TBF](LAB_QUEUE.md) et l'[instrumentation](LAB_INSTRUMENTATION.md). Les tests emploient des commandes réseau simulées et de vrais processus/signaux. **La première validation native est consignée** : transfert complet, dix connexions réussies, statistiques périodiques et nettoyage après fin normale ou mort forcée. Voir le [compte rendu du 30 octobre](VALIDATION_LAB_ACTIVE_2026-10-30.md).
 
 Ce contrôle préalable porte sur un seul transfert. La campagne de [trois paires et ses critères de congestion](VIRTUAL_BOTTLENECK.md) reste à implémenter. Aucun résultat de ce contrôle ne clôt cette campagne ou l'étape 4.2.
 
