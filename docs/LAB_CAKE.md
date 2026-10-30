@@ -2,7 +2,7 @@
 
 ## État et portée
 
-`scripts/lab-cake.py` et le module `lab_cake.py` implémentent un premier contrôle CAKE : création, relecture des options/statistiques et nettoyage après fin normale ou mort forcée d'un pilote. Les tests utilisent des espaces et commandes réseau simulés, avec de vrais processus/signaux. **La validation native de ce contrôle reste à réaliser.**
+`scripts/lab-cake.py` et le module `lab_cake.py` implémentent un premier contrôle CAKE : création, relecture des options/statistiques et nettoyage après fin normale ou mort forcée d'un pilote. Les tests utilisent des espaces et commandes réseau simulés, avec de vrais processus/signaux. **La première validation native est consignée** : les quatre contrôles TBF/CAKE ont réussi, avec options, statistiques et nettoyage conformes. Voir le [compte rendu du 30 octobre](VALIDATION_LAB_CAKE_2026-10-30.md).
 
 Le lien reste DOWN, sans adresse, route, forwarding ou transfert. Ce contrôle prépare le [protocole TBF/CAKE statique v1](CAKE_COMPARISON.md) ; il ne mesure ni débit réel, latence, isolation des flux ou bénéfice CAKE. Le [goulot TBF qualifié](VALIDATION_VIRTUAL_BOTTLENECK_2026-10-30.md) reste une expérience distincte. Le chemin actif CAKE et la comparaison des six campagnes ne sont pas encore implémentés.
 
