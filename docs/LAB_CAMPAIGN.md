@@ -60,4 +60,4 @@ Pour l'essai natif, préparer un dossier neuf contenant protocole figé, source,
 
 ## Réutilisation par CAKE
 
-Le moteur de coordination expose une fabrique de topologie et une fonction de décision ; les valeurs par défaut restent TBF avec les critères v1 inchangés. La classe `Passage` est commune aux deux moteurs. La [campagne CAKE](LAB_CAKE_CAMPAIGN.md) utilise une entrée séparée et son validateur de paramètres/statistiques. Ses tests simulés passent ; sa validation native reste à réaliser. Elle ne qualifie pas la congestion avec les critères de backlog TBF.
+Le moteur de coordination expose une fabrique de topologie et une fonction de décision ; les valeurs par défaut restent TBF avec les critères v1 inchangés. La classe `Passage` est commune aux deux moteurs. La [campagne CAKE](LAB_CAKE_CAMPAIGN.md) utilise une entrée séparée et son validateur de paramètres/statistiques. Ses tests simulés passent et sa [première validation native](VALIDATION_LAB_CAKE_CAMPAIGN_2026-10-30.md) confirme six phases, charge qualifiée et nettoyage après panne. Elle ne qualifie pas la congestion avec les critères de backlog TBF.
