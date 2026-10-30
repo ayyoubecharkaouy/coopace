@@ -20,6 +20,8 @@ Exécuter les commandes ci-dessous depuis la racine du dépôt ; les scripts `.s
 | `lab-active.py check` / `check-crash` | Un transfert et dix sondes sous TBF avec collecte périodique, ou mort forcée du pilote avec trois outils récupérés. |
 | `lab-campaign.py plan` | Prévisualiser les trois paires sous la même TBF et leurs critères, sans création de ressource. |
 | `lab-campaign.py run` / `check-crash` | Collecter six phases et qualifier la congestion, ou vérifier la récupération après mort forcée ; preuves conservées dans `--artifacts`. |
+| `lab-cake.py plan` | Prévisualiser le contrôle CAKE sur lien désactivé, sans création de ressource. |
+| `lab-cake.py check` / `check-crash` | Ajouter et relire CAKE/statistiques sur lien DOWN, puis récupérer pilote/descendant et supprimer les espaces possédés. |
 
 Le mode `run` exige les privilèges documentés et le binaire passerelle construit au préalable avec le compte habituel. Il est réservé au laboratoire et n'est pas lancé automatiquement. Voir [VIRTUAL_LAB.md](../docs/VIRTUAL_LAB.md) pour le scénario, les limites et le premier résultat natif ICMP/TCP consigné.
 
@@ -42,3 +44,5 @@ python3 -B -m unittest discover -s scripts/tests -p 'test_*.py' -v
 Le [contrôle fonctionnel actif](../docs/LAB_ACTIVE.md) se lance séparément avec `python3 -I -B scripts/lab-active.py`. Il réutilise le superviseur, `lab_queue.py` et les outils de processus de `lab-series.py`, chargés par chemin explicite. Il exige aussi `sysctl` et les trois binaires Go déjà cités. Il est testé avec des commandes réseau simulées et de vrais processus ; sa [première validation native](../docs/VALIDATION_LAB_ACTIVE_2026-10-30.md) confirme transfert, sondes, collecte et nettoyage normal ou après mort forcée. Il ne remplace pas la campagne de trois paires du protocole de goulot.
 
 La [campagne TBF](../docs/LAB_CAMPAIGN.md) utilise `python3 -I -B scripts/lab-campaign.py plan`, `run --artifacts DOSSIER` et `check-crash --artifacts DOSSIER`. Son module `lab_campaign.py` coordonne six phases sous le même superviseur et conserve les preuves intermédiaires. Elle requiert aussi `ping` et `CAP_NET_RAW` pour les contrôles de passage. Les tests avec commandes réseau simulées passent ; sa [première validation native](../docs/VALIDATION_VIRTUAL_BOTTLENECK_2026-10-30.md) confirme six phases, trois réceptions, congestion observée selon v1 et nettoyage après mort forcée.
+
+Le [contrôle CAKE DOWN](../docs/LAB_CAKE.md) utilise le module séparé `lab_cake.py`, le superviseur existant et une préparation commune du veth. Il exige le profil JSON identifié iproute2-6.1.0 ; options omises et statistiques indisponibles sont distinguées. Aucun binaire Go ni trafic de mesure n'est nécessaire. Les tests avec commandes réseau simulées et vrais processus passent ; sa validation native reste à réaliser.

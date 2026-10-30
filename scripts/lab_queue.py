@@ -196,7 +196,8 @@ class QueueCheck:
         return document(self.execute([self.namespaces.ip, "-n", namespace,
                                       "-j", "link", "show"]))
 
-    def prepare(self, owner):
+    def prepare_link(self, owner):
+        """Create/verify a fresh DOWN veth; no scheduler-specific validation."""
         self.owner = owner
         self.statistics_started_ns = time.monotonic_ns()
         self.gateway, self.server = owner.owned[1][0], owner.owned[2][0]
@@ -216,6 +217,9 @@ class QueueCheck:
             flags = row.get("flags")
             if not isinstance(flags, list) or not all(isinstance(flag, str) for flag in flags) or "UP" in flags:
                 raise QueueError("Le lien de contrôle doit rester désactivé.")
+
+    def prepare(self, owner):
+        self.prepare_link(owner)
         self.report = {"namespace": self.gateway, "interface": "wan", "link_state": "DOWN",
                        "kind": "tbf", "handle": "10:", "requested_rate_bits_per_second": 4_000_000,
                        "requested_burst_bytes": BURST, "requested_limit_bytes": QUEUE_LIMIT}
