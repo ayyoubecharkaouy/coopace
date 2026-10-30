@@ -100,8 +100,17 @@ def flow_documents(send_raw, receive_raw, latency_raw, code):
     if not (stamp(receive.get("started_at")) <= stamp(receive.get("first_read_at"))
             <= stamp(receive.get("last_read_at")) <= stamp(receive.get("finished_at"))):
         raise Error("Fenêtre de réception invalide.")
+    latency_document(latency, "loaded", code)
+    start, end = stamp(latency["started_at"]), stamp(latency["finished_at"])
+    return {"send": send, "receive": receive, "latency": latency, "measurement_exit_code": code,
+            "probe_window_inside_application_writes": first <= start <= end <= last,
+            "has_successful_probe": latency["successful"] > 0}
+
+
+def latency_document(latency, condition, code):
+    stamp = series.timestamp_ns
     expected_fields(latency, {"schema_version": 1, "method": "tcp_connect", "target": TARGET,
-                             "declared_condition": "loaded", "requested_attempts": 10,
+                             "declared_condition": condition, "requested_attempts": 10,
                              "timeout_ms": 1000, "pause_between_attempts_ms": 250})
     successful, failed, attempts = (latency.get(key) for key in ("successful", "failed", "attempts"))
     if (type(successful) is not int or type(failed) is not int or not 0 <= successful <= 10
@@ -130,9 +139,7 @@ def flow_documents(send_raw, receive_raw, latency_raw, code):
             counted += 1
     if counted != successful:
         raise Error("Résumé TCP incompatible avec les tentatives.")
-    return {"send": send, "receive": receive, "latency": latency, "measurement_exit_code": code,
-            "probe_window_inside_application_writes": first <= start <= end <= last,
-            "has_successful_probe": successful > 0}
+    return latency
 
 
 def worker(ip, client, server, binaries):
@@ -144,8 +151,19 @@ def worker(ip, client, server, binaries):
         runner.interruption = runner.interruption or 128 + signum
     for signum in (signal.SIGHUP, signal.SIGINT, signal.SIGTERM):
         signal.signal(signum, interrupted)
+    try:
+        result = measure_loaded(ip, client, server, binaries, runner,
+                                lambda pids: print("READY " + json.dumps(pids), flush=True))
+    finally:
+        runner.close()
+    runner.check()
+    print(json.dumps(result, allow_nan=False), flush=True)
+
+
+def measure_loaded(ip, client, server, binaries, runner, announce):
     def inside(namespace, binary, *args):
         return [ip, "netns", "exec", namespace, str(binaries / binary), *args]
+    children_start = len(runner.children)
     try:
         target = runner.start(inside(server, "coopace-lab-tcp", "--listen", TARGET,
                                      "--connections", "100", "--duration", "30s"))
@@ -157,7 +175,7 @@ def worker(ip, client, server, binaries):
                                      "--bytes", str(VOLUME), "--rate", "1048576", "--duration", "25s",
                                      "--announce-start"))
         sender.ready("STARTED", runner)
-        print("READY " + json.dumps([child.process.pid for child in (target, receiver, sender)]), flush=True)
+        announce([child.process.pid for child in (target, receiver, sender)])
         # STARTED is emitted after the first successful application write.
         runner.pause()
         runner.pause()
@@ -173,9 +191,10 @@ def worker(ip, client, server, binaries):
         receive_raw, _ = receiver.finish(runner, 29)
         result = flow_documents(send_raw, receive_raw, raw, code)
     finally:
-        runner.close()
+        for child in reversed(runner.children[children_start:]):
+            child.stop()
     runner.check()
-    print(json.dumps(result, allow_nan=False), flush=True)
+    return result
 
 
 def announcement(line):

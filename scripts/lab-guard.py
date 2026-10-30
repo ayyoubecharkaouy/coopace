@@ -158,11 +158,11 @@ class Guard:
             self.check()
         self.journal("armed")
 
-    def start(self, args):
+    def start(self, args, *, stdin=subprocess.DEVNULL):
         if self.child is not None:
             raise GuardError("Un pilote est déjà enregistré.")
         self.check()
-        self.child = subprocess.Popen(args, stdin=subprocess.DEVNULL,
+        self.child = subprocess.Popen(args, stdin=stdin,
                                       stdout=subprocess.PIPE, start_new_session=True)
         # Keep the session leader unreaped until its whole group is signalled.
         # Its PID cannot be reused while it is still our live/zombie child.
@@ -245,6 +245,8 @@ class Guard:
                     time.sleep(0.01)
         finally:
             child.stdout.close()
+            if child.stdin is not None:
+                child.stdin.close()
 
     def stop_command(self, deadline):
         child = self.command_child

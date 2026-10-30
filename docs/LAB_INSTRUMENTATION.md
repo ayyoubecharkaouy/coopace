@@ -4,7 +4,7 @@
 
 Le rapport optionnel de réception et les lectures de statistiques TBF sont implémentés et testés en mémoire ou avec des outils simulés. **Leur première validation native est consignée** : réception TCP locale et statistiques à zéro sur liens TBF désactivés. Le [compte rendu](VALIDATION_LAB_INSTRUMENTATION_2026-10-29.md) conserve les résultats et leurs limites. Le [cycle de vie TBF déjà validé](VALIDATION_LAB_QUEUE_2026-10-29.md) reste distinct de ces nouvelles mesures.
 
-Cette sous-étape prépare les données du [protocole du goulot](VIRTUAL_BOTTLENECK.md). Le [contrôle fonctionnel suivant](LAB_ACTIVE.md) intègre maintenant une topologie active et des lectures périodiques, avec une [première validation native](VALIDATION_LAB_ACTIVE_2026-10-30.md) sur un transfert ; la campagne de trois paires avec file reste à réaliser. Les modes existants de `lab-network.sh` et les contrôles TBF sans statistiques gardent leurs sorties et paramètres.
+Cette sous-étape prépare les données du [protocole du goulot](VIRTUAL_BOTTLENECK.md). Le [contrôle fonctionnel suivant](LAB_ACTIVE.md) intègre maintenant une topologie active et des lectures périodiques, avec une [première validation native](VALIDATION_LAB_ACTIVE_2026-10-30.md) sur un transfert ; la [campagne de trois paires avec file](LAB_CAMPAIGN.md) est implémentée et testée avec des commandes réseau simulées, en attente de validation native. Les modes existants de `lab-network.sh` et les contrôles TBF sans statistiques gardent leurs sorties et paramètres.
 
 ## Rapport côté récepteur
 

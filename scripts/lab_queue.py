@@ -49,10 +49,12 @@ def document(raw):
     return value
 
 
-def run_command(args, owner):
+def run_command(args, owner, *, timeout=2, allowed=(0,)):
     """Bound stdout and time; these fixed ip/tc commands do not spawn helpers."""
     owner.check()
-    deadline = min(owner.deadline, time.monotonic() + 2)
+    if not 0 < timeout <= 6:
+        raise ValueError("Délai de commande invalide.")
+    deadline = min(owner.deadline, time.monotonic() + timeout)
     child = subprocess.Popen(args, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE)
     owner.command_child = child
     output = bytearray()
@@ -75,7 +77,7 @@ def run_command(args, owner):
                 raise QueueError("Réponse réseau trop volumineuse.")
             code = child.poll()
             if code is not None and eof:
-                if code != 0:
+                if code not in allowed:
                     raise QueueError(f"Commande ip/tc échouée (code {code}).")
                 return bytes(output)
             time.sleep(0.005)
