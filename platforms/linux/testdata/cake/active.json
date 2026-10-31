@@ -1,0 +1,62 @@
+[
+  {
+    "kind": "cake",
+    "handle": "10:",
+    "root": true,
+    "refcnt": 5,
+    "options": {
+      "bandwidth": 500000,
+      "diffserv": "besteffort",
+      "flowmode": "flows",
+      "nat": false,
+      "wash": false,
+      "ingress": false,
+      "ack-filter": "disabled",
+      "split_gso": true,
+      "rtt": 100000,
+      "raw": true,
+      "overhead": 0,
+      "memlimit": 1048576,
+      "fwmark": "0"
+    },
+    "bytes": 3642,
+    "packets": 51,
+    "drops": 0,
+    "overlimits": 72,
+    "requeues": 0,
+    "backlog": 0,
+    "qlen": 0,
+    "memory_used": 2304,
+    "memory_limit": 1048576,
+    "capacity_estimate": 500000,
+    "min_network_size": 42,
+    "max_network_size": 98,
+    "min_adj_size": 42,
+    "max_adj_size": 98,
+    "avg_hdr_offset": 3,
+    "tins": [
+      {
+        "threshold_rate": 500000,
+        "sent_bytes": 3642,
+        "backlog_bytes": 0,
+        "target_us": 5000,
+        "interval_us": 100000,
+        "peak_delay_us": 161,
+        "avg_delay_us": 14,
+        "base_delay_us": 7,
+        "sent_packets": 51,
+        "way_indirect_hits": 0,
+        "way_misses": 16,
+        "way_collisions": 0,
+        "drops": 0,
+        "ecn_mark": 0,
+        "ack_drops": 0,
+        "sparse_flows": 1,
+        "bulk_flows": 0,
+        "unresponsive_flows": 0,
+        "max_pkt_len": 98,
+        "flow_quantum": 300
+      }
+    ]
+  }
+]

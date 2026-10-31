@@ -1,6 +1,6 @@
 # Adaptation Linux
 
-État : compteurs d'interfaces de l'étape 3.1 et inventaire de passerelle de l'étape 4.1 implémentés. Modification des files et du routage non implémentée.
+État : compteurs d’interfaces, inventaire de passerelle et catalogue/validateurs CAKE purs implémentés. Modification des files et du routage non implémentée.
 
 `ReadTrafficCounters()` lit les compteurs d'octets RX/TX de `/proc/net/dev` dans l'espace réseau courant. Le décodeur est testé avec des données contrôlées, notamment les compteurs élevés, données tronquées et erreurs de lecture. Les modèles retournés appartiennent au noyau ; le calcul des taux y reste indépendant de Linux.
 
@@ -15,3 +15,5 @@ Le support OpenWrt dépendra du matériel, des paquets disponibles et du packagi
 Le [diagnostic de passerelle](../../docs/GATEWAY_DIAGNOSTIC.md) détaille les sources et les limites. Cet inventaire ne vérifie pas la couverture du foyer ni la restauration et ne sélectionne pas de WAN.
 
 Les fichiers sont regroupés par fonction : `traffic*.go` pour les compteurs, `gateway*.go` pour l'inventaire. Pour ce dernier, [gateway.go](gateway.go) orchestre la collecte, [gateway_parse.go](gateway_parse.go) décode les données sans I/O et [gateway_linux.go](gateway_linux.go) contient les lectures natives et commandes bornées. Les tests de parseurs, de collecte et de processus externes sont séparés dans les fichiers correspondants.
+
+Le [catalogue et les validateurs CAKE Go](../../docs/CAKE_GO_VALIDATION.md) sont dans `cake.go`, `cake_parse.go` et `cake_stats.go`, avec leurs tests dans `cake_test.go`. Ils résolvent le profil fixe du laboratoire et valident des relevés fournis : producteur, options, statistiques uint64 et champs indisponibles. Ils ne lancent aucun outil. Deux fixtures natives de référence sont conservées dans `testdata/cake`, avec provenance ; le contexte de session et l’application du profil restent à développer.
