@@ -4,7 +4,7 @@ Date : 31 octobre 2026.
 
 ## État et première portée
 
-**Catalogue, validateurs, contexte, transport et backend natif Go implémentés ; entrée interne et journal durable livrés ; raccordement au superviseur et validations natives Go à réaliser.** Le [pilote privé](LAB_CAKE_TRANSPORT.md) est testé avec de vrais processus et des outils simulés. La passerelle conserve les commandes `inspect` et [`plan`](GATEWAY_PLANNING.md). Ce document fixe la première intégration privilégiée à développer, ses frontières et les preuves requises avant un lancement natif. Le [processus interne](LAB_CAKE_ENTRY.md) est compilable, mais aucune procédure native sous supervision n’est encore prête à exécuter.
+**Catalogue, validateurs, contexte, transport et backend natif Go implémentés ; entrée interne et journal durable livrés ; raccordement au superviseur testé en simulation ; validations natives Go à réaliser.** Le [pilote privé](LAB_CAKE_TRANSPORT.md) est testé avec de vrais processus et des outils simulés. La passerelle conserve les commandes `inspect` et [`plan`](GATEWAY_PLANNING.md). Ce document fixe la première intégration privilégiée à développer, ses frontières et les preuves requises avant un lancement natif. Le [processus interne](LAB_CAKE_ENTRY.md) est compilable, mais aucune procédure native sous supervision n’est encore prête à exécuter.
 
 La première version est un **contrôle de cycle de vie sur lien DOWN**, équivalent au périmètre du [contrôle CAKE Python déjà validé](LAB_CAKE.md) : ajout du profil, relecture, arrêt et nettoyage normal ou après mort forcée du processus Go. Elle réutilise le superviseur indépendant ; elle ne raccorde pas une interface physique et ne génère aucun trafic de mesure.
 
@@ -123,8 +123,8 @@ La sortie `0` du contrôle normal exige ajout/relecture conformes, sortie Go `0`
 ## Ordre d'implémentation
 
 1. **Livré** : [catalogue du profil et validateurs CAKE purs Go](CAKE_GO_VALIDATION.md), avec fixtures et tests sans réseau.
-2. **Partiellement livré** : [contexte interne, contrôle de session et vérification des descripteurs](LAB_CAKE_CONTEXT.md). Le [transport hérité et le pilote privé](LAB_CAKE_TRANSPORT.md) sont aussi livrés, avec tests de vrais processus et outils simulés. Le [backend natif borné](LAB_CAKE_BACKEND.md) est également implémenté et assemblé en privé, avec tests d’exécutables simulés. Son [entrée interne et son journal durable](LAB_CAKE_ENTRY.md) sont maintenant livrés, avec tests de processus et signaux. Le raccordement au superviseur reste à développer.
-3. Raccorder le processus Go au superviseur sans modifier les commandes historiques, puis préparer les deux contrôles natifs DOWN dans un dossier neuf.
+2. **Partiellement livré** : [contexte interne, contrôle de session et vérification des descripteurs](LAB_CAKE_CONTEXT.md). Le [transport hérité et le pilote privé](LAB_CAKE_TRANSPORT.md) sont aussi livrés, avec tests de vrais processus et outils simulés. Le [backend natif borné](LAB_CAKE_BACKEND.md) est également implémenté et assemblé en privé, avec tests d’exécutables simulés. Son [entrée interne et son journal durable](LAB_CAKE_ENTRY.md) sont maintenant livrés, avec tests de processus et signaux. Le [raccordement au superviseur](LAB_CAKE_GO_GUARD.md) est maintenant implémenté et testé avec des opérations simulées.
+3. **Raccordement implémenté et testé en simulation** : [superviseur du contrôle Go](LAB_CAKE_GO_GUARD.md), avec commandes historiques conservées. Préparer les deux contrôles natifs DOWN dans un dossier neuf.
 4. Après validation native, définir séparément le raccordement au chemin actif : faits récents pour les six prérequis, passage vérifié, application bornée et mesures. Aucun prérequis manquant n'est remplacé par le scénario fictif de `plan`.
 
 Les conditions de poursuite du [produit](PRODUCT.md#conditions-de-poursuite) restent applicables. Ce premier exécuteur vise l'intégration correcte du moteur existant, sans nouveau mécanisme adaptatif ni ML.

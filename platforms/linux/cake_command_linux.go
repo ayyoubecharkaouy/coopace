@@ -35,7 +35,7 @@ func openPinnedLabTool(ctx context.Context, spec LabToolSpec) (*os.File, error) 
 	if canonical != spec.Path {
 		return nil, fmt.Errorf("laboratory tool path contains a symlink")
 	}
-	file, err := os.OpenFile(spec.Path, os.O_RDONLY|syscall.O_NOFOLLOW, 0)
+	file, err := os.OpenFile(spec.Path, os.O_RDONLY|syscall.O_NOFOLLOW|syscall.O_NONBLOCK, 0)
 	if err != nil {
 		return nil, err
 	}

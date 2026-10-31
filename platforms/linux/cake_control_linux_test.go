@@ -422,3 +422,18 @@ func TestNativeCakeToolDeadlineCancellationAndPinning(t *testing.T) {
 		t.Fatal("shell interpreter accepted")
 	}
 }
+
+func TestPinnedCakeToolRejectsFIFOWithoutWaitingForWriter(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "not-an-executable")
+	if err := syscall.Mkfifo(path, 0600); err != nil {
+		t.Fatal(err)
+	}
+	start := time.Now()
+	file, err := openPinnedLabTool(context.Background(), LabToolSpec{Path: path, SHA256: strings.Repeat("0", 64)})
+	if file != nil {
+		file.Close()
+	}
+	if err == nil || time.Since(start) > time.Second {
+		t.Fatal("non-regular tool blocked or was accepted", err)
+	}
+}

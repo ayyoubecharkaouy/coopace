@@ -6,7 +6,7 @@ Le backend natif est implémenté dans `platforms/linux`, avec assemblage privé
 
 Le chemin par défaut utilise les vérifications natives des espaces réseau ; il n’accepte aucun vérificateur fourni par l’appelant. Un test confirme le refus de l’espace d’origine avant tout outil. Le vérificateur permissif des essais positifs est privé au paquet et n’existe dans aucune option CLI, JSON ou variable d’environnement du produit.
 
-La première cible est Linux amd64. La passerelle publique conserve `inspect` et `plan`. L’[entrée interne et le journal durable](LAB_CAKE_ENTRY.md) sont maintenant livrés ; le raccordement au superviseur reste à développer selon le [contrat d’exécuteur](LAB_CAKE_EXECUTOR.md). Cette livraison n’est pas une validation native de l’application CAKE ni du nettoyage du nouveau contrôle.
+La première cible est Linux amd64. La passerelle publique conserve `inspect` et `plan`. L’[entrée interne et le journal durable](LAB_CAKE_ENTRY.md) sont maintenant livrés ; le [raccordement au superviseur](LAB_CAKE_GO_GUARD.md) est maintenant implémenté et testé en simulation, selon le [contrat d’exécuteur](LAB_CAKE_EXECUTOR.md). Cette livraison n’est pas une validation native de l’application CAKE ni du nettoyage du nouveau contrôle.
 
 ## Rangement et API
 
@@ -53,7 +53,7 @@ La bannière doit correspondre au producteur `iproute2-6.1.0`. La file est relue
 
 Chaque appel conserve chemin et empreinte attendue, arguments, départ UTC, durée monotone, PID si démarré, code si récupéré, stdout/stderr, troncatures et erreur. Une empreinte refusée peut donc laisser une trace sans PID ni code ; elle ne signifie pas qu’un outil a été exécuté. La bannière et l’identité du lien sont également conservées. Un cycle normal contient quatorze appels aux outils.
 
-Ces objets sont des traces Go en mémoire, pas un nouveau format JSON public. Ils ne sont pas automatiquement inclus dans les événements `ready`/`applied`. Leur [conservation durable](LAB_CAKE_ENTRY.md) est maintenant raccordée au backend par `LabToolObserver`, avant dispatch et après récupération. Leur intégration au bilan du superviseur reste à réaliser. Ils n’attestent ni nettoyage ni restauration d’une passerelle existante.
+Ces objets sont des traces Go en mémoire, pas un nouveau format JSON public. Ils ne sont pas automatiquement inclus dans les événements `ready`/`applied`. Leur [conservation durable](LAB_CAKE_ENTRY.md) est maintenant raccordée au backend par `LabToolObserver`, avant dispatch et après récupération. Leur intégration au [bilan du superviseur](LAB_CAKE_GO_GUARD.md) est implémentée et testée en simulation. Ils n’attestent ni nettoyage ni restauration d’une passerelle existante.
 
 ## Vérification et suite
 
@@ -64,4 +64,4 @@ sh scripts/go.sh test -race -count=1 ./platforms/linux ./apps/gateway/internal/l
 
 Les tests vérifient le cycle complet, l’absence d’ajout pendant `Prepare`, les arguments fixes, la relecture finale, la copie des traces, les refus de version/empreinte/lien/adresses/file préexistante, les sorties excessives, la limite exacte de bannière, les échecs partiels d’ajout, l’expiration et la récupération des outils. Les références de namespace positives et les relevés réseau sont simulés ; les processus, exécutions ELF, limites et attentes sont réels.
 
-L’[entrée interne et le journal durable](LAB_CAKE_ENTRY.md) sont maintenant livrés. La suite raccorde le processus au superviseur Python sans modifier les contrôles historiques. Elle doit démontrer l’héritage des descripteurs à travers l’entrée dans un espace neuf, la récupération d’un outil après mort forcée du processus Go et les deux contrôles natifs DOWN. Le chemin actif, la restauration du foyer et le pilotage automatique restent ultérieurs.
+L’[entrée interne et le journal durable](LAB_CAKE_ENTRY.md) sont maintenant livrés. Le [raccordement au superviseur Python](LAB_CAKE_GO_GUARD.md) est implémenté et testé en simulation, sans modification des contrôles historiques. La suite prépare les validations natives figées. Elle doit démontrer l’héritage des descripteurs à travers l’entrée dans un espace neuf, la récupération d’un outil après mort forcée du processus Go et les deux contrôles natifs DOWN. Le chemin actif, la restauration du foyer et le pilotage automatique restent ultérieurs.

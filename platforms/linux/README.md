@@ -1,6 +1,6 @@
 # Adaptation Linux
 
-État : compteurs d’interfaces, inventaire de passerelle, validateurs CAKE et backend natif du contrôle DOWN implémentés. Le backend est testé avec des outils simulés ; son [entrée interne et son journal durable](../../docs/LAB_CAKE_ENTRY.md) sont livrés, tandis que le raccordement au superviseur et la validation native restent à réaliser. Le routage et la restauration d’une passerelle réelle ne sont pas implémentés.
+État : compteurs d’interfaces, inventaire de passerelle, validateurs CAKE et backend natif du contrôle DOWN implémentés. Le backend est testé avec des outils simulés ; son [entrée interne et son journal durable](../../docs/LAB_CAKE_ENTRY.md) sont livrés, avec [raccordement au superviseur](../../docs/LAB_CAKE_GO_GUARD.md) testé en simulation ; la validation native reste à réaliser. Le routage et la restauration d’une passerelle réelle ne sont pas implémentés.
 
 `ReadTrafficCounters()` lit les compteurs d'octets RX/TX de `/proc/net/dev` dans l'espace réseau courant. Le décodeur est testé avec des données contrôlées, notamment les compteurs élevés, données tronquées et erreurs de lecture. Les modèles retournés appartiennent au noyau ; le calcul des taux y reste indépendant de Linux.
 

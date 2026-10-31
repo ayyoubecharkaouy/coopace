@@ -4,7 +4,7 @@
 
 `apps/gateway/cmd/coopace-cake-worker` fournit l’entrée interne du contrôle DOWN sous Linux amd64. Elle assemble le [transport](LAB_CAKE_TRANSPORT.md), la session et le [backend natif borné](LAB_CAKE_BACKEND.md), avec journalisation synchronisée. L’application publique `coopace-gateway` conserve `inspect` et `plan` ; le processus interne n’est pas une commande d’application d’un scénario.
 
-Les tests vérifient le cycle et les preuves avec une acceptation de namespace et des opérations simulées. Le binaire réel compilé est testé pour son aide et pour le refus natif de l’espace d’origine, sans appel externe. **L’intégration au superviseur Python et les deux contrôles natifs DOWN restent à réaliser.** Aucun vrai `ip`/`tc` ni changement réseau n’est lancé pendant ces tests.
+Les tests vérifient le cycle et les preuves avec une acceptation de namespace et des opérations simulées. Le binaire réel compilé est testé pour son aide et pour le refus natif de l’espace d’origine, sans appel externe. **L’intégration au superviseur Python est implémentée et testée avec des opérations simulées ; les deux contrôles natifs DOWN restent à réaliser.** Aucun vrai `ip`/`tc` ni changement réseau n’est lancé pendant ces tests.
 
 ## Entrées du lanceur
 
@@ -53,7 +53,7 @@ Codes : `0` pour un cycle local terminé avec journal fermé sans erreur ; `2` p
 
 `worker_exit.data.intended_exit_code` exprime l’intention avant fermeture finale et sortie OS. Un échec de fermeture ou SIGKILL peut encore modifier la sortie réelle. Le superviseur devra comparer ce champ au code effectivement récupéré ; le journal seul ne démontre aucun succès global.
 
-Les enregistrements conservent `cleanup: not_attested`, `traffic_generated: false` et `active_path_verified: false`. Un arrêt forcé peut laisser seulement un préfixe valide, sans `worker_exit`. Les fragments incomplets et l’absence de fin ne doivent jamais être reconstruits en succès. Le retrait des espaces, la récupération des descendants après mort du processus et la décision finale restent à la charge du futur superviseur.
+Les enregistrements conservent `cleanup: not_attested`, `traffic_generated: false` et `active_path_verified: false`. Un arrêt forcé peut laisser seulement un préfixe valide, sans `worker_exit`. Les fragments incomplets et l’absence de fin ne doivent jamais être reconstruits en succès. Le retrait des espaces, la récupération des descendants après mort du processus et la décision finale appartiennent au [superviseur raccordé](LAB_CAKE_GO_GUARD.md), dont les contrôles natifs restent à réaliser.
 
 ## Vérification
 
@@ -64,4 +64,4 @@ sh scripts/go.sh test -race -count=1 ./platforms/linux ./apps/gateway/internal/l
 
 Les tests contrôlent les options, les propriétés du journal, les budgets, les erreurs de synchronisation, l’absence de transmission du journal aux outils, les octets source et l’ordre des preuves. Les tests de processus couvrent fin normale, refus de contexte, signaux gérés et SIGKILL après `applied`, sans outil vivant à ce point. Ils ne démontrent pas la récupération d’un outil orphelin pendant son exécution.
 
-La compilation et l’aide du processus sont vérifiables sans privilèges ; son lancement effectif nécessite les cinq références préparées par le lanceur. Il n’existe pas encore de procédure native prête à exécuter. La prochaine sous-étape raccorde ce contrat au superviseur Python, conserve ses contrôles historiques et prépare ensuite les validations DOWN dans un dossier neuf.
+La compilation et l’aide du processus sont vérifiables sans privilèges ; son lancement effectif nécessite les cinq références préparées par le lanceur. Les modes natifs du [superviseur](LAB_CAKE_GO_GUARD.md) sont implémentés ; leur préparation figée et leur validation restent à réaliser. Le [raccordement au superviseur Python](LAB_CAKE_GO_GUARD.md) est maintenant implémenté et testé en simulation, avec contrôles historiques conservés. La prochaine activité prépare les validations DOWN figées dans un dossier neuf.
