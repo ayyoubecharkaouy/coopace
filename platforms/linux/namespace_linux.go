@@ -12,6 +12,15 @@ import (
 // NS_GET_NSTYPE = _IO(0xb7, 3), checked against Linux amd64 UAPI nsfs.h.
 const nsGetNSTypeAMD64 = 0xb703
 
+// InspectNetworkNamespaceDescriptor reads the kernel type and identity of a
+// borrowed FD. It supplies no ownership, current-namespace or consent check.
+func InspectNetworkNamespaceDescriptor(file *os.File) (NetworkNamespaceIdentity, error) {
+	if runtime.GOARCH != "amd64" {
+		return NetworkNamespaceIdentity{}, fmt.Errorf("network namespace descriptor checks currently support Linux amd64 only")
+	}
+	return readNetworkNamespaceIdentity(file)
+}
+
 func readNetworkNamespaceIdentity(file *os.File) (NetworkNamespaceIdentity, error) {
 	if file == nil {
 		return NetworkNamespaceIdentity{}, fmt.Errorf("network namespace descriptor is absent")

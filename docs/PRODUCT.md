@@ -32,7 +32,7 @@ Un PC Linux n'est pas obligatoire parmi les membres du groupe. Les capacités de
 | Agent local Windows | Compilation Windows amd64 validée ; exécution native non vérifiée, collecte des compteurs et stockage protégé de clé non implémentés. |
 | Application Android | Prévue ; aucun APK ni intégration native disponible. |
 | Groupe coopératif | Prototype Linux à deux pairs : approbation et consentement persistés, TLS mutuel et observations facultatives. Tests en mémoire validés, TCP réel à confirmer ; coordination avancée non implémentée. |
-| Passerelle Linux/OpenWrt | Diagnostic Linux en lecture seule et simulation `plan` disponibles ; catalogue/validateurs CAKE et contexte de session testés. Transport et exécuteur Go complets, gestion du trafic du foyer et restauration réelle non implémentés ; OpenWrt non validé. |
+| Passerelle Linux/OpenWrt | Diagnostic Linux en lecture seule et simulation `plan` disponibles ; catalogue/validateurs CAKE et contexte de session testés. Transport hérité et pilote interne testés avec outils simulés ; backend natif et exécuteur supervisé complets, gestion du trafic du foyer et restauration réelle non implémentés ; OpenWrt non validé. |
 | Passerelle Windows | Cible à étudier ; moteur et performances non validés. |
 | Tableau de bord et relais | Prévus ; aucune implémentation. |
 | ML | Périmètre documenté ; aucun dataset ni modèle entraîné dans ce dépôt. |
@@ -79,7 +79,7 @@ La [campagne CAKE de trois paires](LAB_CAKE_CAMPAIGN.md) est [validée en natif]
 
 La [première planification statique hors ligne](STATIC_CAKE_PLANNING.md) est implémentée et testée dans le noyau Go. Elle recommande de proposer le profil du laboratoire, de conserver une référence conforme ou de s’abstenir selon des hypothèses explicites. Elle ne constitue pas une autorisation d’exécution ; la [commande de simulation de la passerelle](GATEWAY_PLANNING.md) est maintenant disponible, avec scénario local validé, motifs et provenance. Les observations fraîches et l’application du profil restent à développer.
 
-Le [contrat du futur exécuteur Go](LAB_CAKE_EXECUTOR.md) est défini pour une première intégration sur lien DOWN dans le laboratoire jetable. Il distingue l’accord local du contrôle, les identités réelles de ressources, la vérification du profil et le nettoyage indépendant. Le [catalogue et les validateurs purs Go](CAKE_GO_VALIDATION.md) sont désormais implémentés et testés. Le [contexte et le contrôle de session internes](LAB_CAKE_CONTEXT.md) sont aussi implémentés et testés, avec vérification de descripteurs en lecture seule. Aucun nouvel exécuteur complet ni contrôle de chemin actif n’est livré.
+Le [contrat du futur exécuteur Go](LAB_CAKE_EXECUTOR.md) est défini pour une première intégration sur lien DOWN dans le laboratoire jetable. Il distingue l’accord local du contrôle, les identités réelles de ressources, la vérification du profil et le nettoyage indépendant. Le [catalogue et les validateurs purs Go](CAKE_GO_VALIDATION.md) sont désormais implémentés et testés. Le [contexte et le contrôle de session internes](LAB_CAKE_CONTEXT.md) sont aussi implémentés et testés, avec vérification de descripteurs en lecture seule. Le [transport hérité et le pilote interne](LAB_CAKE_TRANSPORT.md) sont maintenant testés avec de vrais processus et outils simulés. Aucun nouvel exécuteur natif complet ni contrôle de chemin actif n’est livré.
 
 ## Références et mesures indispensables
 

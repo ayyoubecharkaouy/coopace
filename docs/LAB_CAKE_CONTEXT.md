@@ -2,7 +2,7 @@
 
 ## État et limites
 
-`apps/gateway/internal/labcontrol` implémente le décodage du contexte, les instructions et leur enchaînement. `platforms/linux/namespace*.go` ajoute la vérification en lecture seule des descripteurs d'espace réseau sous Linux amd64. **Aucun processus de contrôle CAKE, appel `tc`, nouveau point d'entrée CLI ou raccordement au superviseur n'est ajouté.** La passerelle conserve `inspect` et [`plan`](GATEWAY_PLANNING.md).
+`apps/gateway/internal/labcontrol` implémente le décodage du contexte, les instructions et leur enchaînement. `platforms/linux/namespace*.go` ajoute la vérification en lecture seule des descripteurs d'espace réseau sous Linux amd64. Le [transport hérité et le pilote privé](LAB_CAKE_TRANSPORT.md) complètent maintenant cette bibliothèque, avec des essais de processus et outils simulés. **Aucun backend natif CAKE, appel `tc`, nouveau point d’entrée CLI ou raccordement au superviseur n’est ajouté.** La passerelle conserve `inspect` et [`plan`](GATEWAY_PLANNING.md).
 
 Cette sous-étape prépare le [contrat d'exécuteur](LAB_CAKE_EXECUTOR.md). Elle ne constitue ni sa réalisation complète ni une validation native du nettoyage d'un processus Go de contrôle CAKE.
 
@@ -45,7 +45,7 @@ Un échec est permanent sur cet objet : doublon, session différente, instructio
 
 Le départ doit être capturé avec `time.Now` avant la lecture d'initialisation. La durée totale est de 30s ; chaque frontière dispose de 5s au maximum, sans dépasser l'échéance totale. Les comparaisons utilisent la composante monotone lorsqu'elle est conservée. L'expiration à la frontière exacte est refusée et les vérifications seules ne prolongent pas les délais.
 
-**Ces contrôles d'horloge ont lieu aux appels de la bibliothèque.** Le lecteur de trames n'interrompt pas une lecture bloquée. Le futur transport devra gérer échéances/annulations des canaux, écritures, commandes, signaux et arrêt. Ce module ne garantit pas de durée de vie autonome ni de nettoyage indépendant.
+**Ces contrôles d'horloge ont lieu aux appels de la bibliothèque.** Le lecteur de trames n'interrompt pas une lecture bloquée. Le [transport Linux](LAB_CAKE_TRANSPORT.md) fournit maintenant les échéances et annulations des canaux hérités. Les commandes natives bornées, signaux et arrêt sous le superviseur restent à raccorder. Ce module ne garantit pas de durée de vie autonome ni de nettoyage indépendant.
 
 ## Tests et preuves actuelles
 
@@ -57,4 +57,4 @@ Les tests couvrent champs requis, limites des trames, uint64, refus des formats 
 
 Un test Linux en lecture seule vérifie le type réseau sur des descripteurs réels, refuse le type PID et confirme le refus de l'espace d'origine comme cible jetable. Les fichiers ordinaires et descripteurs fermés sont également refusés. Ce test est explicitement ignoré si la lecture native nécessaire est indisponible ; il ne crée aucun espace et ne remplace pas un essai positif dans une cible neuve.
 
-Restent à démontrer : héritage des descripteurs à travers le lancement, groupe de processus, transmission des événements, annulation des canaux bloqués, commandes bornées et nettoyage après panne. Les tests Go généraux, l'analyse statique et les compilations Linux/Windows sont à maintenir lors du raccordement.
+Le [transport et ses tests de processus](LAB_CAKE_TRANSPORT.md) démontrent maintenant l’héritage lors d’un lancement ordinaire, le groupe du processus de test, les événements et l’annulation des canaux bloqués. Restent à démontrer : héritage à travers l’entrée dans un espace neuf, backend natif borné, raccordement au superviseur et nettoyage du contrôle après panne. Les tests Go généraux, l'analyse statique et les compilations Linux/Windows sont à maintenir lors du raccordement.

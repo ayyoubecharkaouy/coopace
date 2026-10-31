@@ -14,6 +14,7 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 | [LAB_CAKE_EXECUTOR.md](LAB_CAKE_EXECUTOR.md) | Contrat du futur exécuteur Go de laboratoire : profil, session, lien DOWN, supervision, preuves et tests requis. |
 | [CAKE_GO_VALIDATION.md](CAKE_GO_VALIDATION.md) | Catalogue et validateurs CAKE Go purs, unités, fixtures natives, bornes et concordance avec la référence Python. |
 | [LAB_CAKE_CONTEXT.md](LAB_CAKE_CONTEXT.md) | Trames internes, contexte de session, transitions, échéances et vérification en lecture seule des descripteurs Linux. |
+| [LAB_CAKE_TRANSPORT.md](LAB_CAKE_TRANSPORT.md) | Canaux hérités, I/O annulables, événements et pilote privé testé avec des processus et outils simulés. |
 | [TECH_STACK.md](TECH_STACK.md) | Choix de Go et Kotlin, outils et décisions différées. |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | Installation locale, commandes, compilation et tests. |
 | [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md) | Compilation Windows et vérifications natives restant à effectuer. |

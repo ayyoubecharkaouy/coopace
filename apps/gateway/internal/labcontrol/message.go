@@ -53,7 +53,7 @@ func validSession(value string) bool {
 }
 
 // readFrame bounds allocation before reading the payload. Deadline/cancellation
-// of a blocked reader belongs to the future inherited-pipe transport.
+// of a blocked reader belongs to its transport (WorkerTransport on Linux).
 func readFrame(input io.Reader, limit uint32) ([]byte, error) {
 	var prefix [4]byte
 	if _, err := io.ReadFull(input, prefix[:]); err != nil {

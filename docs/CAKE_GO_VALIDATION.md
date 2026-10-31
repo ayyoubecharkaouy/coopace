@@ -49,4 +49,4 @@ Les tests Go généraux, `go vet` et compilations Linux/Windows restent distinct
 
 ## Sous-étape suivante
 
-Le [contexte interne, le contrôle de session et les vérifications de descripteurs](LAB_CAKE_CONTEXT.md) sont maintenant implémentés et testés. La prochaine sous-étape développe le transport et le processus avec des outils simulés, selon le [contrat](LAB_CAKE_EXECUTOR.md). L'appel réel à `tc` ne pourra être raccordé qu'avec cette propriété vérifiée, une invocation locale bornée et le superviseur responsable du nettoyage.
+Le [contexte interne, le contrôle de session et les vérifications de descripteurs](LAB_CAKE_CONTEXT.md) sont maintenant implémentés et testés. Le [transport et le pilote interne](LAB_CAKE_TRANSPORT.md) sont également implémentés et testés avec de vrais processus et outils simulés. La prochaine sous-étape développe le backend natif borné et son lancement interne, selon le [contrat](LAB_CAKE_EXECUTOR.md). L'appel réel à `tc` ne pourra être raccordé qu'avec cette propriété vérifiée, une invocation locale bornée et le superviseur responsable du nettoyage.

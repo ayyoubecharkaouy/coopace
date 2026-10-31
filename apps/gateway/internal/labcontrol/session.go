@@ -131,8 +131,8 @@ func (s *Session) BindNamespace(retained, original *os.File) error {
 	return nil
 }
 
-// Ready checks the initial dump; live interface/DOWN checks and the actual
-// emission of the ready event still belong to the future worker implementation.
+// Ready checks the initial dump. The driver emits the event; live interface
+// and DOWN checks still belong to the future native tool backend.
 func (s *Session) Ready(initial []byte) error {
 	if err := s.expect(Bound); err != nil {
 		return err
@@ -174,7 +174,8 @@ func (s *Session) Accept(command Command) error {
 }
 
 // Receive makes malformed frames and EOF terminal. It does not supply transport
-// deadlines for a reader blocked in I/O; the future worker must provide those.
+// deadlines for a reader blocked in I/O; WorkerTransport supplies those for
+// inherited Linux pipes.
 func (s *Session) Receive(input io.Reader) error {
 	if err := s.Check(); err != nil {
 		return err

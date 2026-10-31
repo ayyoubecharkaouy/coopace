@@ -4,7 +4,7 @@ Date : 31 octobre 2026.
 
 ## État et première portée
 
-**Catalogue, validateurs et contexte/protocole interne Go implémentés ; exécuteur complet non implémenté.** La passerelle conserve les commandes `inspect` et [`plan`](GATEWAY_PLANNING.md). Ce document fixe la première intégration privilégiée à développer, ses frontières et les preuves requises avant un lancement natif. Il ne fournit aucune nouvelle commande à exécuter.
+**Catalogue, validateurs, contexte et transport interne Go implémentés ; exécuteur natif complet non implémenté.** Le [pilote privé](LAB_CAKE_TRANSPORT.md) est testé avec de vrais processus et des outils simulés. La passerelle conserve les commandes `inspect` et [`plan`](GATEWAY_PLANNING.md). Ce document fixe la première intégration privilégiée à développer, ses frontières et les preuves requises avant un lancement natif. Il ne fournit aucune nouvelle commande à exécuter.
 
 La première version est un **contrôle de cycle de vie sur lien DOWN**, équivalent au périmètre du [contrôle CAKE Python déjà validé](LAB_CAKE.md) : ajout du profil, relecture, arrêt et nettoyage normal ou après mort forcée du processus Go. Elle réutilise le superviseur indépendant ; elle ne raccorde pas une interface physique et ne génère aucun trafic de mesure.
 
@@ -46,7 +46,7 @@ Le contexte d’initialisation est un objet JSON strict, limité à 4 Kio, trans
 | `reference` | Uniquement `cake-ipv4-lab-4mbit-v1`. |
 | `namespace_identity` | `device` et `inode` entiers non négatifs, rapprochés du descripteur hérité et de l'espace courant. |
 
-L'allocation des numéros de descripteurs appartient au lanceur interne et doit être testée. Aucun nom d'interface libre, débit, argument shell, chemin d'outil ou commande arbitraire n'est reçu dans ce JSON. Le chemin absolu du `tc` sélectionné est fixé et vérifié par le lancement de confiance, avec son empreinte conservée dans les preuves.
+L’allocation est fixée et testée à travers un lancement ordinaire : contrôle en 3, événements en 4, cible en 5 et origine en 6. L’héritage à travers l’entrée dans un espace neuf reste à démontrer avec le superviseur. Le [transport interne](LAB_CAKE_TRANSPORT.md) valide ces emplacements et les marque close-on-exec pour les outils. Aucun nom d'interface libre, débit, argument shell, chemin d'outil ou commande arbitraire n'est reçu dans ce JSON. Le chemin absolu du `tc` sélectionné est fixé et vérifié par le lancement de confiance, avec son empreinte conservée dans les preuves.
 
 Le protocole suit une seule séquence : initialisation, événement `ready` après vérifications sans ajout, instruction `apply` liée à la même session, événement `applied` après ajout **et relecture conforme**, puis instruction `finish` et sortie normale. Une instruction de contrôle est limitée à 1 Kio. Un doublon, événement hors ordre, identifiant différent, délai dépassé ou EOF interrompt la séquence et rend tout nouvel ajout interdit. Il n'existe pas de seconde tentative d'ajout dans la même session.
 
@@ -123,7 +123,7 @@ La sortie `0` du contrôle normal exige ajout/relecture conformes, sortie Go `0`
 ## Ordre d'implémentation
 
 1. **Livré** : [catalogue du profil et validateurs CAKE purs Go](CAKE_GO_VALIDATION.md), avec fixtures et tests sans réseau.
-2. **Partiellement livré** : [contexte interne, contrôle de session et vérification des descripteurs](LAB_CAKE_CONTEXT.md). Les tests de protocole et descripteurs sont disponibles ; le lancement, l’héritage des canaux et les tests de processus avec outils simulés restent à développer.
+2. **Partiellement livré** : [contexte interne, contrôle de session et vérification des descripteurs](LAB_CAKE_CONTEXT.md). Le [transport hérité et le pilote privé](LAB_CAKE_TRANSPORT.md) sont aussi livrés, avec tests de vrais processus et outils simulés. Le backend natif borné et son lancement interne restent à développer avant le raccordement au superviseur.
 3. Raccorder le processus Go au superviseur sans modifier les commandes historiques, puis préparer les deux contrôles natifs DOWN dans un dossier neuf.
 4. Après validation native, définir séparément le raccordement au chemin actif : faits récents pour les six prérequis, passage vérifié, application bornée et mesures. Aucun prérequis manquant n'est remplacé par le scénario fictif de `plan`.
 
