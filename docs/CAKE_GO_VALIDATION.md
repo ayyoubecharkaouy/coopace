@@ -49,4 +49,4 @@ Les tests Go généraux, `go vet` et compilations Linux/Windows restent distinct
 
 ## Sous-étape suivante
 
-Développer le contexte interne et sa liaison à la session et à l'espace réseau, puis vérifier le protocole et les processus avec des outils simulés, selon le [contrat](LAB_CAKE_EXECUTOR.md). L'appel réel à `tc` ne pourra être raccordé qu'avec cette propriété vérifiée, une invocation locale bornée et le superviseur responsable du nettoyage.
+Le [contexte interne, le contrôle de session et les vérifications de descripteurs](LAB_CAKE_CONTEXT.md) sont maintenant implémentés et testés. La prochaine sous-étape développe le transport et le processus avec des outils simulés, selon le [contrat](LAB_CAKE_EXECUTOR.md). L'appel réel à `tc` ne pourra être raccordé qu'avec cette propriété vérifiée, une invocation locale bornée et le superviseur responsable du nettoyage.

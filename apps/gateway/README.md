@@ -11,6 +11,7 @@ gateway/
     ├── cli/                # Commandes inspect/plan et affichage
     ├── diagnostic/         # Inventaire et adaptation système
     ├── planning/           # Scénario local et simulation sans collecte
+    ├── labcontrol/         # Contexte et protocole interne, sans exécuteur
     └── buildinfo/          # Provenance du binaire, partagée sans inventaire
 ```
 
@@ -28,4 +29,4 @@ Les outils de `scripts/` ont leur propre cycle de vie : connectivité, transfert
 
 Le moteur réseau dépendra du système : CAKE/SQM est envisagé sous Linux ; une passerelle Windows exige une intégration et une validation spécifiques. Les privilèges et leur séparation restent à définir.
 
-La [première planification CAKE statique hors ligne](../../docs/STATIC_CAKE_PLANNING.md) est implémentée et testée dans le noyau Go. La [commande `plan --scenario FICHIER [--json]`](../../docs/GATEWAY_PLANNING.md) réalise maintenant ce raccordement : scénario local de 16 Kio maximum, validation stricte, motifs et provenance sur stdout. Elle ne réalise aucune collecte ni application réseau. Le [contrat de l’exécuteur supervisé](../../docs/LAB_CAKE_EXECUTOR.md) est maintenant défini pour un premier contrôle CAKE sur lien DOWN ; le [catalogue et les validateurs purs côté Go](../../docs/CAKE_GO_VALIDATION.md) sont maintenant implémentés dans l’adaptation Linux. Le contexte de session et l’exécution restent à développer. Aucun point d’entrée privilégié n’est encore ajouté.
+La [première planification CAKE statique hors ligne](../../docs/STATIC_CAKE_PLANNING.md) est implémentée et testée dans le noyau Go. La [commande `plan --scenario FICHIER [--json]`](../../docs/GATEWAY_PLANNING.md) réalise maintenant ce raccordement : scénario local de 16 Kio maximum, validation stricte, motifs et provenance sur stdout. Elle ne réalise aucune collecte ni application réseau. Le [contrat de l’exécuteur supervisé](../../docs/LAB_CAKE_EXECUTOR.md) est maintenant défini pour un premier contrôle CAKE sur lien DOWN ; le [catalogue et les validateurs purs côté Go](../../docs/CAKE_GO_VALIDATION.md) sont maintenant implémentés dans l’adaptation Linux. Le [contexte de session interne](../../docs/LAB_CAKE_CONTEXT.md) est maintenant implémenté et testé dans `internal/labcontrol`. Le transport, le lancement supervisé et l’exécution restent à développer. Aucun point d’entrée privilégié n’est encore ajouté.
