@@ -132,7 +132,7 @@ func (s *Session) BindNamespace(retained, original *os.File) error {
 }
 
 // Ready checks the initial dump. The driver emits the event; live interface
-// and DOWN checks still belong to the future native tool backend.
+// and DOWN checks belong to the native tool backend.
 func (s *Session) Ready(initial []byte) error {
 	if err := s.expect(Bound); err != nil {
 		return err

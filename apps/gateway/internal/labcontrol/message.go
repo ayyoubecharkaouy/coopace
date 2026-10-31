@@ -1,5 +1,6 @@
-// Package labcontrol defines the internal, one-session CAKE control protocol.
-// It supplies no CLI, tc execution, privileged launcher or cleanup mechanism.
+// Package labcontrol defines the internal, one-session CAKE control protocol
+// and wires its native DOWN-lab adapter. It supplies no CLI, privileged launcher
+// or independent resource cleanup mechanism.
 package labcontrol
 
 import (

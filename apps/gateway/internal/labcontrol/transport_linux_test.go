@@ -252,7 +252,7 @@ func TestInheritedWorkerProcessSequenceClosesToolDescriptorsAndRechecksBeforeExi
 }
 
 func TestInheritedWorkerRejectsDescriptorsSessionsEOFAndRepeatedApply(t *testing.T) {
-	for _, mode := range []string{"wrong_direction", "ordinary_pipe", "missing_namespace", "native_original", "wrong_session", "premature_finish", "eof", "duplicate_apply", "invalid_final"} {
+	for _, mode := range []string{"wrong_direction", "ordinary_pipe", "missing_namespace", "native_original", "native_backend", "wrong_session", "premature_finish", "eof", "duplicate_apply", "invalid_final"} {
 		t.Run(mode, func(t *testing.T) {
 			h := startWorkerProcess(t, mode)
 			if mode == "wrong_direction" || mode == "ordinary_pipe" || mode == "missing_namespace" {
@@ -269,12 +269,15 @@ func TestInheritedWorkerRejectsDescriptorsSessionsEOFAndRepeatedApply(t *testing
 				session = "other123"
 			}
 			h.request(t, session)
-			if mode == "native_original" || mode == "wrong_session" {
+			if mode == "native_original" || mode == "native_backend" || mode == "wrong_session" {
 				if err := h.wait(); err == nil {
 					t.Fatal("unbound context admitted")
 				}
 				if h.toolCalls() != "" {
 					t.Fatal("tool ran before binding")
+				}
+				if mode == "native_backend" && !strings.Contains(h.stderr.String(), "original supervisor network namespace") {
+					t.Fatal("native backend failed at the wrong boundary", h.stderr.String())
 				}
 				return
 			}
@@ -361,6 +364,17 @@ func TestTransportProcessHelper(t *testing.T) {
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(2)
+	}
+	if mode == "native_backend" {
+		// Production assembly has no verifier injection or PATH/tool fallback.
+		tools := nativeTools{ip: linux.LabToolSpec{Path: "/missing/ip", SHA256: strings.Repeat("0", 64)}, tc: linux.LabToolSpec{Path: "/missing/tc", SHA256: strings.Repeat("0", 64)}}
+		evidence, err := runNativeWorker(context.Background(), transport, "abcd1234", started, tools)
+		if err == nil || len(evidence.Calls) != 0 {
+			fmt.Fprintln(os.Stderr, "invalid native binding admitted")
+			os.Exit(2)
+		}
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 	if syscall.Getpgrp() != os.Getpid() {
 		fmt.Fprintln(os.Stderr, "worker not in its own group")

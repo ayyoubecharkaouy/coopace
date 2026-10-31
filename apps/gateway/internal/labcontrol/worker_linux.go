@@ -12,9 +12,9 @@ import (
 	"github.com/ayyoubecharkaouy/coopace/platforms/linux"
 )
 
-// This private driver is exercised with process-backed fake tools. It has no
-// native tool backend or CLI yet. The future backend must inspect interfaces and
-// DOWN state, enforce tool/output limits, and collect all dumps itself.
+// This private driver accepts the native adapter wired in native_linux.go or
+// process-backed test fakes. A command entrypoint and supervisor are not wired
+// yet; interface/DOWN checks and bounded tool calls belong to the native adapter.
 type workerOperations struct {
 	initial func(context.Context) ([]byte, error)
 	apply   func(context.Context) ([]byte, linux.CakeProducerProfile, error)

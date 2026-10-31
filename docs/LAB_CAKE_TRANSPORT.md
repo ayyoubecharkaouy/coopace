@@ -2,7 +2,7 @@
 
 ## État
 
-Le transport Linux et un pilote interne de séquence sont implémentés dans `apps/gateway/internal/labcontrol`. Les tests lancent un vrai processus Go et des outils simulés. Ils vérifient les canaux hérités, les événements, l’annulation des I/O et la fermeture des descripteurs. **Aucun backend natif d’application CAKE, nouvelle CLI ou raccordement au superviseur Python n’est livré.**
+Le transport Linux et un pilote interne de séquence sont implémentés dans `apps/gateway/internal/labcontrol`. Les tests lancent un vrai processus Go et des outils simulés. Ils vérifient les canaux hérités, les événements, l’annulation des I/O et la fermeture des descripteurs. Le [backend natif borné](LAB_CAKE_BACKEND.md) est maintenant implémenté et assemblé en privé ; **aucune nouvelle CLI ni intégration au superviseur Python n’est livrée.**
 
 Cette livraison prolonge le [contexte de session](LAB_CAKE_CONTEXT.md) et le [contrat d’exécuteur](LAB_CAKE_EXECUTOR.md). La passerelle publique conserve `inspect` et `plan` ; le pilote `runWorker` est privé et n’a actuellement que des appelants de test. Aucun réglage réseau n’est appliqué par les essais.
 
@@ -31,7 +31,7 @@ Chaque lecture/écriture prend la borne la plus proche entre la frontière de se
 
 Une erreur d’I/O rend le transport inutilisable pour la suite. Aucune trame partiellement lue ou écrite n’est réessayée. Les écritures partielles ordinaires sont poursuivies ; une écriture sans progression est refusée. EOF, EPIPE et dépassements de délai restent des erreurs.
 
-Ces propriétés concernent les canaux. Un contexte transmis à une opération métier ne peut pas arrêter une fonction qui l’ignore : le futur backend devra borner et récupérer lui-même ses appels aux outils, avec les limites de deux secondes et de sortie du contrat. Aucun arrêt autonome d’un backend arbitraire ou nettoyage de ressources réseau n’est revendiqué ici.
+Ces propriétés concernent les canaux. Un contexte transmis à une opération métier ne peut pas arrêter une fonction qui l’ignore : le [backend natif](LAB_CAKE_BACKEND.md) borne et récupère maintenant ses appels aux outils avec les limites de deux secondes et de sortie du contrat. Aucun arrêt autonome d’un backend arbitraire ou nettoyage de ressources réseau n’est revendiqué ici.
 
 ## Événements et séquence
 
@@ -46,7 +46,7 @@ La limite est de 128 Kio de JSON par événement et 512 Kio au total, préfixes 
 
 Le pilote privé enchaîne initialisation, liaison, lecture initiale, `ready`, réception de `apply`, opération d’application, validation, `applied`, réception de `finish`, puis relecture finale conforme et fermeture des quatre références. La relecture finale conserve la frontière précédant `finish` : aucune nouvelle fenêtre de cinq secondes n’est accordée. Une erreur de fermeture empêche également un succès du pilote.
 
-Le backend est encore une interface interne de callbacks. La vérification réelle des interfaces attendues et de leur état DOWN, le chemin absolu et l’empreinte de `tc`, les arguments fixes, ses limites stdout/stderr et la provenance des relevés restent à implémenter. Le pilote n’est pas un exécuteur de commandes configurables par JSON.
+Les callbacks du pilote sont maintenant assemblés au [backend natif](LAB_CAKE_BACKEND.md) par `native_linux.go` : interfaces DOWN, chemins/empreintes, arguments fixes, limites stdout/stderr et traces. L’entrée de lancement et les preuves durables restent à développer ; les essais positifs actuels utilisent des outils simulés. Le pilote n’est pas un exécuteur de commandes configurables par JSON.
 
 ## Vérifications disponibles
 
@@ -63,4 +63,4 @@ Un autre essai annule un outil simulé bloqué et constate sa récupération. La
 
 ## Suite
 
-Implémenter le backend natif borné et son lancement interne, d’abord testé avec des outils simulés : interfaces DOWN, producteur, arguments fixes, sorties, annulation et codes. Raccorder ensuite le processus au superviseur existant et démontrer l’héritage des références à travers l’entrée dans un espace réseau neuf, puis les deux contrôles natifs DOWN. Les commandes et preuves Python historiques restent distinctes.
+Le [backend natif borné](LAB_CAKE_BACKEND.md) est maintenant implémenté et testé avec des outils simulés. Ajouter son entrée de lancement et les preuves durables. Raccorder ensuite le processus au superviseur existant et démontrer l’héritage des références à travers l’entrée dans un espace réseau neuf, puis les deux contrôles natifs DOWN. Les commandes et preuves Python historiques restent distinctes.
