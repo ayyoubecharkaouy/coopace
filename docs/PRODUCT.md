@@ -79,6 +79,8 @@ La [campagne CAKE de trois paires](LAB_CAKE_CAMPAIGN.md) est [validée en natif]
 
 La [première planification statique hors ligne](STATIC_CAKE_PLANNING.md) est implémentée et testée dans le noyau Go. Elle recommande de proposer le profil du laboratoire, de conserver une référence conforme ou de s’abstenir selon des hypothèses explicites. Elle ne constitue pas une autorisation d’exécution ; la [commande de simulation de la passerelle](GATEWAY_PLANNING.md) est maintenant disponible, avec scénario local validé, motifs et provenance. Les observations fraîches et l’application du profil restent à développer.
 
+Le [contrat du futur exécuteur Go](LAB_CAKE_EXECUTOR.md) est défini pour une première intégration sur lien DOWN dans le laboratoire jetable. Il distingue l’accord local du contrôle, les identités réelles de ressources, la vérification du profil et le nettoyage indépendant. Cette étape reste documentaire : aucun nouvel exécuteur ni contrôle de chemin actif n’est livré.
+
 ## Références et mesures indispensables
 
 | Expérience | Comparaisons nécessaires |
