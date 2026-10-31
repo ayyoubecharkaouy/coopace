@@ -33,8 +33,9 @@ type WorkerTransport struct {
 // OpenInheritedTransport consumes FDs 3..6, including on failure. Pipes must be
 // FIFO descriptors in the correct direction. Kernel namespace types are checked
 // immediately; identity and current binding are checked by Session.BindNamespace.
-// Call this as the first I/O setup in a dedicated worker whose launcher owns
-// these slots, never as a probe in another application's running process.
+// Call this before setting up pollable I/O in a dedicated worker whose launcher
+// owns these slots; the regular journal FD may be checked first. Never use this
+// as a probe in another application's running process.
 func OpenInheritedTransport() (_ *WorkerTransport, result error) {
 	t := &WorkerTransport{}
 	files := []**os.File{&t.control, &t.events, &t.target, &t.original}

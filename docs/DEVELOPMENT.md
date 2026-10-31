@@ -16,7 +16,7 @@ L'étape 3.4 ajoute l'approbation et le consentement persistés, les certificats
 
 L'étape 4.1 ajoute l'application passerelle avec un diagnostic Linux en lecture seule : `coopace-gateway inspect`. Les tests et le lancement réel sont vérifiés, avec un inventaire partiel dans l'environnement isolé où Netlink est interdit, puis un [inventaire complet dans la passerelle virtuelle](VALIDATION_VIRTUAL_LAB_2026-10-29.md). Le [diagnostic et ses limites](GATEWAY_DIAGNOSTIC.md) distinguent cet essai de l'inventaire du foyer encore à recueillir. Ce programme ne gère pas encore le trafic.
 
-L'étape 4.2 ajoute `inspect --json`, l'export d'inventaire local v1, les outils de laboratoire et la simulation `plan`. Les campagnes natives TBF/CAKE et leur [comparaison statique](VALIDATION_CAKE_COMPARISON_2026-10-30.md) sont validées. Côté Go, le catalogue, les validateurs et le [contexte interne de session](LAB_CAKE_CONTEXT.md) sont livrés ; le [transport hérité et le pilote interne](LAB_CAKE_TRANSPORT.md) sont maintenant testés avec de vrais processus et outils simulés. Le [backend natif borné](LAB_CAKE_BACKEND.md) est aussi implémenté, avec tests utilisant des outils ELF simulés. L’entrée de lancement, les preuves durables et le raccordement au superviseur restent à développer. Le [protocole de référence initiale](GATEWAY_BASELINE.md), la couverture et la restauration restent à compléter pour une passerelle du foyer.
+L'étape 4.2 ajoute `inspect --json`, l'export d'inventaire local v1, les outils de laboratoire et la simulation `plan`. Les campagnes natives TBF/CAKE et leur [comparaison statique](VALIDATION_CAKE_COMPARISON_2026-10-30.md) sont validées. Côté Go, le catalogue, les validateurs et le [contexte interne de session](LAB_CAKE_CONTEXT.md) sont livrés ; le [transport hérité et le pilote interne](LAB_CAKE_TRANSPORT.md) sont maintenant testés avec de vrais processus et outils simulés. Le [backend natif borné](LAB_CAKE_BACKEND.md) est aussi implémenté, avec tests utilisant des outils ELF simulés. L’[entrée interne et le journal durable](LAB_CAKE_ENTRY.md) sont aussi livrés ; le raccordement au superviseur et les validations natives Go restent à réaliser. Le [protocole de référence initiale](GATEWAY_BASELINE.md), la couverture et la restauration restent à compléter pour une passerelle du foyer.
 
 ## Version et module
 
@@ -214,3 +214,7 @@ sh scripts/go.sh run ./apps/gateway/cmd/coopace-gateway plan --scenario docs/exa
 ```
 
 Les exemples sont fictifs ; les hypothèses restent déclarées et aucune configuration réseau n’est appliquée. Le scénario strict et le rapport appartiennent à `apps/gateway/internal/planning`, la règle au noyau et la provenance du binaire à `internal/buildinfo`.
+
+## Processus interne du contrôle CAKE
+
+`apps/gateway/cmd/coopace-cake-worker` est un point d’entrée distinct, destiné au lanceur supervisé. Son [contrat de lancement et de journalisation](LAB_CAKE_ENTRY.md) décrit les cinq descripteurs hérités ; il ne s’utilise pas avec un scénario `plan`. Ses tests font partie de la suite Go et vérifient également le binaire compilé, sans configuration réseau. Le raccordement au superviseur Python reste à réaliser.

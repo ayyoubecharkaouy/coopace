@@ -2,9 +2,9 @@
 
 ## État
 
-Le transport Linux et un pilote interne de séquence sont implémentés dans `apps/gateway/internal/labcontrol`. Les tests lancent un vrai processus Go et des outils simulés. Ils vérifient les canaux hérités, les événements, l’annulation des I/O et la fermeture des descripteurs. Le [backend natif borné](LAB_CAKE_BACKEND.md) est maintenant implémenté et assemblé en privé ; **aucune nouvelle CLI ni intégration au superviseur Python n’est livrée.**
+Le transport Linux et un pilote interne de séquence sont implémentés dans `apps/gateway/internal/labcontrol`. Les tests lancent un vrai processus Go et des outils simulés. Ils vérifient les canaux hérités, les événements, l’annulation des I/O et la fermeture des descripteurs. Le [backend natif borné](LAB_CAKE_BACKEND.md) est maintenant implémenté et assemblé en privé ; l’[entrée interne et le journal durable](LAB_CAKE_ENTRY.md) sont maintenant livrés, sans intégration au superviseur Python.
 
-Cette livraison prolonge le [contexte de session](LAB_CAKE_CONTEXT.md) et le [contrat d’exécuteur](LAB_CAKE_EXECUTOR.md). La passerelle publique conserve `inspect` et `plan` ; le pilote `runWorker` est privé et n’a actuellement que des appelants de test. Aucun réglage réseau n’est appliqué par les essais.
+Cette livraison prolonge le [contexte de session](LAB_CAKE_CONTEXT.md) et le [contrat d’exécuteur](LAB_CAKE_EXECUTOR.md). La passerelle publique conserve `inspect` et `plan` ; le pilote `runWorker` reste privé et est assemblé par l’entrée interne. Aucun réglage réseau n’est appliqué par les essais.
 
 ## Descripteurs fixes
 
@@ -14,8 +14,9 @@ Cette livraison prolonge le [contexte de session](LAB_CAKE_CONTEXT.md) et le [co
 | 4 | Écriture du canal d’événements. |
 | 5 | Référence conservée de l’espace réseau cible. |
 | 6 | Référence de l’espace réseau d’origine du superviseur. |
+| 7 | Journal durable, validé et fermé séparément par l’entrée interne. |
 
-`OpenInheritedTransport` est réservé au premier montage des I/O d’un processus dédié dont le lanceur possède ces quatre emplacements. Il les consomme, y compris après un échec, et les ferme après usage. Il ne doit pas servir de sonde dans un autre processus en cours d’exécution. Aucun numéro de descripteur ni chemin d’espace ne provient du JSON.
+`OpenInheritedTransport` est réservé au montage initial des I/O pollables d’un processus dédié dont le lanceur possède ces quatre emplacements. Il les consomme, y compris après un échec, et les ferme après usage. Il ne doit pas servir de sonde dans un autre processus en cours d’exécution. Aucun numéro de descripteur ni chemin d’espace ne provient du JSON.
 
 Les quatre emplacements sont examinés avant l’enregistrement des canaux auprès du poller Go, pour qu’un descripteur manquant ne soit pas confondu avec une nouvelle allocation interne. Le contrôle et les événements doivent être deux objets FIFO distincts, respectivement ouverts en lecture seule et en écriture seule. Le futur lanceur doit créer ces canaux anonymes ; leur type seul ne prouve pas leur origine.
 
@@ -46,7 +47,7 @@ La limite est de 128 Kio de JSON par événement et 512 Kio au total, préfixes 
 
 Le pilote privé enchaîne initialisation, liaison, lecture initiale, `ready`, réception de `apply`, opération d’application, validation, `applied`, réception de `finish`, puis relecture finale conforme et fermeture des quatre références. La relecture finale conserve la frontière précédant `finish` : aucune nouvelle fenêtre de cinq secondes n’est accordée. Une erreur de fermeture empêche également un succès du pilote.
 
-Les callbacks du pilote sont maintenant assemblés au [backend natif](LAB_CAKE_BACKEND.md) par `native_linux.go` : interfaces DOWN, chemins/empreintes, arguments fixes, limites stdout/stderr et traces. L’entrée de lancement et les preuves durables restent à développer ; les essais positifs actuels utilisent des outils simulés. Le pilote n’est pas un exécuteur de commandes configurables par JSON.
+Les callbacks du pilote sont maintenant assemblés au [backend natif](LAB_CAKE_BACKEND.md) par `native_linux.go` : interfaces DOWN, chemins/empreintes, arguments fixes, limites stdout/stderr et traces. L’[entrée interne](LAB_CAKE_ENTRY.md) transmet maintenant le journal durable au backend ; les essais positifs actuels utilisent des outils simulés. Le pilote n’est pas un exécuteur de commandes configurables par JSON.
 
 ## Vérifications disponibles
 
@@ -63,4 +64,4 @@ Un autre essai annule un outil simulé bloqué et constate sa récupération. La
 
 ## Suite
 
-Le [backend natif borné](LAB_CAKE_BACKEND.md) est maintenant implémenté et testé avec des outils simulés. Ajouter son entrée de lancement et les preuves durables. Raccorder ensuite le processus au superviseur existant et démontrer l’héritage des références à travers l’entrée dans un espace réseau neuf, puis les deux contrôles natifs DOWN. Les commandes et preuves Python historiques restent distinctes.
+Le [backend natif borné](LAB_CAKE_BACKEND.md) est maintenant implémenté et testé avec des outils simulés. L’[entrée interne et son journal durable](LAB_CAKE_ENTRY.md) sont livrés. Raccorder ensuite le processus au superviseur existant et démontrer l’héritage des références à travers l’entrée dans un espace réseau neuf, puis les deux contrôles natifs DOWN. Les commandes et preuves Python historiques restent distinctes.

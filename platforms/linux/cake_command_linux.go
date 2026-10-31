@@ -12,7 +12,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 	"syscall"
 	"time"
 )
@@ -22,19 +21,11 @@ const cakeExecutableLimit = 64 * 1024 * 1024
 
 var errCakeOutputLimit = errors.New("laboratory tool output limit exceeded")
 
-func validateLabTool(spec LabToolSpec) error {
-	digest, err := hex.DecodeString(spec.SHA256)
-	if len(spec.Path) > 4096 || !filepath.IsAbs(spec.Path) || filepath.Clean(spec.Path) != spec.Path || err != nil || len(digest) != sha256.Size || spec.SHA256 != strings.ToLower(spec.SHA256) {
-		return fmt.Errorf("absolute canonical tool path and lowercase SHA-256 required")
-	}
-	return nil
-}
-
 func openPinnedLabTool(ctx context.Context, spec LabToolSpec) (*os.File, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
-	if err := validateLabTool(spec); err != nil {
+	if err := spec.Validate(); err != nil {
 		return nil, err
 	}
 	canonical, err := filepath.EvalSymlinks(spec.Path)

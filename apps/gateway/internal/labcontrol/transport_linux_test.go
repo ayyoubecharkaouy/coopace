@@ -109,11 +109,16 @@ type workerProcess struct {
 	control, events *os.File
 	stderr          bytes.Buffer
 	calls           string
+	journal         string
 	identity        linux.NetworkNamespaceIdentity
 	waited          bool
 }
 
 func startWorkerProcess(t *testing.T, mode string) *workerProcess {
+	return startWorkerProgram(t, mode, "")
+}
+
+func startWorkerProgram(t *testing.T, mode, program string) *workerProcess {
 	t.Helper()
 	if runtime.GOARCH != "amd64" {
 		t.Skip("inherited namespace bootstrap currently supports Linux amd64")
@@ -143,10 +148,50 @@ func startWorkerProcess(t *testing.T, mode string) *workerProcess {
 	h := &workerProcess{control: controlW, events: eventsR, calls: filepath.Join(t.TempDir(), "tools"), identity: linux.NetworkNamespaceIdentity{Device: uint64(stat.Dev), Inode: uint64(stat.Ino)}}
 	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
 	h.command = exec.CommandContext(ctx, path, "-test.run=^TestTransportProcessHelper$")
+	if program != "" {
+		h.command = exec.CommandContext(ctx, program, workerTestArgs()...)
+	}
 	h.command.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	h.command.Cancel = func() error { return syscall.Kill(-h.command.Process.Pid, syscall.SIGKILL) }
 	h.command.Stderr = &h.stderr
 	h.command.ExtraFiles = []*os.File{controlR, eventsW, target, original}
+	var journalFile *os.File
+	if strings.HasPrefix(mode, "entry_") {
+		h.journal = h.calls + ".jsonl"
+		journalFile, err = os.OpenFile(h.journal, os.O_CREATE|os.O_EXCL|os.O_WRONLY|os.O_APPEND, 0600)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if mode == "entry_populated_journal" {
+			journalFile.WriteString("existing evidence")
+		}
+		journalFile.Sync()
+		directory, err := os.Open(filepath.Dir(h.journal))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := directory.Sync(); err != nil {
+			t.Fatal(err)
+		}
+		directory.Close()
+		if mode == "entry_badmode_journal" {
+			if err := journalFile.Chmod(0644); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if mode == "entry_readonly_journal" {
+			journalFile.Close()
+			journalFile, err = os.Open(h.journal)
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+		h.command.ExtraFiles = append(h.command.ExtraFiles, journalFile)
+		if mode == "entry_missing_journal" {
+			h.command.ExtraFiles[4] = nil
+		}
+	}
+
 	h.command.Env = append(os.Environ(), "COOPACE_LAB_TRANSPORT_HELPER="+mode, "COOPACE_LAB_TOOL_CALLS="+h.calls, "GORACE=atexit_sleep_ms=0")
 	if mode == "wrong_direction" {
 		h.command.ExtraFiles[0] = controlW
@@ -160,6 +205,9 @@ func startWorkerProcess(t *testing.T, mode string) *workerProcess {
 	if err := h.command.Start(); err != nil {
 		cancel()
 		t.Fatal(err)
+	}
+	if journalFile != nil {
+		journalFile.Close()
 	}
 	controlR.Close()
 	eventsW.Close()
@@ -360,6 +408,12 @@ func TestTransportProcessHelper(t *testing.T) {
 		return
 	}
 	started := time.Now()
+	if strings.HasPrefix(mode, "entry_") {
+		if mode == "entry_native" || mode == "entry_populated_journal" || mode == "entry_badmode_journal" || mode == "entry_readonly_journal" || mode == "entry_missing_journal" {
+			os.Exit(RunInternalWorker(context.Background(), workerTestArgs(), "test", started, os.Stderr))
+		}
+		os.Exit(runInternalWorker(context.Background(), workerTestArgs(), "test", started, os.Stderr, testRecordedWorker))
+	}
 	transport, err := OpenInheritedTransport()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)

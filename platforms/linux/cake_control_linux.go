@@ -4,6 +4,7 @@ package linux
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 
@@ -16,6 +17,7 @@ type CakeLabLaunch struct {
 	IP, TC           LabToolSpec
 	Namespace        NetworkNamespaceIdentity
 	Target, Original *os.File
+	Observer         LabToolObserver
 }
 
 // LabCakeControl is a sequential, one-shot adapter for the fixed DOWN lab
@@ -39,7 +41,7 @@ func NewLabCakeControl(launch CakeLabLaunch) (*LabCakeControl, error) {
 
 func newLabCakeControl(launch CakeLabLaunch, verify func(NetworkNamespaceIdentity, *os.File, *os.File) error) (*LabCakeControl, error) {
 	for _, spec := range []LabToolSpec{launch.IP, launch.TC} {
-		if err := validateLabTool(spec); err != nil {
+		if err := spec.Validate(); err != nil {
 			return nil, err
 		}
 	}
@@ -81,8 +83,19 @@ func (c *LabCakeControl) run(ctx context.Context, spec LabToolSpec, args []strin
 	if err := c.binding(ctx); err != nil {
 		return nil, err
 	}
+	if c.launch.Observer != nil {
+		if err := c.launch.Observer.ToolIntent(spec, append([]string(nil), args...)); err != nil {
+			return nil, err
+		}
+	}
+	if err := c.binding(ctx); err != nil {
+		return nil, err
+	}
 	call, err := runCakeTool(ctx, spec, args, limit)
 	c.calls = append(c.calls, call)
+	if c.launch.Observer != nil {
+		err = errors.Join(err, c.launch.Observer.ToolResult(cloneLabToolCall(call)))
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -225,14 +238,7 @@ func (c *LabCakeControl) Evidence() CakeLabEvidence {
 		result.Link = &link
 	}
 	for _, call := range c.calls {
-		call.Arguments = append([]string(nil), call.Arguments...)
-		call.Stdout = append([]byte(nil), call.Stdout...)
-		call.Stderr = append([]byte(nil), call.Stderr...)
-		if call.ExitCode != nil {
-			code := *call.ExitCode
-			call.ExitCode = &code
-		}
-		result.Calls = append(result.Calls, call)
+		result.Calls = append(result.Calls, cloneLabToolCall(call))
 	}
 	return result
 }
