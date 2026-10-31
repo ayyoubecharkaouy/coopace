@@ -11,13 +11,14 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 | [ROADMAP.md](ROADMAP.md) | Progression par étapes et validations restantes. |
 | [STATIC_CAKE_PLANNING.md](STATIC_CAKE_PLANNING.md) | Première règle Go de planification hors ligne : périmètre, prérequis, décisions et limites avant intégration. |
 | [GATEWAY_PLANNING.md](GATEWAY_PLANNING.md) | Commande `plan`, scénario JSON local strict, motifs, provenance et exemples de simulation. |
-| [LAB_CAKE_EXECUTOR.md](LAB_CAKE_EXECUTOR.md) | Contrat du futur exécuteur Go de laboratoire : profil, session, lien DOWN, supervision, preuves et tests requis. |
+| [LAB_CAKE_EXECUTOR.md](LAB_CAKE_EXECUTOR.md) | Contrat de l’exécuteur Go de laboratoire : profil, session, lien DOWN, supervision, preuves et tests requis. |
 | [CAKE_GO_VALIDATION.md](CAKE_GO_VALIDATION.md) | Catalogue et validateurs CAKE Go purs, unités, fixtures natives, bornes et concordance avec la référence Python. |
 | [LAB_CAKE_CONTEXT.md](LAB_CAKE_CONTEXT.md) | Trames internes, contexte de session, transitions, échéances et vérification en lecture seule des descripteurs Linux. |
 | [LAB_CAKE_TRANSPORT.md](LAB_CAKE_TRANSPORT.md) | Canaux hérités, I/O annulables, événements et pilote privé testé avec des processus et outils simulés. |
 | [LAB_CAKE_BACKEND.md](LAB_CAKE_BACKEND.md) | Backend natif borné : veth DOWN, exécutables épinglés, ajout unique, relecture et preuves testées avec des outils simulés. |
 | [LAB_CAKE_ENTRY.md](LAB_CAKE_ENTRY.md) | Processus interne, journal hérité synchronisé, signaux, limites et sortie locale distincte du nettoyage. |
 | [LAB_CAKE_GO_GUARD.md](LAB_CAKE_GO_GUARD.md) | Raccordement Python du processus Go, dialogue, preuves, récupération du groupe et contrôles simulés. |
+| [LAB_CAKE_GO_NATIVE.md](LAB_CAKE_GO_NATIVE.md) | Préparation figée et critères des deux contrôles natifs DOWN ; résultats en attente. |
 | [TECH_STACK.md](TECH_STACK.md) | Choix de Go et Kotlin, outils et décisions différées. |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | Installation locale, commandes, compilation et tests. |
 | [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md) | Compilation Windows et vérifications natives restant à effectuer. |
