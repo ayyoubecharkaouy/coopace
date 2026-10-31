@@ -32,7 +32,7 @@ Un PC Linux n'est pas obligatoire parmi les membres du groupe. Les capacités de
 | Agent local Windows | Compilation Windows amd64 validée ; exécution native non vérifiée, collecte des compteurs et stockage protégé de clé non implémentés. |
 | Application Android | Prévue ; aucun APK ni intégration native disponible. |
 | Groupe coopératif | Prototype Linux à deux pairs : approbation et consentement persistés, TLS mutuel et observations facultatives. Tests en mémoire validés, TCP réel à confirmer ; coordination avancée non implémentée. |
-| Passerelle Linux/OpenWrt | Diagnostic Linux en lecture seule implémenté ; inventaire partiel dans l'environnement isolé et complet dans la passerelle virtuelle lors du premier essai natif ICMP/TCP. Gestion de trafic et restauration non implémentées ; OpenWrt non validé. |
+| Passerelle Linux/OpenWrt | Diagnostic Linux en lecture seule et simulation `plan` disponibles ; catalogue/validateurs CAKE et contexte de session testés. Transport et exécuteur Go complets, gestion du trafic du foyer et restauration réelle non implémentés ; OpenWrt non validé. |
 | Passerelle Windows | Cible à étudier ; moteur et performances non validés. |
 | Tableau de bord et relais | Prévus ; aucune implémentation. |
 | ML | Périmètre documenté ; aucun dataset ni modèle entraîné dans ce dépôt. |

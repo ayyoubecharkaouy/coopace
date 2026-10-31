@@ -2,7 +2,7 @@
 
 ## État et portée
 
-La première sous-étape du [contrat d'exécuteur](LAB_CAKE_EXECUTOR.md) est implémentée dans `platforms/linux` : catalogue du profil fixe, identification du producteur, validation des configurations/statistiques et différences de compteurs. **Ces fonctions sont pures** : aucun appel `tc`, descripteur de session, ajout de file ou contrôle natif Go n'est livré.
+La première sous-étape du [contrat d'exécuteur](LAB_CAKE_EXECUTOR.md) est implémentée dans `platforms/linux` : catalogue du profil fixe, identification du producteur, validation des configurations/statistiques et différences de compteurs. **Ces fonctions sont pures** : elles ne lancent aucun appel `tc`, n’ouvrent aucun descripteur et n’ajoutent aucune file. Le [contexte et la vérification en lecture seule des descripteurs](LAB_CAKE_CONTEXT.md) sont livrés séparément ; aucun processus Go de contrôle CAKE n’est encore implémenté.
 
 La passerelle conserve `inspect` et [`plan`](GATEWAY_PLANNING.md). Les validations natives Python restent des preuves distinctes. Réutiliser leurs relevés dans des tests ne prouve pas l'application de CAKE par Go.
 

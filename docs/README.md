@@ -48,6 +48,8 @@ Le [protocole comparatif TBF/CAKE statique v1](CAKE_COMPARISON.md) fixe trois bl
 
 ## Bilans datés
 
+La [revue du 31 octobre 2026](REVIEW_2026-10-31.md) compare les documents, le code et les preuves après la livraison du contexte CAKE Go ; elle corrige les états périmés et confirme la prochaine intégration au superviseur.
+
 La [revue du 29 octobre 2026](REVIEW_2026-10-29.md) revérifie le projet depuis le démarrage, consigne le correctif de nettoyage du laboratoire et définit les validations nécessaires pour poursuivre l'étape 4.2.
 
 La [revue du 26 octobre 2026](REVIEW_2026-10-26.md) consigne le démarrage et la cohérence avec le rapport V5, avant le développement du diagnostic de l'étape 4.1. Elle ne remplace pas l'état courant du produit.
