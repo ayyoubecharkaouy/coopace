@@ -22,7 +22,7 @@ Le [périmètre produit](docs/PRODUCT.md) décrit le résultat visé, l'état r�
 | Superviseur de laboratoire | [Fin normale et mort forcée du pilote validées](docs/VALIDATION_LAB_GUARD_2026-10-29.md) ; [contrôle fonctionnel actif également validé en natif](docs/VALIDATION_LAB_ACTIVE_2026-10-30.md). |
 | Autres plateformes et interfaces | Compilation Windows amd64 vérifiée, exécution native en attente ; Android, tableau de bord et ML non implémentés. |
 
-Le [contrôle de passage IPv4](docs/LAB_CAKE_GO_PATH_CONTROL.md) est raccordé au superviseur et testé avec réseau simulé ; ses essais natifs restent à préparer.
+Le [contrôle de passage IPv4](docs/LAB_CAKE_GO_PATH_CONTROL.md) est raccordé au superviseur et testé avec réseau simulé ; sa [préparation et sa relecture natives](docs/LAB_CAKE_GO_PATH_NATIVE.md) sont livrées, avec exécution des essais en attente.
 
 Le [cycle de vie de la file virtuelle](docs/LAB_QUEUE.md) est implémenté sous le superviseur : création et relecture de TBF à 4 Mbit/s sur un lien désactivé, puis nettoyage après fin normale ou mort forcée du pilote. Les [quatre contrôles natifs](docs/VALIDATION_LAB_QUEUE_2026-10-29.md) sont validés. Les commandes de `lab-network.sh` restent sans file ; les références WAN, la restauration d'une passerelle réelle et tout gain d'optimisation restent à démontrer.
 

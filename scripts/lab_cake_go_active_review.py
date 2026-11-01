@@ -103,13 +103,16 @@ def events(folder, session):
     return result
 
 
-def validate_control(folder, report, expected_tools, expected_sources, expected_build):
+def validate_control(folder, report, expected_tools, expected_sources, expected_build, *, path_validator=None):
     """Recompute one control; caller independently verifies frozen inputs first."""
     fields = {"schema_version","kind","state","mode","reference","session_id","cleanup_verified","traffic_generated",
               "go_phase","traffic_group","topology","queue_samples","traffic_statistics_delta","flow","congestion",
               "traffic_coverage","environment","namespaces","workspace","groups","supervisor_journal"}
+    if path_validator is not None:
+        fields.add("path_check")
+    expected_kind = "lab_cake_go_path_check" if path_validator is not None else "lab_cake_go_active_check"
     require(set(report) == fields and type(report["schema_version"]) is int and report["schema_version"] == 1
-            and report["kind"] == "lab_cake_go_active_check" and report["state"] == "complete"
+            and report["kind"] == expected_kind and report["state"] == "complete"
             and report["cleanup_verified"] is True and report["traffic_generated"] is True,
             "Contrôle incomplet, non nettoyé ou de type incompatible.")
     mode = report["mode"]
@@ -125,7 +128,7 @@ def validate_control(folder, report, expected_tools, expected_sources, expected_
     equal(environment, report["environment"], "Environnement et rapport différents.")
     equal(environment["tools"], expected_tools, "Exécutables différents des entrées figées.")
     equal(environment["source_sha256"], expected_sources, "Sources différentes des entrées figées.")
-    equal(environment["invocation"], {"mode":mode,"purpose":"cake_go_then_traffic","reference":go.protocol.REFERENCE}, "Invocation différente.")
+    equal(environment["invocation"], {"mode":mode,"purpose":"cake_go_path_then_traffic" if path_validator is not None else "cake_go_then_traffic","reference":go.protocol.REFERENCE}, "Invocation différente.")
     require(environment["bootstrap_sha256"] == hashlib.sha256(go.BOOTSTRAP.encode()).hexdigest(), "Bootstrap Go différent.")
     phase, group = report["go_phase"], report["traffic_group"]
     require(type(phase['schema_version']) is int and phase["schema_version"] == 1 and phase["kind"] == "lab_cake_go_down_phase" and phase["state"] == "finished"
@@ -309,10 +312,17 @@ def validate_control(folder, report, expected_tools, expected_sources, expected_
           "driver_exit_code":group['driver_exit_code'],"reaped_descendants":group['reaped_descendants']},"Arrêt de groupe non concordant.")
     require(one("traffic_launched")[1]['driver_pid']==group['driver_pid'],"PID de lancement différent.")
     recorded_pids=[phase["worker_pid"],group["driver_pid"],*summary["tool_pids"],*ready["helper_pids"]]
-    return {"session_id":session,"namespaces":names,"workspace":report["workspace"],"recorded_pids":recorded_pids,
+    path_facts = None
+    if path_validator is not None:
+        path_facts = path_validator(folder, report, rows, normalized, expected_tools)
+        recorded_pids += path_facts.pop("recorded_pids")
+    result = {"session_id":session,"namespaces":names,"workspace":report["workspace"],"recorded_pids":recorded_pids,
             "go_worker_exit_code":0,"go_tool_calls":14,"go_journal_records":36,"traffic_driver_exit_code":group["driver_exit_code"],
             "reaped_traffic_helpers":group["reaped_descendants"],"received_bytes":None if crash else report["flow"]["receive"]["received_bytes"],
             "successful_probes":None if crash else report["flow"]["latency"]["successful"],"queue_samples":len(samples),"traffic_statistics_delta":delta}
+    if path_facts is not None:
+        result["path_check"] = path_facts
+    return result
 
 
 def verify_inputs(case, prepared):
@@ -335,13 +345,13 @@ def artifacts_snapshot(case):
             for p in sorted(case.rglob('*')) if p.is_file() and p.name not in excluded}
 
 
-def review(case):
+def review(case, *, path_validator=None):
     case=case.resolve(strict=True)
     prepared_raw=raw(case/'prepared.json')
     seal=raw(case/'prepared.sha256',1024).decode().strip().split('  ',1)
     require(len(seal)==2 and seal[1]=='prepared.json' and seal[0]==hashlib.sha256(prepared_raw).hexdigest(),"Préparation modifiée.")
     prepared=go.protocol.document(prepared_raw,LIMIT)
-    require(prepared["state"]=="not_run" and prepared["kind"]=="lab_cake_go_active_preparation","Préparation incompatible.")
+    require(prepared["state"]=="not_run" and prepared["kind"]==("lab_cake_go_path_preparation" if path_validator is not None else "lab_cake_go_active_preparation"),"Préparation incompatible.")
     require(isinstance(prepared['source_commit'],str) and re.fullmatch(r'[0-9a-f]{40}',prepared['source_commit']),"Commit préparé invalide.")
     count=verify_inputs(case,prepared)
     before_artifacts=artifacts_snapshot(case)
@@ -363,7 +373,9 @@ def review(case):
         require(report['environment']['git_commit']==prepared['source_commit'],"Révision d’exécution différente.")
         require(report['environment']['kernel']==runtime['kernel']
                 and report['environment']['python'].split()[0]==runtime['python_version'],"Environnement d’exécution différent.")
-        results[mode]=validate_control(case/mode,report,prepared['tools'],prepared['supervisor_sources'],expected_build)
+        results[mode]=validate_control(case/mode,report,prepared['tools'],prepared['supervisor_sources'],expected_build,path_validator=path_validator)
+        if path_validator is not None:
+            equal(report["environment"]["versions"]["ping"], prepared["ping_version"], "Producteur ping différent de la préparation.")
         log=raw(case/(mode+'.log'),4*1024*1024).decode()
         require(report['workspace'] in log and 'Processus récupérés et espaces du contrôle supprimés.' in log,"Journal de nettoyage incomplet.")
         for name in report['namespaces']:
@@ -373,7 +385,7 @@ def review(case):
     require(len({name for r in results.values() for name in r['namespaces']})==6,"Noms d’espaces réutilisés.")
     require(verify_inputs(case,prepared)==count,"Entrées modifiées pendant la relecture.")
     equal(artifacts_snapshot(case),before_artifacts,'Pièces modifiées pendant la relecture.')
-    validation={"schema_version":1,"state":"native_cake_go_active_validated","source_commit":prepared['source_commit'],
+    validation={"schema_version":1,"state":"native_cake_go_path_validated" if path_validator is not None else "native_cake_go_active_validated","source_commit":prepared['source_commit'],
                 "reviewed_at":datetime.now(timezone.utc).isoformat(),"runtime":runtime,"frozen_inputs_verified":count,"results":results,
                 "artifact_sha256":before_artifacts,
                 "limits":["synthetic_ipv4_only","no_Coopace_benefit","no_household_restoration","no_Go_kill_during_tool"]}

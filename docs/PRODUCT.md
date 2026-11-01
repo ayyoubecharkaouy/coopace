@@ -83,7 +83,7 @@ Le [contrat de l’exécuteur Go](LAB_CAKE_EXECUTOR.md) est défini pour une pre
 
 Le [contrat du contrôle Go puis trafic](LAB_CAKE_GO_ACTIVE.md) est implémenté et testé avec un réseau simulé : Go ajoute et vérifie CAKE sur lien DOWN, puis le superviseur active les mêmes ressources et conduit le transfert. Les observations après ajout restent distinctes des prérequis d’une intervention planifiée. La [phase Go et la gestion des groupes](LAB_CAKE_GO_PHASE.md) sont maintenant implémentées et testées avec ressources simulées ; [activation et relectures de continuité](LAB_CAKE_GO_TOPOLOGY.md) implémentées et testées en simulation ; [pilote de trafic à accusé](LAB_CAKE_GO_TRAFFIC.md) implémenté et testé avec outils simulés et vrais processus ; [collecte et contrôle global](LAB_CAKE_GO_COLLECT.md) implémentés et testés avec réseau simulé ; [préparation et relecture natives](LAB_CAKE_GO_ACTIVE_NATIVE.md) livrées ; [première validation native combinée](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) confirmée pour les deux contrôles.
 
-Le [contrôle négatif/positif du passage IPv4](LAB_CAKE_GO_PATH_CONTROL.md) est maintenant raccordé avant le trafic TCP et testé avec réseau simulé et vrais processus. Cette extension possède son propre type de rapport ; ses essais natifs restent à préparer.
+Le [contrôle négatif/positif du passage IPv4](LAB_CAKE_GO_PATH_CONTROL.md) est maintenant raccordé avant le trafic TCP et testé avec réseau simulé et vrais processus. Cette extension possède son propre type de rapport ; ses [outils de préparation et de relecture natives](LAB_CAKE_GO_PATH_NATIVE.md) sont livrés, avec exécution des essais en attente.
 
 ## Références et mesures indispensables
 

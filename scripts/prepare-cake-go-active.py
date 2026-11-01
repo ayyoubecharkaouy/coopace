@@ -90,6 +90,17 @@ exit "$coopace_result"
 '''
 
 
+
+def runner_template(path_control=False):
+    if not path_control:
+        return RUNNER
+    return RUNNER.replace('scripts/lab-cake-go-active.py', 'scripts/lab-cake-go-path.py').replace(
+        'Deux contrôles Go puis trafic : fin normale, puis mort forcée du pilote de trafic.',
+        'Deux contrôles Go puis passage IPv4 et trafic : fin normale, puis panne du pilote de trafic.').replace(
+        'Un transfert complet de 8 Mio attendu ; prévoir environ une minute, puis relecture hors ligne.',
+        'Blocage sans forwarding puis trois réponses avec forwarding dans chaque contrôle ; un transfert de 8 Mio attendu. Prévoir une à deux minutes.')
+
+
 def command(args,**kwargs):
     return subprocess.check_output(args,cwd=ROOT,timeout=120,**kwargs)
 
@@ -101,7 +112,7 @@ def write(path,data):
         stream.write(data);stream.flush();os.fsync(stream.fileno())
 
 
-def prepare(destination=None):
+def prepare(destination=None, *, path_control=False):
     model.require(os.geteuid()!=0,'Compiler avec le compte habituel, sans sudo.')
     model.require(sys.platform=='linux' and platform.machine()=='x86_64' and hasattr(os,'setns'),
                   'Linux amd64 et Python avec setns requis.')
@@ -109,7 +120,11 @@ def prepare(destination=None):
     revision=command(['git','rev-parse','HEAD'],text=True).strip()
     if destination is None:
         (ROOT/'.local/experiments').mkdir(parents=True,exist_ok=True)
-    case=destination or ROOT/'.local/experiments'/('go-active-native-validation-'+revision[:7])
+    prefix='go-path-native-validation-' if path_control else 'go-active-native-validation-'
+    entry='lab-cake-go-path.py' if path_control else 'lab-cake-go-active.py'
+    review_entry='lab-cake-go-path-review.py' if path_control else 'lab-cake-go-active-review.py'
+    protocol='LAB_CAKE_GO_PATH_NATIVE.md' if path_control else 'LAB_CAKE_GO_ACTIVE_NATIVE.md'
+    case=destination or ROOT/'.local/experiments'/(prefix+revision[:7])
     case=case.parent.resolve(strict=True)/case.name
     case.mkdir(mode=0o700);(case/'bin').mkdir(mode=0o700)
     sdk='go'+(ROOT/'.go-version').read_text().strip()
@@ -133,14 +148,14 @@ def prepare(destination=None):
     tools={'worker':model.go.tool(case/'bin/coopace-cake-worker'),'agent':model.go.tool(case/'bin/coopace'),
            'target':model.go.tool(case/'bin/coopace-lab-tcp'),'load':model.go.tool(case/'bin/coopace-lab-load'),
            'python':model.go.tool(sys.executable)}
-    for name in ('ip','tc','sysctl'):
+    for name in (('ip','tc','sysctl','ping') if path_control else ('ip','tc','sysctl')):
         path=shutil.which(name);model.require(path is not None,'Outil requis : '+name)
         tools[name]=model.go.tool(path)
     tc_version=command([tools['tc']['path'],'-V'],env={**os.environ,'LANG':'C','LC_ALL':'C'})
     model.collect.cake.producer(tc_version)
     write(case/'tc-version.txt',tc_version)
-    write(case/'plan.txt',command([tools['python']['path'],'-I','-B',str(ROOT/'scripts/lab-cake-go-active.py'),'plan']))
-    write(case/'protocol.md',(ROOT/'docs/LAB_CAKE_GO_ACTIVE_NATIVE.md').read_bytes())
+    write(case/'plan.txt',command([tools['python']['path'],'-I','-B',str(ROOT/'scripts'/entry),'plan']))
+    write(case/'protocol.md',(ROOT/'docs'/protocol).read_bytes())
     write(case/'prepare.py',Path(__file__).read_bytes())
     wrapper='''from pathlib import Path
 import importlib.util,json
@@ -151,12 +166,25 @@ spec=importlib.util.spec_from_file_location('frozen_review',source)
 module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 raise SystemExit(module.main(['--artifacts',str(case)]))
 '''
+    wrapper=wrapper.replace('lab-cake-go-active-review.py',review_entry)
     write(case/'review-native.py',wrapper)
-    runner=RUNNER
+    runner=runner_template(path_control)
     for token,value in (('PROJECT',ROOT),('CASE',case),('PYTHON',tools['python']['path']),
                          ('WORKER',case/'bin/coopace-cake-worker'),('REVISION',revision)):
         runner=runner.replace('='+token+'\n','='+shlex.quote(str(value))+'\n')
     write(case/'run.sh',runner);subprocess.run(['sh','-n',str(case/'run.sh')],check=True,timeout=3)
+    ping_version=None
+    sources=model.source_fingerprints()
+    if path_control:
+        spec=importlib.util.spec_from_file_location('frozen_path_control',ROOT/'scripts/lab_cake_go_path_control.py')
+        control=importlib.util.module_from_spec(spec);spec.loader.exec_module(control)
+        sources=control.source_fingerprints()
+        ping_result=subprocess.run([tools['ping']['path'],'-V'],capture_output=True,timeout=2,check=True,env={'LANG':'C','LC_ALL':'C'})
+        model.require(ping_result.stdout.startswith(b'ping from iputils ') and max(len(ping_result.stdout),len(ping_result.stderr))<=65536,'Producteur ping iputils requis.')
+        model.require(model.go.tool(tools['ping']['path'])==tools['ping'],'Ping modifié pendant la préparation.')
+        ping_version={'available':True,'stdout':ping_result.stdout.decode('ascii'),'stderr':ping_result.stderr.decode('ascii')}
+        write(case/'ping-version.json',json.dumps(ping_version,indent=2)+'\n')
+        write(case/'prepare-path.py',(ROOT/'scripts/prepare-cake-go-path.py').read_bytes())
     tracked=command(['git','ls-files','-z']).decode().strip('\0').split('\0')
     paths=[ROOT/name for name in tracked]+list(case.rglob('*'))+[Path(t['path']) for t in tools.values()]+[go_executable]
     inputs={}
@@ -165,13 +193,14 @@ raise SystemExit(module.main(['--artifacts',str(case)]))
         key=str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else str(path)
         model.require('\n' not in key and '\\' not in key,'Chemin incompatible avec le manifeste.')
         inputs[key]=hashlib.sha256(model.go.read(path,64*1024*1024)).hexdigest()
-    prepared={'schema_version':1,'kind':'lab_cake_go_active_preparation','state':'not_run','project':str(ROOT),
+    prepared={'schema_version':1,'kind':'lab_cake_go_path_preparation' if path_control else 'lab_cake_go_active_preparation','state':'not_run','project':str(ROOT),
               'source_commit':revision,'tracked_tree_clean':True,'prepared_at':datetime.now(timezone.utc).isoformat(),
               'kernel':platform.release(),'python_version':platform.python_version(),'go_version':sdk,
-              'go_executable':str(go_executable),'tools':tools,'supervisor_sources':model.source_fingerprints(),
+              'go_executable':str(go_executable),'tools':tools,'supervisor_sources':sources,
               'tracked_inputs':tracked,'inputs_sha256':inputs,'build_info':build_info,'native_steps':['check','check-crash'],
               'reference':model.go.protocol.REFERENCE,'native_execution':'not_run',
               'limits':['synthetic_ipv4_only','no_Coopace_benefit','no_household_restoration','no_Go_kill_during_tool']}
+    if path_control:prepared['ping_version']=ping_version
     write(case/'prepared.json',json.dumps(prepared,ensure_ascii=False,indent=2)+'\n')
     write(case/'prepared.sha256',hashlib.sha256((case/'prepared.json').read_bytes()).hexdigest()+'  prepared.json\n')
     write(case/'inputs.sha256',''.join(f'{value}  {name}\n' for name,value in inputs.items()))

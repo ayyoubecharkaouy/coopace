@@ -158,7 +158,7 @@ Le [pilote Go puis trafic à accusé](LAB_CAKE_GO_TRAFFIC.md) est testé sépar�
 
 La [préparation native Go puis trafic](LAB_CAKE_GO_ACTIVE_NATIVE.md) est disponible avec `python3 -I -B scripts/prepare-cake-go-active.py` depuis un arbre Git propre. Elle compile quatre binaires et fige leur provenance ; les contrôles privilégiés se lancent séparément depuis le terminal utilisateur ; leur [première validation native](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) est consignée. La relecture n’exécute aucune commande réseau.
 
-Les lecteurs purs du [contrôle de passage IPv4](LAB_CAKE_GO_PATH.md) se vérifient avec `python3 -B -m unittest discover -s scripts/tests -p 'test_lab_cake_go_path.py' -v`. Ils ne lancent aucune sonde. Le [raccordement au superviseur](LAB_CAKE_GO_PATH_CONTROL.md) est testé séparément avec `python3 -B -m unittest discover -s scripts/tests -p 'test_lab_cake_go_path_control.py' -v` : réseau simulé et vrais processus. La commande `python3 -I -B scripts/lab-cake-go-path.py plan` reste sans privilèges ; les essais natifs de cette extension restent à préparer.
+Les lecteurs purs du [contrôle de passage IPv4](LAB_CAKE_GO_PATH.md) se vérifient avec `python3 -B -m unittest discover -s scripts/tests -p 'test_lab_cake_go_path.py' -v`. Ils ne lancent aucune sonde. Le [raccordement au superviseur](LAB_CAKE_GO_PATH_CONTROL.md) est testé séparément avec `python3 -B -m unittest discover -s scripts/tests -p 'test_lab_cake_go_path_control.py' -v` : réseau simulé et vrais processus. La commande `python3 -I -B scripts/lab-cake-go-path.py plan` reste sans privilèges ; les [outils de préparation figée et de relecture natives](LAB_CAKE_GO_PATH_NATIVE.md) sont livrés, avec exécution des essais encore en attente.
 
 ## Sous Windows
 

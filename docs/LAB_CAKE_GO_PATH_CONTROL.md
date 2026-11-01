@@ -10,7 +10,7 @@ Une entrée distincte est disponible :
 python3 -I -B scripts/lab-cake-go-path.py plan
 ```
 
-`plan` ne crée aucune ressource et ne demande aucun privilège. Les modes `check` et `check-crash` exigent `--worker`, `--binaries` et `--artifacts`, un dossier existant neuf et vide, ainsi que les privilèges du laboratoire Linux amd64 avec Python `os.setns`. Une préparation figée dédiée reste à livrer avant les essais natifs de cette extension ; les anciens dossiers ne doivent pas être réutilisés.
+`plan` ne crée aucune ressource et ne demande aucun privilège. Les modes `check` et `check-crash` exigent `--worker`, `--binaries` et `--artifacts`, un dossier existant neuf et vide, ainsi que les privilèges du laboratoire Linux amd64 avec Python `os.setns`. Les [outils de préparation et de relecture natives](LAB_CAKE_GO_PATH_NATIVE.md) sont livrés pour cette extension ; les essais restent à exécuter dans un dossier neuf.
 
 ## Organisation
 
@@ -49,11 +49,11 @@ Le nouveau rapport porte `kind: lab_cake_go_path_check`, avec le même schéma d
 
 Les événements `path_begin`, `path_tool_intent`, `path_tool_result` et `path_verified` sont intégrés au journal durable existant. Chaque intention précède le lancement ; chaque résultat conserve arguments, indice, code OS, PID, récupération, dates UTC, durée monotone, captures base64 et indicateurs de troncature. Une validation de capture peut échouer après un résultat de commande correctement enregistré ; l’erreur figure alors dans l’objet de passage et la fin du contrôle.
 
-La durée du résultat inclut la récupération et les vérifications après sortie. L’échéance de commande est imposée par l’exécuteur ; cette durée totale peut aussi servir de majorant conservateur pour une future revue hors ligne. Un échec d’écriture des preuves interdit le lancement suivant et tout succès global.
+La durée du résultat inclut la récupération et les vérifications après sortie. L’échéance de commande est imposée par l’exécuteur ; la revue du passage utilise cette durée totale comme majorant conservateur. Un échec d’écriture des preuves interdit le lancement suivant et tout succès global.
 
 Les relevés `before_path` et `after_path` ne modifient pas la différence d’activation déjà figée. Le départ de la différence TCP reste immédiatement avant le pilote, après les sondes ICMP. Une baisse de compteur ou une modification de CAKE interdit le succès.
 
-Le relecteur natif historique refuse ce nouveau type de rapport. Aucun certificat natif du passage n’est produit par cette livraison. Une préparation et une relecture adaptées constituent la prochaine sous-étape.
+Le relecteur natif historique refuse ce nouveau type de rapport. Les [outils de préparation et de relecture natives](LAB_CAKE_GO_PATH_NATIVE.md) adaptés sont maintenant livrés ; leur revue réutilise explicitement les vérifications communes et recalcule le passage IPv4. Aucun contrôle natif du passage n’est encore validé ; la prochaine activité exécute les deux modes préparés et analyse leurs preuves.
 
 ## Vérification
 
