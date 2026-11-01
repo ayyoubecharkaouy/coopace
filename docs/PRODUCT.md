@@ -85,6 +85,8 @@ Le [contrat du contrôle Go puis trafic](LAB_CAKE_GO_ACTIVE.md) est implémenté
 
 Le [contrôle négatif/positif du passage IPv4](LAB_CAKE_GO_PATH_CONTROL.md) est maintenant raccordé avant le trafic TCP et testé avec réseau simulé et vrais processus. Cette extension possède son propre type de rapport ; ses [contrôles natifs](VALIDATION_CAKE_GO_PATH_2026-11-01.md) confirment blocage/passage ICMP, transfert complet, dix connexions TCP réussies et nettoyage normal ou après panne du pilote de trafic.
 
+Le [contrat de campagne répétée après Go](LAB_CAKE_GO_CAMPAIGN.md) définit trois paires repos/charge et sépare validité technique, charge et connexions confirmées. La campagne n’est pas encore implémentée ; ses futurs écarts de latence resteront descriptifs.
+
 ## Références et mesures indispensables
 
 | Expérience | Comparaisons nécessaires |

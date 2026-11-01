@@ -55,7 +55,7 @@ La durée du résultat inclut la récupération et les vérifications après sor
 
 Les relevés `before_path` et `after_path` ne modifient pas la différence d’activation déjà figée. Le départ de la différence TCP reste immédiatement avant le pilote, après les sondes ICMP. Une baisse de compteur ou une modification de CAKE interdit le succès.
 
-Le relecteur natif historique refuse ce nouveau type de rapport. Les [outils de préparation et de relecture natives](LAB_CAKE_GO_PATH_NATIVE.md) adaptés sont maintenant livrés ; leur revue réutilise explicitement les vérifications communes et recalcule le passage IPv4. La [validation native du passage IPv4](VALIDATION_CAKE_GO_PATH_2026-11-01.md) confirme les deux modes. La prochaine sous-étape définit une campagne répétée de l’intégration Go et ses critères avant collecte.
+Le relecteur natif historique refuse ce nouveau type de rapport. Les [outils de préparation et de relecture natives](LAB_CAKE_GO_PATH_NATIVE.md) adaptés sont maintenant livrés ; leur revue réutilise explicitement les vérifications communes et recalcule le passage IPv4. La [validation native du passage IPv4](VALIDATION_CAKE_GO_PATH_2026-11-01.md) confirme les deux modes. Le [contrat de campagne répétée Go](LAB_CAKE_GO_CAMPAIGN.md) est défini avant collecte : trois paires repos/charge, dialogue lié à la session et critères séparés. La prochaine sous-étape implémente les lecteurs du dialogue et l’automate de phases purs ; le pilote et la collecte restent à développer.
 
 ## Vérification
 
