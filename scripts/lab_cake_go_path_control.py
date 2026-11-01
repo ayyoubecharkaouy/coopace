@@ -121,10 +121,10 @@ class PathCheck:
         self.commands = (
             ("disable", [*switch, "-q", "-w", "net.ipv4.ip_forward=0"], 2, 0),
             ("read_disabled", [*switch, "-n", "net.ipv4.ip_forward"], 2, 0),
-            ("blocked_probe", [*probe, "-c", "1", "-w", "3", "-W", "1", readers.TARGET], 4, 1),
+            ("blocked_probe", [*probe, "-c", "1", "-W", "1", readers.TARGET], 4, 1),
             ("enable", [*switch, "-q", "-w", "net.ipv4.ip_forward=1"], 2, 0),
             ("read_enabled", [*switch, "-n", "net.ipv4.ip_forward"], 2, 0),
-            ("passing_probe", [*probe, "-c", "3", "-w", "5", "-W", "1", readers.TARGET], 6, 0),
+            ("passing_probe", [*probe, "-c", "3", "-W", "1", readers.TARGET], 6, 0),
         )
         self.next_command = 0
         self.report = {"schema_version": 1, "kind": "lab_cake_go_ipv4_passage", "state": "prepared",

@@ -2,9 +2,11 @@
 
 ## État et portée
 
-Le [raccordement du passage IPv4](LAB_CAKE_GO_PATH_CONTROL.md) est testé avec réseau simulé et vrais processus. La préparation figée et la relecture indépendante de ses preuves sont livrées. **Les deux essais natifs de cette extension ne sont pas encore exécutés ni validés.** La [preuve combinée historique](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) reste distincte.
+Le [raccordement du passage IPv4](LAB_CAKE_GO_PATH_CONTROL.md) est testé avec réseau simulé et vrais processus. La préparation figée et la relecture indépendante de ses preuves sont livrées. **Les deux contrôles corrigés restent à exécuter et à valider en natif.** La [preuve combinée historique](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) reste distincte.
 
 Le contrôle doit confirmer successivement Go DOWN, activation des mêmes ressources, blocage IPv4 sans forwarding, passage après réactivation, puis transfert TCP ou panne du pilote de trafic. Chaque mode utilise son propre laboratoire neuf.
+
+Le [premier essai au commit afa0b22](REVIEW_CAKE_GO_PATH_FAILURE_2026-11-01.md) a été refusé : la sonde négative a émis trois requêtes avec `-w`. La correction supprime `-w` des deux sondes, conserve une puis trois requêtes exigées et garde les bornes externes de 4/6 s. Le nouveau dossier doit être préparé depuis les sources corrigées ; l’ancien essai reste conservé.
 
 ## Préparation sans privilèges
 
@@ -62,6 +64,8 @@ python3 -I -B scripts/lab-cake-go-path-review.py --artifacts CHEMIN_DU_DOSSIER
 
 Les fichiers suivis doivent correspondre au commit préparé à leurs chemins d’origine, y compris les documents. Une modification ultérieure doit être refusée sans réécrire les manifestes ou les preuves.
 
-Validation locale du 1er novembre 2026 : les 209 tests Python passent en 493,072 s, dont sept tests de relecture du passage et quatre du profil de préparation/lanceur. Les captures synthétiques et les faux appels sudo de ces tests ne valident aucun essai réseau natif.
+Validation de l’outillage avant le premier essai `afa0b22` : les 209 tests Python passent en 493,072 s, dont sept tests de relecture du passage et quatre du profil de préparation/lanceur. Les captures synthétiques et les faux appels sudo de ces tests ne valident aucun essai réseau natif.
+
+Après correction des options ping, les 210 tests Python passent en 484,311 s. La capture native à trois envois reste refusée par le nouveau test de régression ; la simulation représente l’effet de `-w`. Les deux contrôles corrigés demandent une préparation neuve et restent à valider en natif.
 
 La prochaine activité exécute ces deux contrôles préparés et analyse leurs preuves. Le bénéfice propre à Coopace, une campagne comparative de l’intégration Go, IPv6/DNS, la couverture du foyer, la restauration réelle et la mort de Go pendant un outil actif restent hors de cette validation.

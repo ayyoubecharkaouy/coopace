@@ -2,7 +2,7 @@
 
 ## État et objectif
 
-Le contrat et les lecteurs purs de `scripts/lab_cake_go_path.py` sont livrés avec huit tests. Le [raccordement au superviseur](LAB_CAKE_GO_PATH_CONTROL.md) est maintenant implémenté et testé avec réseau simulé ; l’exécuteur de commandes est testé avec de vrais sous-processus sans réseau. **Cette extension n’est pas encore validée en natif.** L’entrée séparée `scripts/lab-cake-go-path.py` expose `plan`, `check` et `check-crash`.
+Le contrat et les lecteurs purs de `scripts/lab_cake_go_path.py` sont livrés avec neuf tests. Le [raccordement au superviseur](LAB_CAKE_GO_PATH_CONTROL.md) est maintenant implémenté et testé avec réseau simulé ; l’exécuteur de commandes est testé avec de vrais sous-processus sans réseau. **Cette extension n’est pas encore validée en natif.** L’entrée séparée `scripts/lab-cake-go-path.py` expose `plan`, `check` et `check-crash`.
 
 La [validation native Go puis trafic](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) confirme un transfert sur les ressources conservées après Go. Ce nouveau contrôle doit ajouter une preuve causale limitée : sans forwarding dans la passerelle possédée, aucune réponse à une requête ICMP ; après réactivation, trois requêtes et trois réponses. Les contrôles historiques des campagnes Python restent des preuves de leurs propres révisions.
 
@@ -17,10 +17,10 @@ La phase Go normale, la récupération de son groupe et l’[activation](LAB_CAK
 | Avant contrôle | Topologie active, forwarding `1`, file et identités relus | Continuité avec Go confirmée |
 | 1 | `sysctl -q -w net.ipv4.ip_forward=0` dans la passerelle | Code 0 |
 | 2 | `sysctl -n net.ipv4.ip_forward` dans la passerelle | Code 0 et ligne exacte `0` |
-| 3 | `ping -4 -n -c 1 -w 3 -W 1 10.203.0.6` depuis le client | Code 1, un envoi et zéro réponse |
+| 3 | `ping -4 -n -c 1 -W 1 10.203.0.6` depuis le client | Code 1, un envoi et zéro réponse |
 | 4 | `sysctl -q -w net.ipv4.ip_forward=1` dans la passerelle | Code 0 |
 | 5 | `sysctl -n net.ipv4.ip_forward` dans la passerelle | Code 0 et ligne exacte `1` |
-| 6 | `ping -4 -n -c 3 -w 5 -W 1 10.203.0.6` depuis le client | Code 0, trois envois et trois réponses |
+| 6 | `ping -4 -n -c 3 -W 1 10.203.0.6` depuis le client | Code 0, trois envois et trois réponses |
 | Après contrôle | Topologie, forwarding `1`, file et identités relus | Même CAKE, compteurs monotones |
 
 Les commandes sont précédées de `ip netns exec ESPACE` avec les chemins canoniques épinglés des outils. Leur liste est fermée et ordonnée ; pas de shell, adresse publique, route par défaut, NAT ou interface physique. La locale des outils est `LANG=C`, `LC_ALL=C`.
@@ -49,7 +49,7 @@ Les lecteurs produisent des faits de capture, sans état de validation native. L
 
 ## Bornes et preuves
 
-Le budget global reste de 180 s, sans remise à zéro après Go ni après activation. Chaque `ip`/`tc`/`sysctl` reste borné à 2 s ; les sondes négative et positive reçoivent respectivement une borne externe de 4 s et 6 s. Leurs options `-w` ne remplacent pas ces échéances monotones. Chaque capture stdout/stderr est limitée à 64 Kio ; une troncature interdit le succès. Le nettoyage garde son budget indépendant existant.
+Le budget global reste de 180 s, sans remise à zéro après Go ni après activation. Chaque `ip`/`tc`/`sysctl` reste borné à 2 s ; les sondes négative et positive reçoivent respectivement une borne externe de 4 s et 6 s. Les sondes utilisent `-c` et `-W`, sans `-w` : une échéance iputils peut entraîner des envois supplémentaires malgré le compte demandé. Le délai externe reste imposé par le superviseur. Chaque capture stdout/stderr est limitée à 64 Kio ; une troncature interdit le succès. Le nettoyage garde son budget indépendant existant.
 
 Le [raccordement](LAB_CAKE_GO_PATH_CONTROL.md) conserve, avant chaque action, une intention durable, puis ses arguments exacts, code OS, sorties brutes, dates UTC et durée monotone. Les outils — y compris `ping`, sa sortie `-V` et son empreinte ELF — et les sources sont figés avant lancement et revérifiés. Les identités des espaces doivent être recontrôlées avant chaque commande.
 
@@ -63,6 +63,6 @@ Une relecture indépendante doit recalculer les comptes depuis les captures et v
 python3 -B -m unittest discover -s scripts/tests -p 'test_lab_cake_go_path.py' -v
 ```
 
-Les huit tests passent au 1er novembre 2026. Ils couvrent blocage et passage attendus, erreurs techniques, réponse inattendue, réception partielle, mauvais comptes/cible, ambiguïtés, formats, bornes, types stricts et relecture du forwarding. Les captures de test sont des données de lecture ; aucun processus ni réseau n’est lancé par le module ou cette suite.
+Les neuf tests des lecteurs passent au 1er novembre 2026, y compris la capture native du [premier essai refusé](REVIEW_CAKE_GO_PATH_FAILURE_2026-11-01.md). Ils couvrent blocage et passage attendus, erreurs techniques, réponse inattendue, réception partielle, mauvais comptes/cible, ambiguïtés, formats, bornes, types stricts et relecture du forwarding. Les captures de test sont des données de lecture ; aucun processus ni réseau n’est lancé par le module ou cette suite.
 
 Le [raccordement à l’exécuteur borné et au superviseur](LAB_CAKE_GO_PATH_CONTROL.md) est livré avec tests des erreurs, interruptions et refus de démarrer le trafic. Les [outils de préparation et de relecture natives](LAB_CAKE_GO_PATH_NATIVE.md) sont livrés. La prochaine activité exécute les deux modes préparés et analyse leurs preuves. Une campagne comparative de l’intégration Go et tout bénéfice propre à Coopace restent ultérieurs.

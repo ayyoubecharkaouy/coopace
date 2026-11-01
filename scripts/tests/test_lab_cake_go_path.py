@@ -30,6 +30,14 @@ class PathReadersTests(unittest.TestCase):
         with_error = NEGATIVE.replace(b"0 received, ", b"0 received, +1 errors, ")
         self.assertEqual(model.validate_probe(with_error, 1, forwarding=0)["reported_errors"], 1)
 
+    def test_recorded_iputils_deadline_capture_does_not_meet_single_probe_contract(self):
+        # Native failure at afa0b22, 2026-11-01: -c 1 -w 3 continued sending
+        # while no echo reply arrived. Preserve the real capture as regression.
+        recorded = (HEADER + HEADING
+                    + b"3 packets transmitted, 0 received, 100% packet loss, time 2036ms\n\n")
+        with self.assertRaisesRegex(model.Error, "Nombre d’envois"):
+            model.validate_probe(recorded, 1, forwarding=0)
+
     def test_positive_capture_keeps_reported_counts_and_time(self):
         result = model.validate_probe(POSITIVE, 0, forwarding=1)
         self.assertEqual(result, {"target": "10.203.0.6", "forwarding": 1, "exit_code": 0,

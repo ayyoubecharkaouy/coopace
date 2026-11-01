@@ -161,6 +161,9 @@ class PathCheck(path_runtime.PathCheck):
   elif negative or positive:
    kernel.count+=200
    stdout=NEGATIVE if negative else POSITIVE;code=1 if negative else 0
+   # iputils -w waits for replies and may retry despite -c 1. Model that
+   # documented behavior instead of assuming -c always caps transmissions.
+   if negative and '-w' in args:stdout=NEGATIVE.replace(b'1 packets',b'3 packets')
    if negative and scenario=='path_negative_reply':stdout=NEGATIVE.replace(b'0 received',b'1 received');code=0
    if negative and scenario=='path_negative_empty':stdout=b''
    if negative and scenario=='path_negative_technical':code=2;stderr=b'Operation not permitted\n'

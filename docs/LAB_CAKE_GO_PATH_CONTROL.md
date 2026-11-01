@@ -12,6 +12,8 @@ python3 -I -B scripts/lab-cake-go-path.py plan
 
 `plan` ne crée aucune ressource et ne demande aucun privilège. Les modes `check` et `check-crash` exigent `--worker`, `--binaries` et `--artifacts`, un dossier existant neuf et vide, ainsi que les privilèges du laboratoire Linux amd64 avec Python `os.setns`. Les [outils de préparation et de relecture natives](LAB_CAKE_GO_PATH_NATIVE.md) sont livrés pour cette extension ; les essais restent à exécuter dans un dossier neuf.
 
+Le [premier essai natif](REVIEW_CAKE_GO_PATH_FAILURE_2026-11-01.md) a été refusé à cause de l’interaction `-c`/`-w`. Les commandes corrigées retirent `-w` et conservent les comptes stricts et les délais externes. Une nouvelle préparation est nécessaire ; aucun succès natif du passage n’est encore confirmé.
+
 ## Organisation
 
 | Emplacement | Responsabilité |
@@ -61,7 +63,7 @@ Le relecteur natif historique refuse ce nouveau type de rapport. Les [outils de 
 python3 -B -m unittest discover -s scripts/tests -p 'test_lab_cake_go_path*.py' -v
 ```
 
-Les tests propres au raccordement couvrent captures des deux pipes, locale et stdin, codes réels, dépassements de taille/délai, interruptions, échec de lancement, attente incertaine, producteur ping et ordre fermé. L’intégration simulée vérifie fin normale et panne du pilote, aucune ouverture TCP sans passage accepté, comptes/captures invalides, forwarding mal relu, lien modifié, sources/outils ou journal défaillants et nettoyage après interruption. La suite des huit lecteurs purs reste séparée.
+Les tests propres au raccordement couvrent captures des deux pipes, locale et stdin, codes réels, dépassements de taille/délai, interruptions, échec de lancement, attente incertaine, producteur ping et ordre fermé. L’intégration simulée vérifie fin normale et panne du pilote, aucune ouverture TCP sans passage accepté, comptes/captures invalides, forwarding mal relu, lien modifié, sources/outils ou journal défaillants et nettoyage après interruption. La suite des neuf lecteurs purs reste séparée.
 
 Validation locale du 1er novembre 2026 : les 198 tests Python passent en 452,576 s, dont treize tests propres au raccordement. Le mode `plan` est également vérifié sans privilèges. Aucun contrôle réseau natif de cette extension n’a été exécuté.
 

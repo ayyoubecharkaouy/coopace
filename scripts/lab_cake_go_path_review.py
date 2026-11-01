@@ -23,10 +23,10 @@ def expected_commands(names, tools):
     return (
         ("disable", [*switch, "-q", "-w", "net.ipv4.ip_forward=0"], 2, 0),
         ("read_disabled", [*switch, "-n", "net.ipv4.ip_forward"], 2, 0),
-        ("blocked_probe", [*probe, "-c", "1", "-w", "3", "-W", "1", "10.203.0.6"], 4, 1),
+        ("blocked_probe", [*probe, "-c", "1", "-W", "1", "10.203.0.6"], 4, 1),
         ("enable", [*switch, "-q", "-w", "net.ipv4.ip_forward=1"], 2, 0),
         ("read_enabled", [*switch, "-n", "net.ipv4.ip_forward"], 2, 0),
-        ("passing_probe", [*probe, "-c", "3", "-w", "5", "-W", "1", "10.203.0.6"], 6, 0),
+        ("passing_probe", [*probe, "-c", "3", "-W", "1", "10.203.0.6"], 6, 0),
     )
 
 
