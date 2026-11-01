@@ -2,7 +2,7 @@
 
 ## État et objectif
 
-Le contrat et les lecteurs purs de `scripts/lab_cake_go_path.py` sont livrés avec neuf tests. Le [raccordement au superviseur](LAB_CAKE_GO_PATH_CONTROL.md) est maintenant implémenté et testé avec réseau simulé ; l’exécuteur de commandes est testé avec de vrais sous-processus sans réseau. **Cette extension n’est pas encore validée en natif.** L’entrée séparée `scripts/lab-cake-go-path.py` expose `plan`, `check` et `check-crash`.
+Le contrat et les lecteurs purs de `scripts/lab_cake_go_path.py` sont livrés avec neuf tests. Le [raccordement au superviseur](LAB_CAKE_GO_PATH_CONTROL.md) est maintenant implémenté et testé avec réseau simulé ; l’exécuteur de commandes est testé avec de vrais sous-processus sans réseau. **La [validation native du passage IPv4](VALIDATION_CAKE_GO_PATH_2026-11-01.md) est confirmée pour les deux modes.** L’entrée séparée `scripts/lab-cake-go-path.py` expose `plan`, `check` et `check-crash`.
 
 La [validation native Go puis trafic](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) confirme un transfert sur les ressources conservées après Go. Ce nouveau contrôle doit ajouter une preuve causale limitée : sans forwarding dans la passerelle possédée, aucune réponse à une requête ICMP ; après réactivation, trois requêtes et trois réponses. Les contrôles historiques des campagnes Python restent des preuves de leurs propres révisions.
 
@@ -65,4 +65,4 @@ python3 -B -m unittest discover -s scripts/tests -p 'test_lab_cake_go_path.py' -
 
 Les neuf tests des lecteurs passent au 1er novembre 2026, y compris la capture native du [premier essai refusé](REVIEW_CAKE_GO_PATH_FAILURE_2026-11-01.md). Ils couvrent blocage et passage attendus, erreurs techniques, réponse inattendue, réception partielle, mauvais comptes/cible, ambiguïtés, formats, bornes, types stricts et relecture du forwarding. Les captures de test sont des données de lecture ; aucun processus ni réseau n’est lancé par le module ou cette suite.
 
-Le [raccordement à l’exécuteur borné et au superviseur](LAB_CAKE_GO_PATH_CONTROL.md) est livré avec tests des erreurs, interruptions et refus de démarrer le trafic. Les [outils de préparation et de relecture natives](LAB_CAKE_GO_PATH_NATIVE.md) sont livrés. La prochaine activité exécute les deux modes préparés et analyse leurs preuves. Une campagne comparative de l’intégration Go et tout bénéfice propre à Coopace restent ultérieurs.
+Le [raccordement à l’exécuteur borné et au superviseur](LAB_CAKE_GO_PATH_CONTROL.md) est livré avec tests des erreurs, interruptions et refus de démarrer le trafic. Les [outils de préparation et de relecture natives](LAB_CAKE_GO_PATH_NATIVE.md) sont livrés. La [validation native du passage IPv4](VALIDATION_CAKE_GO_PATH_2026-11-01.md) confirme les deux modes corrigés. La prochaine sous-étape définit une campagne répétée de l’intégration Go et ses critères avant collecte. Une campagne comparative de l’intégration Go et tout bénéfice propre à Coopace restent ultérieurs.

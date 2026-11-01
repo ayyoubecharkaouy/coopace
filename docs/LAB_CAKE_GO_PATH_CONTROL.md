@@ -2,7 +2,7 @@
 
 ## État
 
-Le [contrat de passage IPv4](LAB_CAKE_GO_PATH.md), ses lecteurs purs et leur raccordement au superviseur sont implémentés. Les tests du raccordement utilisent un réseau simulé et de vrais groupes Go/trafic de test ; les tests de l’exécuteur utilisent de vrais sous-processus sans réseau. **Cette extension n’est pas encore validée en natif.** La [validation combinée historique](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) garde son périmètre sans sondes négatives.
+Le [contrat de passage IPv4](LAB_CAKE_GO_PATH.md), ses lecteurs purs et leur raccordement au superviseur sont implémentés. Les tests du raccordement utilisent un réseau simulé et de vrais groupes Go/trafic de test ; les tests de l’exécuteur utilisent de vrais sous-processus sans réseau. **La [validation native du passage IPv4](VALIDATION_CAKE_GO_PATH_2026-11-01.md) est confirmée.** La [validation combinée historique](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) garde son périmètre sans sondes négatives.
 
 Une entrée distincte est disponible :
 
@@ -10,9 +10,9 @@ Une entrée distincte est disponible :
 python3 -I -B scripts/lab-cake-go-path.py plan
 ```
 
-`plan` ne crée aucune ressource et ne demande aucun privilège. Les modes `check` et `check-crash` exigent `--worker`, `--binaries` et `--artifacts`, un dossier existant neuf et vide, ainsi que les privilèges du laboratoire Linux amd64 avec Python `os.setns`. Les [outils de préparation et de relecture natives](LAB_CAKE_GO_PATH_NATIVE.md) sont livrés pour cette extension ; les essais restent à exécuter dans un dossier neuf.
+`plan` ne crée aucune ressource et ne demande aucun privilège. Les modes `check` et `check-crash` exigent `--worker`, `--binaries` et `--artifacts`, un dossier existant neuf et vide, ainsi que les privilèges du laboratoire Linux amd64 avec Python `os.setns`. Les [outils de préparation et de relecture natives](LAB_CAKE_GO_PATH_NATIVE.md) sont livrés pour cette extension ; leur [validation native du passage IPv4](VALIDATION_CAKE_GO_PATH_2026-11-01.md) est consignée ; toute répétition exige un dossier neuf.
 
-Le [premier essai natif](REVIEW_CAKE_GO_PATH_FAILURE_2026-11-01.md) a été refusé à cause de l’interaction `-c`/`-w`. Les commandes corrigées retirent `-w` et conservent les comptes stricts et les délais externes. Une nouvelle préparation est nécessaire ; aucun succès natif du passage n’est encore confirmé.
+Le [premier essai natif](REVIEW_CAKE_GO_PATH_FAILURE_2026-11-01.md) a été refusé à cause de l’interaction `-c`/`-w`. Les commandes corrigées retirent `-w` et conservent les comptes stricts et les délais externes. Une nouvelle préparation a permis la [validation native du passage IPv4](VALIDATION_CAKE_GO_PATH_2026-11-01.md) des deux modes corrigés.
 
 ## Organisation
 
@@ -55,7 +55,7 @@ La durée du résultat inclut la récupération et les vérifications après sor
 
 Les relevés `before_path` et `after_path` ne modifient pas la différence d’activation déjà figée. Le départ de la différence TCP reste immédiatement avant le pilote, après les sondes ICMP. Une baisse de compteur ou une modification de CAKE interdit le succès.
 
-Le relecteur natif historique refuse ce nouveau type de rapport. Les [outils de préparation et de relecture natives](LAB_CAKE_GO_PATH_NATIVE.md) adaptés sont maintenant livrés ; leur revue réutilise explicitement les vérifications communes et recalcule le passage IPv4. Aucun contrôle natif du passage n’est encore validé ; la prochaine activité exécute les deux modes préparés et analyse leurs preuves.
+Le relecteur natif historique refuse ce nouveau type de rapport. Les [outils de préparation et de relecture natives](LAB_CAKE_GO_PATH_NATIVE.md) adaptés sont maintenant livrés ; leur revue réutilise explicitement les vérifications communes et recalcule le passage IPv4. La [validation native du passage IPv4](VALIDATION_CAKE_GO_PATH_2026-11-01.md) confirme les deux modes. La prochaine sous-étape définit une campagne répétée de l’intégration Go et ses critères avant collecte.
 
 ## Vérification
 
