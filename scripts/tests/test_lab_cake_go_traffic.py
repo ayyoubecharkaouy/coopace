@@ -1,6 +1,7 @@
 """Strict pipe protocol and real processes; no sockets, namespaces or qdiscs."""
 
 from copy import deepcopy
+import hashlib
 import importlib.util
 import json
 import os
@@ -23,6 +24,7 @@ HELPER = r'''
 import json,os,signal,sys,time
 from pathlib import Path
 root=Path(__file__).resolve().parents[1]
+assert os.readlink('/proc/self/fd/0')=='/dev/null','helper inherited the control pipe'
 name=Path(sys.argv[0]).name
 scenario=(root/'scenario').read_text()
 if scenario=='crash':signal.signal(signal.SIGTERM,signal.SIG_IGN)
@@ -121,6 +123,23 @@ with (root/'stderr').open('wb') as errors:
 
 
 class ProtocolTests(unittest.TestCase):
+    def test_parent_inventory_is_bound_to_session_and_rechecked_at_each_start(self):
+        with tempfile.TemporaryDirectory() as directory:
+            tools={}
+            for name in ('ip','agent','target','load'):
+                p=Path(directory)/name;p.write_bytes(b'#!/bin/sh\nexit 0\n');p.chmod(0o700)
+                tools[name]={'path':str(p.resolve()),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
+            value={'schema_version':1,'kind':'lab_cake_go_active_tools','session_id':SESSION,'tools':tools}
+            inventory=m.ToolSet(json.dumps(value),SESSION)
+            for args in inventory.commands:inventory.before_start(args)
+            wrong=list(inventory.commands[0]);wrong[3]='cg-other123-s'
+            with self.assertRaises(m.Error):inventory.before_start(wrong)
+            Path(tools['agent']['path']).write_bytes(b'changed')
+            with self.assertRaisesRegex(m.Error,'modifié'):inventory.before_start(inventory.commands[3])
+            for change in ({**value,'session_id':'other123'},{**value,'extra':True},
+                           {**value,'schema_version':True},{**value,'tools':{'ip':tools['ip']}}):
+                with self.subTest(change=change),self.assertRaises(m.Error):m.ToolSet(json.dumps(change),SESSION)
+
     def test_ready_and_continue_are_strict_session_bound_lines(self):
         self.assertEqual(m.parse_ready(m.ready_frame(SESSION, [11, 22, 33]), SESSION)["helper_pids"], [11,22,33])
         self.assertEqual(m.parse_continue(m.continue_frame(SESSION), SESSION)["action"], "continue")

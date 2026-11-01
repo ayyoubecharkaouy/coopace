@@ -5,12 +5,15 @@ creates/deletes namespaces or changes a qdisc; it only uses the fixed lab flow.
 """
 
 import argparse
+import hashlib
 import importlib.util
 import json
 import os
 from pathlib import Path
 import re
 import signal
+import stat
+import subprocess
 import sys
 import time
 
@@ -118,6 +121,54 @@ def parse_flow(raw, session):
     return validated_flow(value["flow"])
 
 
+def helper_commands(tools):
+    return [
+        [tools["target"]["path"], "--listen", active.TARGET, "--connections", "100", "--duration", "30s"],
+        [tools["load"]["path"], "receive", "--listen", active.LOAD_TARGET, "--bytes", "8388608", "--duration", "28s", "--json"],
+        [tools["load"]["path"], "send", "--target", active.LOAD_TARGET, "--bytes", "8388608", "--rate", "1048576", "--duration", "25s", "--announce-start"],
+    ]
+
+
+class ToolSet:
+    """Parent-supplied fingerprints, rechecked before each of the four starts."""
+    def __init__(self, raw, session):
+        value = line_document(raw.encode() + b"\n", 16384)
+        require(set(value) == {"schema_version", "kind", "session_id", "tools"}
+                and type(value["schema_version"]) is int and value["schema_version"] == 1
+                and value["kind"] == "lab_cake_go_active_tools" and value["session_id"] == session_id(session),
+                "Empreintes du pilote hors session.")
+        self.tools = value["tools"]
+        require(isinstance(self.tools, dict) and set(self.tools) == {"ip", "agent", "target", "load"},
+                "Inventaire du pilote incomplet.")
+        for spec in self.tools.values():
+            require(isinstance(spec, dict) and set(spec) == {"path", "sha256"}
+                    and isinstance(spec["path"], str) and Path(spec["path"]).is_absolute()
+                    and isinstance(spec["sha256"], str) and re.fullmatch(r"[0-9a-f]{64}", spec["sha256"]),
+                    "Empreinte d’outil invalide.")
+        self.session = session
+        c, s, ip = f"cg-{session}-c", f"cg-{session}-s", self.tools["ip"]["path"]
+        helpers = helper_commands(self.tools)
+        self.commands = [[ip, "netns", "exec", s if i < 2 else c, *command] for i, command in enumerate(helpers)]
+        self.commands.append([ip, "netns", "exec", c, self.tools["agent"]["path"], "latency", "--target", active.TARGET,
+                              "--count", "10", "--timeout", "1s", "--interval", "250ms", "--condition", "loaded", "--json"])
+
+    def verify(self, spec):
+        path = Path(spec["path"])
+        require(str(path.resolve(strict=True)) == spec["path"], "Chemin d’outil redirigé.")
+        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(descriptor, "rb") as stream:
+            info = os.fstat(stream.fileno())
+            require(stat.S_ISREG(info.st_mode) and os.access(path, os.X_OK), "Outil exécutable régulier requis.")
+            data = stream.read(64 * 1024 * 1024 + 1)
+        require(len(data) <= 64 * 1024 * 1024 and hashlib.sha256(data).hexdigest() == spec["sha256"],
+                "Outil modifié avant son lancement.")
+
+    def before_start(self, args):
+        require(args in self.commands, "Commande de trafic hors inventaire.")
+        for path in (args[0], args[4]):
+            self.verify(next(spec for spec in self.tools.values() if spec["path"] == path))
+
+
 class Channel:
     def __init__(self, session, input_fd, output_fd):
         self.session = session_id(session)
@@ -191,10 +242,17 @@ class Channel:
 
 
 class TrafficRunner(active.series.Runner):
-    def __init__(self, channel):
+    def __init__(self, channel, tools=None):
         super().__init__(timeout=45)
         self.channel, self.availability_announced = channel, False
         self.ready_deadline = time.monotonic() + 15
+        self.tools = tools
+
+    def start(self, args):
+        self.check()
+        if self.tools is not None:
+            self.tools.before_start(args)
+        return super().start(args, stdin=subprocess.DEVNULL)
 
     def check(self):
         super().check()
@@ -203,14 +261,19 @@ class TrafficRunner(active.series.Runner):
         self.channel.observe()
 
 
-def worker(ip, client, server, binaries, session):
+def worker(ip, client, server, binaries, session, tools=None):
     session_id(session)
     require(client == f"cg-{session}-c" and server == f"cg-{session}-s",
             "Espaces client/serveur de cette session requis.")
     require(os.getpid() == os.getpgrp() == os.getsid(0),
             "Le pilote doit être le leader du groupe réservé par le superviseur.")
+    if tools is not None:
+        require(tools.session == session and tools.tools["ip"]["path"] == ip
+                and all(tools.tools[key]["path"] == str(binaries / filename) for key, filename in
+                        (("agent", "coopace"), ("target", "coopace-lab-tcp"), ("load", "coopace-lab-load"))),
+                "Chemins de lancement incompatibles avec l’inventaire.")
     channel = Channel(session, sys.stdin.fileno(), sys.stdout.fileno())
-    runner = TrafficRunner(channel)
+    runner = TrafficRunner(channel, tools)
     previous = {}
     def interrupted(signum, _frame):
         runner.interruption = runner.interruption or 128 + signum
@@ -236,12 +299,14 @@ def main(argv=None):
     parser.add_argument("--server", required=True)
     parser.add_argument("--ip", type=Path, required=True)
     parser.add_argument("--binaries", type=Path, required=True)
+    parser.add_argument("--tools-json", help="inventaire privé du superviseur combiné")
     args = parser.parse_args(argv)
     try:
         ip, binaries = args.ip.resolve(strict=True), args.binaries.resolve(strict=True)
         for path in (ip, *(binaries / name for name in ("coopace", "coopace-lab-tcp", "coopace-lab-load"))):
             require(path.is_file() and os.access(path, os.X_OK), "Exécutables de laboratoire requis.")
-        worker(str(ip), args.client, args.server, binaries, args.session_id)
+        tools = ToolSet(args.tools_json, args.session_id) if args.tools_json is not None else None
+        worker(str(ip), args.client, args.server, binaries, args.session_id, tools)
         return 0
     except active.series.Interrupted as error:
         print(str(error), file=sys.stderr)

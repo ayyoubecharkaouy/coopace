@@ -50,4 +50,4 @@ Les tests couvrent :
 
 Les tests dédiés sont `test_lab_process_group.py` et `test_lab_cake_go_phase.py`. Ils s’exécutent dans la suite Python ordinaire ; les scénarios subreaper sont isolés dans des sous-processus. Les contrôles réseau privilégiés restent distincts des tests automatiques.
 
-L’[activation et les relectures de continuité](LAB_CAKE_GO_TOPOLOGY.md) sont maintenant implémentées et testées en simulation. Le [pilote de trafic à accusé](LAB_CAKE_GO_TRAFFIC.md) est maintenant implémenté et testé avec outils simulés et vrais processus. La prochaine sous-étape raccorde la collecte et le contrôle global ; les deux essais natifs complets suivront selon le contrat.
+L’[activation et les relectures de continuité](LAB_CAKE_GO_TOPOLOGY.md) sont maintenant implémentées et testées en simulation. Le [pilote de trafic à accusé](LAB_CAKE_GO_TRAFFIC.md) est maintenant implémenté et testé avec outils simulés et vrais processus. La [collecte et le contrôle global](LAB_CAKE_GO_COLLECT.md) sont maintenant raccordés et testés avec réseau simulé ; la prochaine sous-étape prépare les deux essais natifs complets.

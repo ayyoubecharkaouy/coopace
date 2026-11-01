@@ -103,7 +103,9 @@ try:
  assert owner.owned==baseline and owner.deadline==deadline and len(list((root/'namespaces').iterdir()))==3
  assert owner.child is None and len(owner.process_groups)==2 and owner.process_groups[0].driver_code==0
  assert not (root/'proc'/str(phase['worker_pid'])).exists() or not Path('/proc',str(phase['worker_pid'])).exists()
+ activation_delta=deepcopy(activation.report['activation_statistics_delta'])
  activation.verify('continuity')
+ assert activation.report['activation_statistics_delta']==activation_delta,'traffic readings changed activation delta'
  if scenario=='arbitrary_tc':activation.execute([kernel.ip,'netns','exec',down.gateway,down.tc,'qdisc','del','dev','wan','root'])
  result={'state':activation.state,'queue':activation.report,'mutations':activation.next_mutation,'events':len(events)}
 except Exception as caught:error=str(caught)

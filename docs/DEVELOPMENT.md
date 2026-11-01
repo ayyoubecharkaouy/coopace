@@ -154,7 +154,7 @@ L'[instrumentation du goulot](LAB_INSTRUMENTATION.md) ajoute `coopace-lab-load r
 
 Les contrôles CAKE [DOWN](LAB_CAKE.md), [actif](LAB_CAKE_ACTIVE.md), [en trois paires](LAB_CAKE_CAMPAIGN.md) et la [comparaison des six campagnes](LAB_COMPARISON_RUN.md) ont chacun leur entrée Python dans `scripts`. La [comparaison native](VALIDATION_CAKE_COMPARISON_2026-10-30.md) valide le moteur statique dans le laboratoire ; elle ne démontre pas un gain du futur pilotage Go. Leurs commandes et tests sont détaillés dans l’[index des scripts](../scripts/README.md).
 
-Le [pilote Go puis trafic à accusé](LAB_CAKE_GO_TRAFFIC.md) est testé séparément avec de vrais processus et des outils réseau simulés. Sa suite dédiée est `python3 -B -m unittest discover -s scripts/tests -p 'test_lab_cake_go_traffic.py' -v`. L’entrée `lab-cake-go-traffic.py` reste un sous-processus privé, sans création de réseau ; le raccordement au contrôle global et les essais natifs restent à réaliser.
+Le [pilote Go puis trafic à accusé](LAB_CAKE_GO_TRAFFIC.md) est testé séparément avec de vrais processus et des outils réseau simulés. Sa suite dédiée est `python3 -B -m unittest discover -s scripts/tests -p 'test_lab_cake_go_traffic.py' -v`. L’entrée `lab-cake-go-traffic.py` reste un sous-processus privé, sans création de réseau ; le [raccordement au contrôle global](LAB_CAKE_GO_COLLECT.md) est maintenant testé avec réseau simulé, et les essais natifs restent à réaliser.
 
 ## Sous Windows
 

@@ -233,7 +233,8 @@ class Topology(cake.CakeCheck):
             require(self.state in ("activating", "activated"), "Phase d’activation incompatible.")
             topology = self.snapshot(True)
             self.report[label] = self.read(True)
-            self.report["activation_statistics_delta"] = cake.queue.statistics_delta(self.initial_statistics, self.last)
+            if self.state == "activating":
+                self.report["activation_statistics_delta"] = cake.queue.statistics_delta(self.initial_statistics, self.last)
             self.report["topology"] = topology
             self.owner.queue_report = self.report
         except BaseException as error:

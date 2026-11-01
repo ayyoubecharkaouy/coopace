@@ -33,9 +33,9 @@ class Interrupted(ExperimentError):
 
 
 class Process:
-    def __init__(self, args):
+    def __init__(self, args, *, stdin=None):
         # No shell, no descendant commands in the selected Coopace binaries.
-        self.process = subprocess.Popen(args, stdout=subprocess.PIPE)
+        self.process = subprocess.Popen(args, stdout=subprocess.PIPE, stdin=stdin)
         try:
             os.set_blocking(self.process.stdout.fileno(), False)
         except OSError:
@@ -121,9 +121,9 @@ class Runner:
         if time.monotonic() >= self.deadline:
             raise ExperimentError("Délai applicatif global des séries dépassé.")
 
-    def start(self, args):
+    def start(self, args, *, stdin=None):
         self.check()
-        child = Process(args)
+        child = Process(args, stdin=stdin)
         # Signal handlers only record a flag, including while Popen is returning.
         # The child is registered before a pending signal can cause an exit.
         self.children.append(child)

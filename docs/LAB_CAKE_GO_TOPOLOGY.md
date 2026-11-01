@@ -4,7 +4,7 @@
 
 `scripts/lab_cake_go_topology.py` implémente l’activation prévue par le [contrat Go puis trafic](LAB_CAKE_GO_ACTIVE.md), après la [phase Go réutilisable](LAB_CAKE_GO_PHASE.md). Les tests enchaînent la phase puis l’activation avec un noyau réseau simulé et de vrais processus/descripteurs pour le contrôle précédent.
 
-Le chemin du laboratoire peut être configuré et relu par ce module interne. Il ne lance pas de transfert, de sonde ou de contrôle négatif ICMP. Le [pilote à accusé](LAB_CAKE_GO_TRAFFIC.md) est implémenté et testé séparément avec outils simulés et vrais processus. Son raccordement, la collecte combinée, la CLI active et la validation native de l’enchaînement restent à développer. La [preuve native DOWN](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) reste liée à sa révision source historique.
+Le chemin du laboratoire peut être configuré et relu par ce module interne. Il ne lance pas de transfert, de sonde ou de contrôle négatif ICMP. Le [pilote à accusé](LAB_CAKE_GO_TRAFFIC.md) est implémenté et testé séparément avec outils simulés et vrais processus. Son [raccordement, la collecte combinée et la CLI active](LAB_CAKE_GO_COLLECT.md) sont implémentés et testés avec réseau simulé ; la validation native de l’enchaînement reste à réaliser. La [preuve native DOWN](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) reste liée à sa révision source historique.
 
 ## Entrée et responsabilités
 
@@ -14,7 +14,7 @@ L’activation exige une phase Go normale vérifiée, son leader et son groupe r
 
 Le module vérifie une nouvelle fois outils, sources et identité des espaces. Il rapproche les liens `lo`/`wan` du dernier relevé brut `ip` dans le journal Go. Le client doit encore contenir seulement `lo`, la passerelle `lo`/`wan` et le serveur `lo`/`eth0`, tous DOWN ; les extrémités n’ont aucune adresse et les tables IPv4 principales sont vides. Les adresses locales de loopback éventuelles restent admises.
 
-Après ces contrôles, le propriétaire réserve son groupe suivant sans changer les espaces ni le délai global. Ce groupe reste vide ; son raccordement au pilote de trafic à accusé reste à réaliser. Le module réutilise `lab_active.activate` pour les seuls quinze changements fixes : ajout de `lan`/pair client, quatre adresses IPv4, activation des interfaces et loopbacks, deux routes spécifiques et forwarding IPv4 dans la passerelle possédée.
+Après ces contrôles, le propriétaire réserve son groupe suivant sans changer les espaces ni le délai global. Ce groupe reste vide ; le [contrôle combiné](LAB_CAKE_GO_COLLECT.md) y lance ensuite le pilote de trafic à accusé. Le module réutilise `lab_active.activate` pour les seuls quinze changements fixes : ajout de `lan`/pair client, quatre adresses IPv4, activation des interfaces et loopbacks, deux routes spécifiques et forwarding IPv4 dans la passerelle possédée.
 
 La séquence des changements est imposée et à usage unique ; une commande échouée peut déjà avoir eu un effet. Aucune commande d’ajout/remplacement/suppression de qdisc n’est admise dans cette phase. Le profil ajouté par Go reste `cake-ipv4-lab-4mbit-v1`.
 
@@ -32,7 +32,7 @@ Les nouvelles extrémités `lan`/client sont rapprochées par indices de pairs r
 
 Chaque lecture CAKE passe par les validateurs existants du producteur `iproute2-6.1.0`. Aucun des cinq compteurs racine ne peut diminuer entre relevés. Les jauges ne sont pas soustraites. Une progression pendant l’activation peut provenir du trafic IPv6 automatique et ne devient pas un volume utile ou une mesure de capacité WAN.
 
-Le relevé de fin de phase Go est conservé comme `after_go_exit`. `down_statistics_delta` garde sa différence historique ; `activation_statistics_delta` compare ce relevé à la dernière relecture d’activation. Les futures différences de trafic auront leur propre point de départ juste avant le pilote.
+Le relevé de fin de phase Go est conservé comme `after_go_exit`. `down_statistics_delta` garde sa différence historique ; `activation_statistics_delta` compare ce relevé à la fin de l’activation et reste figé pendant les relectures ultérieures. Les futures différences de trafic auront leur propre point de départ juste avant le pilote.
 
 ## Preuves, état et nettoyage
 
@@ -50,4 +50,4 @@ Les tests de `test_lab_cake_go_topology.py` vérifient la transition, les quinze
 
 Les appels réseau et le processus du contrôle Go sont simulés ; la suppression des espaces est représentée par des fichiers. Ces essais ne valident pas encore les nouveaux relevés sur `ip`/`tc` natifs. Les commandes DOWN et les contrôles actifs historiques restent indépendants.
 
-La prochaine sous-étape raccorde le [pilote à accusé déjà testé](LAB_CAKE_GO_TRAFFIC.md) aux ressources activées et à la collecte. La collecte et le rapport combinés, puis les deux contrôles natifs complets, suivront selon le contrat.
+Le [contrôle combiné](LAB_CAKE_GO_COLLECT.md) raccorde maintenant ce pilote, les ressources activées et la collecte ; les tests utilisent un réseau simulé. La prochaine sous-étape prépare les deux contrôles natifs complets selon le contrat.
