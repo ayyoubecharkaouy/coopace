@@ -2,7 +2,7 @@
 
 ## État
 
-L’enchaînement du [contrat fonctionnel](LAB_CAKE_GO_ACTIVE.md) est implémenté avec un seul propriétaire des espaces. Les tests utilisent un noyau réseau et des outils simulés, mais de vrais processus, descripteurs, pipes, signaux et groupes Linux. La [préparation et la relecture natives](LAB_CAKE_GO_ACTIVE_NATIVE.md) sont livrées ; les contrôles combinés restent à exécuter sur une révision figée.
+L’enchaînement du [contrat fonctionnel](LAB_CAKE_GO_ACTIVE.md) est implémenté avec un seul propriétaire des espaces. Les tests utilisent un noyau réseau et des outils simulés, mais de vrais processus, descripteurs, pipes, signaux et groupes Linux. La [préparation et la relecture natives](LAB_CAKE_GO_ACTIVE_NATIVE.md) sont livrées ; les contrôles combinés sont [validés en natif](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) sur une révision figée.
 
 L’entrée `scripts/lab-cake-go-active.py` fournit `plan`, `check` et `check-crash`. `plan` reste sans privilèges ni création de ressource :
 
@@ -39,7 +39,7 @@ La collecte conserve au plus 240 lectures et 1 Mio de relevés. Chaque lecture r
 
 `activation_statistics_delta` est figé à la fin de l’activation. `traffic_statistics_delta` utilise uniquement la lecture juste avant le pilote et celle après arrêt. Le trafic automatique éventuel ne devient ni un volume utile TCP ni une validation IPv6.
 
-Un rapport complet peut conserver dix sondes échouées : code de mesure et tentatives restent visibles. `state: complete` valide la collecte et le nettoyage ; la future validation native positive exigera en plus dix réussites et le recouvrement des sondes avec les écritures applicatives. Le contrôle ne qualifie aucun bénéfice Coopace ni comparaison de latence.
+Un rapport complet peut conserver dix sondes échouées : code de mesure et tentatives restent visibles. `state: complete` valide la collecte et le nettoyage ; la validation native positive exige en plus dix réussites et le recouvrement des sondes avec les écritures applicatives. Le contrôle ne qualifie aucun bénéfice Coopace ni comparaison de latence.
 
 ## Preuves et rapport
 
@@ -65,4 +65,4 @@ Les tests dédiés du pilote vérifient aussi l’inventaire avant chaque lancem
 
 Validation locale du 1er novembre 2026 : la suite Python complète passe avec 168 tests en 365,645 s. Elle inclut huit tests du contrôle combiné et onze tests dédiés du pilote. Les limites de simulation décrites ci-dessus restent applicables.
 
-Les [outils de préparation figée et de relecture indépendante](LAB_CAKE_GO_ACTIVE_NATIVE.md) sont livrés. La prochaine étape exécute les contrôles natifs `check` et `check-crash` préparés et analyse leurs preuves. Ces tests simulés n’autorisent aucune conclusion sur le trafic du foyer, la restauration d’une passerelle réelle ou le bénéfice du pilotage Coopace.
+Les [outils de préparation figée et de relecture indépendante](LAB_CAKE_GO_ACTIVE_NATIVE.md) sont livrés. La [première validation native combinée](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) confirme `check` et `check-crash`. La prochaine sous-étape définit les contrôles négatifs du chemin IPv4 avant une éventuelle campagne comparée de l’intégration Go. Ces validations de laboratoire n’autorisent aucune conclusion sur le trafic du foyer, la restauration d’une passerelle réelle ou le bénéfice du pilotage Coopace.

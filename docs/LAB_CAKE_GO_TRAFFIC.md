@@ -4,7 +4,7 @@
 
 Le pilote interne `scripts/lab_cake_go_traffic.py` et son entrée privée `scripts/lab-cake-go-traffic.py` sont implémentés. Les tests emploient de vrais processus, pipes, signaux et groupes Linux ; les exécutables réseau et leurs rapports sont simulés. Aucun namespace, socket ou qdisc réel n’est créé par ces tests.
 
-Cette sous-étape suit l’[activation sur les ressources conservées](LAB_CAKE_GO_TOPOLOGY.md). Le [raccordement au propriétaire, la collecte CAKE et le rapport global](LAB_CAKE_GO_COLLECT.md) sont maintenant implémentés et testés avec réseau simulé ; la validation native combinée reste à réaliser.
+Cette sous-étape suit l’[activation sur les ressources conservées](LAB_CAKE_GO_TOPOLOGY.md). Le [raccordement au propriétaire, la collecte CAKE et le rapport global](LAB_CAKE_GO_COLLECT.md) sont maintenant implémentés et testés avec réseau simulé ; la [première validation native combinée](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) est confirmée.
 
 ## Responsabilités
 
@@ -36,7 +36,7 @@ Un contrôle reçu avant l’annonce est refusé. EOF avant un accusé complet e
 
 Après récupération de ses outils, le pilote écrit une ligne JSON v1 `lab_cake_go_active_flow`, avec exactement `schema_version`, `kind`, `session_id` et `flow`. `flow` conserve les exports d’émission, réception et latence, le code de mesure et les indicateurs de réussite/recouvrement. `parse_flow` recalcule ces indicateurs avec les validateurs existants ; ils ne sont pas acceptés sur simple déclaration.
 
-Un code pilote `0` signifie collecte complète et rapports compatibles. Les dix sondes peuvent avoir échoué : les tentatives et le code de mesure `1` restent alors visibles. La future validation native positive exigera séparément dix réussites et le recouvrement temporel. Aucun seuil de latence/débit ni bénéfice Coopace n’est qualifié ici.
+Un code pilote `0` signifie collecte complète et rapports compatibles. Les dix sondes peuvent avoir échoué : les tentatives et le code de mesure `1` restent alors visibles. La validation native positive exige séparément dix réussites et le recouvrement temporel. Aucun seuil de latence/débit ni bénéfice Coopace n’est qualifié ici.
 
 | Borne | Valeur |
 | --- | --- |
@@ -61,4 +61,4 @@ python3 -B -m unittest discover -s scripts/tests -p 'test_lab_cake_go_traffic.py
 
 Première validation locale du 1er novembre 2026 : les dix tests dédiés passent ; la suite Python complète passe également, avec 159 tests en 251,403 s. Cette vérification conserve les limites de simulation décrites ci-dessus.
 
-La [collecte combinée](LAB_CAKE_GO_COLLECT.md) raccorde maintenant ce pilote à la topologie activée avec preuves durables et contrôle du nettoyage global. La prochaine sous-étape prépare les deux contrôles natifs complets sur une révision figée.
+La [collecte combinée](LAB_CAKE_GO_COLLECT.md) raccorde maintenant ce pilote à la topologie activée avec preuves durables et contrôle du nettoyage global. Les deux contrôles natifs complets sont [validés sur une révision figée](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md).

@@ -4,7 +4,7 @@
 
 La première sous-étape du [contrat Go puis trafic](LAB_CAKE_GO_ACTIVE.md) est implémentée : une phase Go termine son groupe en conservant les espaces possédés. Le superviseur peut ensuite réserver un nouveau groupe sur les mêmes ressources. L’[activation du réseau et la continuité](LAB_CAKE_GO_TOPOLOGY.md) sont maintenant implémentées et testées en simulation ; pilote à accusé et collecte active combinée restent à développer.
 
-Les tests simulent espaces réseau, entrée réseau et processus du contrôle Go. Ils exécutent réellement les descripteurs, pipes, `exec`, signaux et récupérations. Un second groupe de test contient trois enfants réellement récupérés après SIGKILL de son pilote. Ce groupe ne transfère aucune donnée. La [validation native DOWN du 1er novembre](VALIDATION_CAKE_GO_DOWN_2026-11-01.md), au commit `e104994`, précède cette extraction ; la nouvelle séquence devra avoir sa propre validation native.
+Les tests simulent espaces réseau, entrée réseau et processus du contrôle Go. Ils exécutent réellement les descripteurs, pipes, `exec`, signaux et récupérations. Un second groupe de test contient trois enfants réellement récupérés après SIGKILL de son pilote. Ce groupe ne transfère aucune donnée. La [validation native DOWN du 1er novembre](VALIDATION_CAKE_GO_DOWN_2026-11-01.md), au commit `e104994`, précède cette extraction ; la nouvelle séquence dispose maintenant de sa [première validation native combinée](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md).
 
 ## Organisation
 
@@ -50,4 +50,4 @@ Les tests couvrent :
 
 Les tests dédiés sont `test_lab_process_group.py` et `test_lab_cake_go_phase.py`. Ils s’exécutent dans la suite Python ordinaire ; les scénarios subreaper sont isolés dans des sous-processus. Les contrôles réseau privilégiés restent distincts des tests automatiques.
 
-L’[activation et les relectures de continuité](LAB_CAKE_GO_TOPOLOGY.md) sont maintenant implémentées et testées en simulation. Le [pilote de trafic à accusé](LAB_CAKE_GO_TRAFFIC.md) est maintenant implémenté et testé avec outils simulés et vrais processus. La [collecte et le contrôle global](LAB_CAKE_GO_COLLECT.md) sont maintenant raccordés et testés avec réseau simulé ; la prochaine sous-étape prépare les deux essais natifs complets.
+L’[activation et les relectures de continuité](LAB_CAKE_GO_TOPOLOGY.md) sont maintenant implémentées et testées en simulation. Le [pilote de trafic à accusé](LAB_CAKE_GO_TRAFFIC.md) est maintenant implémenté et testé avec outils simulés et vrais processus. La [collecte et le contrôle global](LAB_CAKE_GO_COLLECT.md) sont maintenant raccordés et testés avec réseau simulé ; les deux essais natifs complets sont [validés](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md).

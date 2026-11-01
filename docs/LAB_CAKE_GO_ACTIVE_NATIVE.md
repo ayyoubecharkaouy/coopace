@@ -2,7 +2,7 @@
 
 ## État et portée
 
-Le [contrôle combiné](LAB_CAKE_GO_COLLECT.md) passe ses tests avec réseau simulé et vrais processus. Les outils de préparation et de relecture native sont livrés. **Les deux essais natifs combinés ne sont pas encore exécutés ni validés.** Les preuves historiques [Go DOWN](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) et CAKE actif Python restent des validations séparées.
+Le [contrôle combiné](LAB_CAKE_GO_COLLECT.md) passe ses tests avec réseau simulé et vrais processus. Les outils de préparation et de relecture native sont livrés. **Les deux essais natifs combinés sont [validés au 1er novembre 2026](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md).** Les preuves historiques [Go DOWN](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) et CAKE actif Python restent des validations séparées.
 
 Ce protocole vise un seul transfert complet de 8 Mio dans le contrôle normal, puis une panne du pilote de trafic pendant l’attente de l’accusé dans un second laboratoire neuf. Dans les deux modes, le processus Go termine normalement son cycle DOWN avant activation. La panne ne tue pas le processus Go pendant un appel d’outil.
 
@@ -65,7 +65,7 @@ Les noms/réservations et PID consignés doivent être absents au moment de la r
 
 `validation.json` n’est créé qu’après acceptation des deux contrôles. Il conserve `native_cake_go_active_validated`, commit, synthèses recalculées et empreintes des pièces. Une relecture identique conserve une validation existante ; une divergence est refusée. Le préparateur reste inchangé en `not_run`.
 
-Pour relire ultérieurement, depuis les sources figées :
+Pour relire ultérieurement, restituer les sources et documents suivis du commit préparé à leurs chemins d’origine : le manifeste inclut aussi les documents, et une modification ultérieure doit être refusée. Conserver les pièces locales et les manifestes inchangés, puis lancer :
 
 ```sh
 python3 -I -B scripts/lab-cake-go-active-review.py --artifacts CHEMIN_DU_DOSSIER

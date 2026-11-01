@@ -4,7 +4,7 @@
 
 `scripts/lab_cake_go_topology.py` implémente l’activation prévue par le [contrat Go puis trafic](LAB_CAKE_GO_ACTIVE.md), après la [phase Go réutilisable](LAB_CAKE_GO_PHASE.md). Les tests enchaînent la phase puis l’activation avec un noyau réseau simulé et de vrais processus/descripteurs pour le contrôle précédent.
 
-Le chemin du laboratoire peut être configuré et relu par ce module interne. Il ne lance pas de transfert, de sonde ou de contrôle négatif ICMP. Le [pilote à accusé](LAB_CAKE_GO_TRAFFIC.md) est implémenté et testé séparément avec outils simulés et vrais processus. Son [raccordement, la collecte combinée et la CLI active](LAB_CAKE_GO_COLLECT.md) sont implémentés et testés avec réseau simulé ; la validation native de l’enchaînement reste à réaliser. La [preuve native DOWN](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) reste liée à sa révision source historique.
+Le chemin du laboratoire peut être configuré et relu par ce module interne. Il ne lance pas de transfert, de sonde ou de contrôle négatif ICMP. Le [pilote à accusé](LAB_CAKE_GO_TRAFFIC.md) est implémenté et testé séparément avec outils simulés et vrais processus. Son [raccordement, la collecte combinée et la CLI active](LAB_CAKE_GO_COLLECT.md) sont implémentés et testés avec réseau simulé ; la [première validation native combinée](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) est confirmée. La [preuve native DOWN](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) reste liée à sa révision source historique.
 
 ## Entrée et responsabilités
 
@@ -48,6 +48,6 @@ Une activation réussie exige encore ce `finally` après utilisation. L’évén
 
 Les tests de `test_lab_cake_go_topology.py` vérifient la transition, les quinze changements, les relectures répétées et l’absence de mutation de qdisc. Ils refusent modifications de lien, interface étrangère, adresse/route incorrecte, forwarding non confirmé, profil altéré, baisse des compteurs, outil modifié, preuve défaillante et activation après panne Go. Les validateurs d’adresses/routes ont aussi des cas de types et chemins incompatibles.
 
-Les appels réseau et le processus du contrôle Go sont simulés ; la suppression des espaces est représentée par des fichiers. Ces essais ne valident pas encore les nouveaux relevés sur `ip`/`tc` natifs. Les commandes DOWN et les contrôles actifs historiques restent indépendants.
+Les appels réseau et le processus du contrôle Go sont simulés ; la suppression des espaces est représentée par des fichiers. Ces essais simulés sont complétés par la [première validation native combinée](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) avec `ip`/`tc` natifs. Les commandes DOWN et les contrôles actifs historiques restent indépendants.
 
-Le [contrôle combiné](LAB_CAKE_GO_COLLECT.md) raccorde maintenant ce pilote, les ressources activées et la collecte ; les tests utilisent un réseau simulé. La prochaine sous-étape prépare les deux contrôles natifs complets selon le contrat.
+Le [contrôle combiné](LAB_CAKE_GO_COLLECT.md) raccorde maintenant ce pilote, les ressources activées et la collecte ; les tests utilisent un réseau simulé. Les deux contrôles natifs complets sont [validés selon le contrat](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md).

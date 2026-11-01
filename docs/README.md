@@ -19,12 +19,13 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 | [LAB_CAKE_ENTRY.md](LAB_CAKE_ENTRY.md) | Processus interne, journal hérité synchronisé, signaux, limites et sortie locale distincte du nettoyage. |
 | [LAB_CAKE_GO_GUARD.md](LAB_CAKE_GO_GUARD.md) | Raccordement Python du processus Go, dialogue, preuves, récupération du groupe et contrôles simulés. |
 | [LAB_CAKE_GO_NATIVE.md](LAB_CAKE_GO_NATIVE.md) | Préparation figée et critères des deux contrôles natifs DOWN ; première exécution validée. |
-| [LAB_CAKE_GO_ACTIVE.md](LAB_CAKE_GO_ACTIVE.md) | Contrat Go puis trafic : phase Go, activation et pilote à accusé implémentés avec réseau simulé ; collecte et contrôle combinés également implémentés avec réseau simulé ; validation native à réaliser. |
+| [LAB_CAKE_GO_ACTIVE.md](LAB_CAKE_GO_ACTIVE.md) | Contrat Go puis trafic : phase Go, activation et pilote à accusé implémentés avec réseau simulé ; collecte et contrôle combinés également implémentés ; première validation native combinée confirmée. |
 | [LAB_CAKE_GO_PHASE.md](LAB_CAKE_GO_PHASE.md) | Phase Go réutilisable et groupes de processus, récupération avant transition et espaces conservés ; tests en simulation. |
-| [LAB_CAKE_GO_TOPOLOGY.md](LAB_CAKE_GO_TOPOLOGY.md) | Activation après Go, interfaces/adresses/routes et continuité CAKE ; tests en simulation, transfert à raccorder. |
+| [LAB_CAKE_GO_TOPOLOGY.md](LAB_CAKE_GO_TOPOLOGY.md) | Activation après Go, interfaces/adresses/routes et continuité CAKE ; tests en simulation et validation native dans le contrôle combiné. |
 | [LAB_CAKE_GO_TRAFFIC.md](LAB_CAKE_GO_TRAFFIC.md) | Pilote à accusé : session, trois outils avant accord, sondes après accord et récupération après SIGKILL ; réseau simulé, vrais processus. |
-| [LAB_CAKE_GO_COLLECT.md](LAB_CAKE_GO_COLLECT.md) | Enchaînement Go/activation/trafic, contrôle des PID, collecte CAKE, preuves et rapport global ; réseau simulé, exécution native en attente. |
-| [LAB_CAKE_GO_ACTIVE_NATIVE.md](LAB_CAKE_GO_ACTIVE_NATIVE.md) | Préparation figée de quatre binaires Go, lanceur des deux contrôles et relecture indépendante ; essais natifs combinés non encore exécutés. |
+| [LAB_CAKE_GO_COLLECT.md](LAB_CAKE_GO_COLLECT.md) | Enchaînement Go/activation/trafic, contrôle des PID, collecte CAKE, preuves et rapport global ; tests avec réseau simulé et première validation native combinée confirmée. |
+| [LAB_CAKE_GO_ACTIVE_NATIVE.md](LAB_CAKE_GO_ACTIVE_NATIVE.md) | Préparation figée de quatre binaires Go, lanceur des deux contrôles et relecture indépendante ; première validation native des deux modes confirmée. |
+| [VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) | Deux contrôles combinés : 8 Mio reçus, dix connexions réussies, continuité CAKE et nettoyage après panne du pilote de trafic. |
 | [VALIDATION_CAKE_GO_DOWN_2026-11-01.md](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) | Deux contrôles Go DOWN avec vrais outils : ajout/relecture, journal durable et nettoyage normal ou après SIGKILL. |
 | [TECH_STACK.md](TECH_STACK.md) | Choix de Go et Kotlin, outils et décisions différées. |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | Installation locale, commandes, compilation et tests. |
