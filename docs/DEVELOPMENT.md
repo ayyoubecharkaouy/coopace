@@ -158,6 +158,8 @@ Le [pilote Go puis trafic à accusé](LAB_CAKE_GO_TRAFFIC.md) est testé sépar�
 
 La [préparation native Go puis trafic](LAB_CAKE_GO_ACTIVE_NATIVE.md) est disponible avec `python3 -I -B scripts/prepare-cake-go-active.py` depuis un arbre Git propre. Elle compile quatre binaires et fige leur provenance ; les contrôles privilégiés se lancent séparément depuis le terminal utilisateur ; leur [première validation native](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) est consignée. La relecture n’exécute aucune commande réseau.
 
+Les lecteurs purs du [contrôle de passage IPv4](LAB_CAKE_GO_PATH.md) se vérifient avec `python3 -B -m unittest discover -s scripts/tests -p 'test_lab_cake_go_path.py' -v`. Ils ne lancent aucune sonde ; leur raccordement au superviseur reste à implémenter.
+
 ## Sous Windows
 
 Un exécutable Windows x64 est disponible dans `.local/bin/coopace-windows-amd64.exe`, accompagné de son empreinte SHA-256. La [procédure Windows](WINDOWS_VALIDATION.md) explique comment le compiler depuis Linux et le tester sur un PC Windows sans installer Go.
