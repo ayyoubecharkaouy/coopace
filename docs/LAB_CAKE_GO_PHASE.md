@@ -2,7 +2,7 @@
 
 ## État et portée
 
-La première sous-étape du [contrat Go puis trafic](LAB_CAKE_GO_ACTIVE.md) est implémentée : une phase Go termine son groupe en conservant les espaces possédés. Le superviseur peut ensuite réserver un nouveau groupe sur les mêmes ressources. L’activation du réseau, le pilote à accusé et la collecte active combinée restent à développer.
+La première sous-étape du [contrat Go puis trafic](LAB_CAKE_GO_ACTIVE.md) est implémentée : une phase Go termine son groupe en conservant les espaces possédés. Le superviseur peut ensuite réserver un nouveau groupe sur les mêmes ressources. L’[activation du réseau et la continuité](LAB_CAKE_GO_TOPOLOGY.md) sont maintenant implémentées et testées en simulation ; pilote à accusé et collecte active combinée restent à développer.
 
 Les tests simulent espaces réseau, entrée réseau et processus du contrôle Go. Ils exécutent réellement les descripteurs, pipes, `exec`, signaux et récupérations. Un second groupe de test contient trois enfants réellement récupérés après SIGKILL de son pilote. Ce groupe ne transfère aucune donnée. La [validation native DOWN du 1er novembre](VALIDATION_CAKE_GO_DOWN_2026-11-01.md), au commit `e104994`, précède cette extraction ; la nouvelle séquence devra avoir sa propre validation native.
 
@@ -50,4 +50,4 @@ Les tests couvrent :
 
 Les tests dédiés sont `test_lab_process_group.py` et `test_lab_cake_go_phase.py`. Ils s’exécutent dans la suite Python ordinaire ; les scénarios subreaper sont isolés dans des sous-processus. Les contrôles réseau privilégiés restent distincts des tests automatiques.
 
-La prochaine sous-étape ajoute l’activation et les relectures de continuité sur les ressources conservées. Le pilote de trafic à accusé, la collecte combinée et les deux essais natifs complets viendront ensuite, conformément au contrat.
+L’[activation et les relectures de continuité](LAB_CAKE_GO_TOPOLOGY.md) sont maintenant implémentées et testées en simulation. La prochaine sous-étape développe le pilote de trafic à accusé ; la collecte combinée et les deux essais natifs complets suivront selon le contrat.

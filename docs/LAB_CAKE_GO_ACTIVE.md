@@ -4,7 +4,7 @@ Date : 1er novembre 2026.
 
 ## État et objectif
 
-**Contrat défini ; [phase Go et gestion des groupes](LAB_CAKE_GO_PHASE.md) implémentées et testées avec ressources simulées. Activation, pilote de trafic et validation native combinée restent à réaliser.** Les [deux contrôles Go DOWN](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) et le [contrôle CAKE actif Python](VALIDATION_LAB_CAKE_ACTIVE_2026-10-30.md) sont les preuves préalables. Leur réussite séparée ne valide pas leur enchaînement sur les mêmes ressources.
+**Contrat défini ; [phase Go et gestion des groupes](LAB_CAKE_GO_PHASE.md) implémentées et testées avec ressources simulées. [Activation et continuité](LAB_CAKE_GO_TOPOLOGY.md) également implémentées en simulation ; pilote de trafic et validation native combinée restent à réaliser.** Les [deux contrôles Go DOWN](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) et le [contrôle CAKE actif Python](VALIDATION_LAB_CAKE_ACTIVE_2026-10-30.md) sont les preuves préalables. Leur réussite séparée ne valide pas leur enchaînement sur les mêmes ressources.
 
 La première intégration doit vérifier un transfert sur le veth dont Go vient d’ajouter CAKE. Le processus Go termine son cycle DOWN avant activation. Le superviseur conserve les espaces et le lien, active la topologie, puis pilote le trafic et les mesures. Le backend Go garde ses exigences DOWN et son protocole actuel ; aucun contrôleur Go permanent n’est ajouté.
 
@@ -18,12 +18,13 @@ L’intervention relève d’une invocation locale explicite de ce contrôle de 
 | `platforms/linux/cake_control*.go` | Ajout unique et relecture du profil fixe sur lien DOWN. |
 | `scripts/lab_cake_go.py` | Transport, preuves Go et relecture indépendante ; `run_phase` conserve maintenant les espaces après récupération du groupe. |
 | `scripts/lab_process_group.py` | Cycle de vie d’un groupe sans possession des namespaces ; utilisé par le superviseur. |
+| `scripts/lab_cake_go_topology.py` | Activation et relectures de continuité après Go ; implémentées et testées en simulation. |
 | `scripts/lab_cake_go_active.py`, à créer | Enchaînement, possession unique des ressources, groupes de processus, pilote de trafic et preuves combinées. |
 | `scripts/lab-cake-go-active.py`, à créer | Entrée séparée prévue : `plan`, `check`, `check-crash`, avec `--worker`, `--binaries` et `--artifacts`. |
 | `scripts/lab_active.py`, `lab_cake.py`, `lab-series.py` | Activation, collecte, validation CAKE et mesure de charge à réutiliser. |
 | `scripts/tests/test_lab_cake_go_active.py`, à créer | Tests d’enchaînement, de panne et de conservation des preuves. |
 
-Ces nouvelles entrées ne sont pas encore disponibles. Les commandes DOWN et les contrôles actifs historiques gardent leur format et leur comportement. Les opérations communes éventuellement extraites doivent être couvertes par leurs tests existants. `packages/core` et le protocole du groupe ne reçoivent ni processus ni opérations réseau.
+La CLI active et le pilote de trafic ne sont pas encore disponibles. Les commandes DOWN et les contrôles actifs historiques gardent leur format et leur comportement. Les opérations communes éventuellement extraites doivent être couvertes par leurs tests existants. `packages/core` et le protocole du groupe ne reçoivent ni processus ni opérations réseau.
 
 ## Ressources et séquence
 
@@ -112,10 +113,10 @@ Le rapport conserve séparément : référence native validée, invocation local
 ## Ordre de réalisation et critères de validation
 
 1. **Implémenté et testé en simulation** : [gestion d’une phase de processus et phase Go DOWN](LAB_CAKE_GO_PHASE.md) sans suppression des espaces. Tester récupération avant transition, fermeture répétée, absence de signal après récupération du leader et refus d’une seconde phase après arrêt incertain. Les commandes existantes gardent leurs tests et contrats.
-2. Ajouter l’activation et les validations de continuité, puis le pilote à accusé de disponibilité et la collecte combinée. Tester échecs Go, code réel incompatible, identité/file modifiée, erreur d’activation, mauvais jeton/PID/groupe, EOF, délais, baisse des compteurs, vidage absent et panne pendant attente.
+2. **Activation implémentée et testée en simulation** : [topologie et continuité](LAB_CAKE_GO_TOPOLOGY.md). Ajouter ensuite le pilote à accusé de disponibilité et la collecte combinée. Tester échecs Go, code réel incompatible, identité/file modifiée, erreur d’activation, mauvais jeton/PID/groupe, EOF, délais, baisse des compteurs, vidage absent et panne pendant attente.
 3. Vérifier les deux groupes avec de vrais processus et trois outils orphelins ; les tests réseau positifs peuvent rester simulés, avec cette limite explicite. Vérifier absence de succès après preuves ou nettoyage défaillants.
 4. Figer un commit, quatre binaires Go, sources/outils et un dossier neuf par mode. Exécuter les deux contrôles natifs et leur relecture, sans réutiliser les rapports actifs Python comme résultats du nouveau contrôle.
 
 La validation native normale exigera mêmes ressources entre phases, unique ajout Go, réception complète, dix sondes réussies et recouvertes, progression cohérente, vidage et nettoyage. La panne exigera Go `0`, pilote `-9`, trois descendants récupérés et nettoyage. Les journaux, codes, empreintes et absence des noms/réservations/PID seront relus hors ligne.
 
-Le contrat et sa [première sous-étape d’extraction](LAB_CAKE_GO_PHASE.md) sont livrés. La prochaine sous-étape ajoute l’activation et les validations de continuité sur les ressources conservées ; pilote de trafic et collecte combinée viendront ensuite. Le bénéfice propre à Coopace, l’automatisation, la restauration réelle, les autres plateformes et le ML restent ultérieurs.
+Le contrat et sa [première sous-étape d’extraction](LAB_CAKE_GO_PHASE.md) sont livrés. L’[activation et les validations de continuité](LAB_CAKE_GO_TOPOLOGY.md) sur les ressources conservées sont également implémentées et testées en simulation. La prochaine sous-étape développe le pilote de trafic à accusé ; collecte combinée et validation native viendront ensuite. Le bénéfice propre à Coopace, l’automatisation, la restauration réelle, les autres plateformes et le ML restent ultérieurs.
