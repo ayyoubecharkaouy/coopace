@@ -80,4 +80,4 @@ Le module interne `lab_cake_go_path.py` contient les lecteurs purs de captures I
 
 Le [protocole natif Go puis trafic](../docs/LAB_CAKE_GO_ACTIVE_NATIVE.md) utilise un dossier neuf et un arbre Git propre. Le préparateur compile et inspecte les binaires sans privilèges ; son `run.sh` réserve le lancement et appelle sudo uniquement pour les deux contrôles. Les relecteurs sont testés avec preuves synthétiques ; la [première validation native combinée](../docs/VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) est consignée.
 
-Le [contrat de campagne répétée après Go](../docs/LAB_CAKE_GO_CAMPAIGN.md) est défini. Les lecteurs de dialogue, le pilote et l’entrée de campagne restent à implémenter ; aucune nouvelle commande de campagne Go n’est disponible à ce stade.
+Le [contrat de campagne répétée après Go](../docs/LAB_CAKE_GO_CAMPAIGN.md) est défini. Les [lecteurs de dialogue et l’automate purs](../docs/LAB_CAKE_GO_CAMPAIGN_PROTOCOL.md) sont livrés dans `lab_cake_go_campaign_protocol.py`, avec quatorze tests sans processus ni réseau. Le pilote, le collecteur et l’entrée de campagne restent à implémenter ; aucune nouvelle commande de campagne Go n’est disponible.

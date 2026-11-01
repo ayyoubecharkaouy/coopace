@@ -24,7 +24,7 @@ Le [périmètre produit](docs/PRODUCT.md) décrit le résultat visé, l'état r�
 
 Le [contrôle de passage IPv4](docs/LAB_CAKE_GO_PATH_CONTROL.md) est [validé en natif](docs/VALIDATION_CAKE_GO_PATH_2026-11-01.md) : blocage sans forwarding, trois réponses après réactivation, transfert de 8 Mio et nettoyage normal ou après panne du pilote TCP.
 
-Le [contrat de campagne répétée après Go](docs/LAB_CAKE_GO_CAMPAIGN.md) fixe trois paires repos/charge et les critères avant collecte. Le pilote de campagne et son exécution restent à implémenter.
+Le [contrat de campagne répétée après Go](docs/LAB_CAKE_GO_CAMPAIGN.md) fixe trois paires repos/charge et les critères avant collecte. Les [lecteurs du dialogue et l’automate](docs/LAB_CAKE_GO_CAMPAIGN_PROTOCOL.md) passent leurs quatorze tests ; le pilote et la collecte restent à implémenter.
 
 Le [cycle de vie de la file virtuelle](docs/LAB_QUEUE.md) est implémenté sous le superviseur : création et relecture de TBF à 4 Mbit/s sur un lien désactivé, puis nettoyage après fin normale ou mort forcée du pilote. Les [quatre contrôles natifs](docs/VALIDATION_LAB_QUEUE_2026-10-29.md) sont validés. Les commandes de `lab-network.sh` restent sans file ; les références WAN, la restauration d'une passerelle réelle et tout gain d'optimisation restent à démontrer.
 
