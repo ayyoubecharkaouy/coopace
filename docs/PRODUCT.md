@@ -81,6 +81,8 @@ La [première planification statique hors ligne](STATIC_CAKE_PLANNING.md) est im
 
 Le [contrat de l’exécuteur Go](LAB_CAKE_EXECUTOR.md) est défini pour une première intégration sur lien DOWN dans le laboratoire jetable. Il distingue l’accord local du contrôle, les identités réelles de ressources, la vérification du profil et le nettoyage indépendant. Le [catalogue et les validateurs purs Go](CAKE_GO_VALIDATION.md) sont désormais implémentés et testés. Le [contexte et le contrôle de session internes](LAB_CAKE_CONTEXT.md) sont aussi implémentés et testés, avec vérification de descripteurs en lecture seule. Le [transport hérité et le pilote interne](LAB_CAKE_TRANSPORT.md) sont maintenant testés avec de vrais processus et outils simulés. Le [backend natif borné](LAB_CAKE_BACKEND.md) est également implémenté, avec vérification des outils et tests par exécutables simulés. Son [entrée interne et son journal durable](LAB_CAKE_ENTRY.md) sont maintenant livrés ; le [raccordement au superviseur](LAB_CAKE_GO_GUARD.md) est maintenant testé avec des opérations simulées. Les [deux contrôles natifs Go DOWN sont validés](VALIDATION_CAKE_GO_DOWN_2026-11-01.md), avec ajout/relecture réels et nettoyage confirmé. Aucun contrôle Go de chemin actif n’est livré.
 
+Le [contrat du contrôle Go puis trafic](LAB_CAKE_GO_ACTIVE.md) est défini, sans implémentation active livrée : Go ajoute et vérifie CAKE sur lien DOWN, puis le superviseur active les mêmes ressources et conduit le transfert. Les observations après ajout restent distinctes des prérequis d’une intervention planifiée. La prochaine sous-étape extrait la phase Go et la gestion des groupes avant transition.
+
 ## Références et mesures indispensables
 
 | Expérience | Comparaisons nécessaires |
