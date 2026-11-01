@@ -2,7 +2,7 @@
 
 ## État et objectif
 
-**Contrat défini avant collecte ; [lecteurs et automate purs](LAB_CAKE_GO_CAMPAIGN_PROTOCOL.md) implémentés et testés. Le pilote et le collecteur restent à développer ; aucune campagne n’a été exécutée.** Les commandes proposées ici ne sont pas encore disponibles.
+**Contrat défini avant collecte ; [lecteurs et automate purs](LAB_CAKE_GO_CAMPAIGN_PROTOCOL.md) et [pilote privé](LAB_CAKE_GO_CAMPAIGN_TRAFFIC.md) implémentés et testés. Le collecteur et l’évaluation restent à développer ; aucune campagne réseau native n’a été exécutée.** Les commandes proposées ici ne sont pas encore disponibles.
 
 La [validation native du passage IPv4](VALIDATION_CAKE_GO_PATH_2026-11-01.md) confirme une séquence Go DOWN → activation → passage → transfert, et le nettoyage après panne du pilote. La campagne étendra cette séquence à trois paires repos/charge sur les mêmes ressources, avec une seule installation CAKE par Go.
 
@@ -113,8 +113,8 @@ Un contrôle de panne réussi gardera code 0, `technical_valid: null` et `load_s
 
 Une préparation figera commit, protocole, sources, quatre binaires et outils, avec dossiers distincts `run` et `check-crash`. Les rapports, contrôles, identités, codes, sorties, commandes brutes et horodatages seront préservés, y compris après échec. Une revue indépendante devra recalculer l’ordre, les captures, les bornes observables, les fenêtres, les différences et les verdicts ; elle ne déduira pas la réussite d’un booléen du pilote. Les anciens relecteurs conserveront leurs types de rapports distincts.
 
-Les lecteurs et l’automate purs sont [livrés](LAB_CAKE_GO_CAMPAIGN_PROTOCOL.md) dans `lab_cake_go_campaign_protocol.py`. Restent à implémenter le pilote privé de phases, le collecteur/l’évaluation de campagne et l’entrée séparée `lab-cake-go-campaign.py` (`plan`, `run`, `check-crash`). La possession, la phase Go, l’activation et le passage seront réutilisés ; toute extraction commune gardera les comportements existants et leurs tests.
+Les lecteurs et l’automate purs sont [livrés](LAB_CAKE_GO_CAMPAIGN_PROTOCOL.md) dans `lab_cake_go_campaign_protocol.py`. Le [pilote privé des phases](LAB_CAKE_GO_CAMPAIGN_TRAFFIC.md) et son entrée `lab-cake-go-campaign-traffic.py` sont également livrés et testés avec outils simulés. Restent à implémenter le collecteur/l’évaluation et l’entrée publique `lab-cake-go-campaign.py` (`plan`, `run`, `check-crash`). La possession, la phase Go, l’activation et le passage seront réutilisés ; toute extraction commune gardera les comportements existants et leurs tests.
 
-Les quatorze tests des lecteurs et de l’automate couvrent limites, fragments, sessions/indices, transitions interdites et erreurs de mesure. **Prochaine sous-étape : pilote privé des six phases**, avec I/O annulables et outils de test simulés. Son raccordement au collecteur, l’évaluation puis la préparation/relecture et les essais natifs suivront. Aucune commande réseau de campagne ni nouveau binaire n’est livré à ce stade.
+Les quatorze tests des lecteurs et de l’automate couvrent limites, fragments, sessions/indices, transitions interdites et erreurs de mesure. Le pilote privé passe ses tests de processus avec outils simulés. **Prochaine sous-étape : raccordement au collecteur de campagne**, avec contrôle des PID, journal durable et vidage entre phases. L’évaluation puis la préparation/relecture et les essais natifs suivront. Aucune commande réseau de campagne ni nouveau binaire n’est livré à ce stade.
 
 La comparaison future avec une référence devra notamment harmoniser les contrôles ICMP, la préparation et les observations avant trafic ; des campagnes historiques réalisées à d’autres révisions ne sont pas des bras appariés. Couverture du foyer, IPv6/DNS, restauration réelle, équité, coût système et bénéfice du contrôleur Coopace restent ouverts.

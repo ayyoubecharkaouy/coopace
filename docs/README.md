@@ -26,8 +26,9 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 | [LAB_CAKE_GO_COLLECT.md](LAB_CAKE_GO_COLLECT.md) | Enchaînement Go/activation/trafic, contrôle des PID, collecte CAKE, preuves et rapport global ; tests avec réseau simulé et première validation native combinée confirmée. |
 | [REVIEW_CAKE_GO_PATH_FAILURE_2026-11-01.md](REVIEW_CAKE_GO_PATH_FAILURE_2026-11-01.md) | Premier essai IPv4 refusé, interaction des options ping corrigée et preuves conservées ; nouvelle exécution distincte ensuite validée. |
 | [VALIDATION_CAKE_GO_PATH_2026-11-01.md](VALIDATION_CAKE_GO_PATH_2026-11-01.md) | Passage IPv4 avant TCP validé : une requête sans réponse à forwarding 0, trois réponses à forwarding 1, transfert complet et nettoyage après panne. |
+| [LAB_CAKE_GO_CAMPAIGN_TRAFFIC.md](LAB_CAKE_GO_CAMPAIGN_TRAFFIC.md) | Pilote privé des six phases, I/O bornées, inventaire et récupération ; tests avec outils simulés, collecteur à développer. |
 | [LAB_CAKE_GO_CAMPAIGN_PROTOCOL.md](LAB_CAKE_GO_CAMPAIGN_PROTOCOL.md) | Lecteurs de lignes fragmentées, budgets et automate des six phases ; quatorze tests sans réseau. |
-| [LAB_CAKE_GO_CAMPAIGN.md](LAB_CAKE_GO_CAMPAIGN.md) | Contrat de trois paires après Go ; lecteurs et automate implémentés, pilote et collecte à développer. |
+| [LAB_CAKE_GO_CAMPAIGN.md](LAB_CAKE_GO_CAMPAIGN.md) | Contrat de trois paires après Go ; lecteurs, automate et pilote privé implémentés ; collecteur et évaluation à développer. |
 | [LAB_CAKE_GO_PATH_NATIVE.md](LAB_CAKE_GO_PATH_NATIVE.md) | Préparation figée, lanceur des deux modes IPv4 et relecture indépendante ; deux modes corrigés validés en natif. |
 | [LAB_CAKE_GO_PATH_CONTROL.md](LAB_CAKE_GO_PATH_CONTROL.md) | Exécuteur borné à deux captures et passage IPv4 avant le collecteur TCP ; tests avec réseau simulé et validation native des deux modes. |
 | [LAB_CAKE_GO_PATH.md](LAB_CAKE_GO_PATH.md) | Contrat du contrôle négatif/positif IPv4 après Go et lecteurs purs testés ; raccordement implémenté avec réseau simulé. |

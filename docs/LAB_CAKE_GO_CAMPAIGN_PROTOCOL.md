@@ -2,7 +2,7 @@
 
 ## État et portée
 
-Le [contrat de campagne v1](LAB_CAKE_GO_CAMPAIGN.md) dispose de ses lecteurs et de son automate dans `scripts/lab_cake_go_campaign_protocol.py`. **Le pilote, le collecteur et l’entrée de campagne ne sont pas encore implémentés. Aucune campagne n’a été exécutée.**
+Le [contrat de campagne v1](LAB_CAKE_GO_CAMPAIGN.md) dispose de ses lecteurs et de son automate dans `scripts/lab_cake_go_campaign_protocol.py`. **Le [pilote privé](LAB_CAKE_GO_CAMPAIGN_TRAFFIC.md) est maintenant implémenté et testé avec outils simulés. Le collecteur et l’entrée publique restent à développer ; aucune campagne réseau native n’a été exécutée.**
 
 Ce module traite uniquement des octets et des états. Il ne lance aucun processus, ne lit pas d’horloge, ne crée aucun réseau et n’exécute ni sonde ni nettoyage. Les aides métier du pilote à flux unique sont importées pour valider les sous-rapports ; son code et son dialogue restent inchangés.
 
@@ -59,4 +59,4 @@ Les quatorze tests couvrent le parcours des six phases, les données de mesure �
 
 Les six tests purs du protocole à flux unique restent également vérifiés. Ces vingt tests ciblés ne lancent aucune expérience réseau et ne produisent aucun certificat natif. Les preuves de la [validation du passage IPv4](VALIDATION_CAKE_GO_PATH_2026-11-01.md) restent distinctes.
 
-La prochaine sous-étape implémente le pilote privé des six phases avec ces lecteurs, des I/O annulables et des outils de test simulés. Le raccordement au collecteur, l’évaluation de campagne, puis préparation/relecture et essais natifs suivront séparément.
+Le [pilote privé des six phases](LAB_CAKE_GO_CAMPAIGN_TRAFFIC.md) est livré avec I/O annulables et tests de processus à outils simulés. La prochaine sous-étape le raccorde au collecteur de campagne avec contrôle des PID, journal durable et vidage entre phases. L’évaluation, puis préparation/relecture et essais natifs suivront séparément.
