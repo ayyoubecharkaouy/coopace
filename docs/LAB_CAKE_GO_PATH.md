@@ -2,13 +2,13 @@
 
 ## État et objectif
 
-Le contrat et les lecteurs purs de `scripts/lab_cake_go_path.py` sont livrés avec huit tests. **L’exécution des sondes et leur raccordement au superviseur ne sont pas encore implémentés.** Aucune nouvelle commande de contrôle n’est disponible à cette sous-étape.
+Le contrat et les lecteurs purs de `scripts/lab_cake_go_path.py` sont livrés avec huit tests. Le [raccordement au superviseur](LAB_CAKE_GO_PATH_CONTROL.md) est maintenant implémenté et testé avec réseau simulé ; l’exécuteur de commandes est testé avec de vrais sous-processus sans réseau. **Cette extension n’est pas encore validée en natif.** L’entrée séparée `scripts/lab-cake-go-path.py` expose `plan`, `check` et `check-crash`.
 
 La [validation native Go puis trafic](VALIDATION_CAKE_GO_ACTIVE_2026-11-01.md) confirme un transfert sur les ressources conservées après Go. Ce nouveau contrôle doit ajouter une preuve causale limitée : sans forwarding dans la passerelle possédée, aucune réponse à une requête ICMP ; après réactivation, trois requêtes et trois réponses. Les contrôles historiques des campagnes Python restent des preuves de leurs propres révisions.
 
 Ce test porte sur le chemin IPv4 fixe du laboratoire. Il ne prouve ni une couverture du foyer, une amélioration Internet, l’absence universelle de route de contournement, ni le comportement IPv6/DNS.
 
-## Placement et séquence prévue
+## Placement et séquence
 
 La phase Go normale, la récupération de son groupe et l’[activation](LAB_CAKE_GO_TOPOLOGY.md) précèdent ce contrôle. `wan`, sa CAKE et les trois espaces restent possédés par le même superviseur. Aucun pilote de trafic, cible TCP ou transfert ne doit démarrer avant l’acceptation du passage.
 
@@ -47,11 +47,11 @@ Une erreur ICMP déclarée `+1 errors` reste admise dans le contrôle négatif s
 
 Les lecteurs produisent des faits de capture, sans état de validation native. Le pourcentage de perte et la durée du résumé restent ceux déclarés par ping ; ils ne mesurent pas une perte TCP, une latence applicative, une capacité Internet ou la durée monotone du processus. Une capture acceptée ne prouve pas à elle seule les arguments réellement lancés, le namespace, l’ordre ou la relecture du forwarding : le raccordement doit établir ces faits séparément.
 
-## Bornes et preuves à raccorder
+## Bornes et preuves
 
 Le budget global reste de 180 s, sans remise à zéro après Go ni après activation. Chaque `ip`/`tc`/`sysctl` reste borné à 2 s ; les sondes négative et positive reçoivent respectivement une borne externe de 4 s et 6 s. Leurs options `-w` ne remplacent pas ces échéances monotones. Chaque capture stdout/stderr est limitée à 64 Kio ; une troncature interdit le succès. Le nettoyage garde son budget indépendant existant.
 
-Le futur raccordement doit conserver, avant chaque action, une intention durable, puis ses arguments exacts, code OS, sorties brutes, dates UTC et durée monotone. Les outils — y compris `ping`, sa sortie `-V` et son empreinte ELF — et les sources sont figés avant lancement et revérifiés. Les identités des espaces doivent être recontrôlées avant chaque commande.
+Le [raccordement](LAB_CAKE_GO_PATH_CONTROL.md) conserve, avant chaque action, une intention durable, puis ses arguments exacts, code OS, sorties brutes, dates UTC et durée monotone. Les outils — y compris `ping`, sa sortie `-V` et son empreinte ELF — et les sources sont figés avant lancement et revérifiés. Les identités des espaces doivent être recontrôlées avant chaque commande.
 
 Les lectures CAKE avant/après passage restent séparées de la différence de trafic TCP, dont le point de départ demeure juste avant le pilote. Les tentatives ICMP et leurs nombres d’envois constatés restent distincts du volume applicatif reçu. Les compteurs peuvent aussi inclure du trafic local automatique ; ils ne sont pas un comptage exclusif des sondes.
 
@@ -65,4 +65,4 @@ python3 -B -m unittest discover -s scripts/tests -p 'test_lab_cake_go_path.py' -
 
 Les huit tests passent au 1er novembre 2026. Ils couvrent blocage et passage attendus, erreurs techniques, réponse inattendue, réception partielle, mauvais comptes/cible, ambiguïtés, formats, bornes, types stricts et relecture du forwarding. Les captures de test sont des données de lecture ; aucun processus ni réseau n’est lancé par le module ou cette suite.
 
-La prochaine sous-étape raccorde ces lecteurs à un exécuteur borné et au superviseur, avec tests des erreurs, interruptions et refus de démarrer le trafic. Une préparation neuve et des essais natifs suivront seulement après ce raccordement. Une campagne comparative de l’intégration Go et tout bénéfice propre à Coopace restent ultérieurs.
+Le [raccordement à l’exécuteur borné et au superviseur](LAB_CAKE_GO_PATH_CONTROL.md) est livré avec tests des erreurs, interruptions et refus de démarrer le trafic. La prochaine sous-étape prépare une révision et quatre binaires figés, un dossier neuf et une relecture adaptée avant les essais natifs de cette extension. Une campagne comparative de l’intégration Go et tout bénéfice propre à Coopace restent ultérieurs.

@@ -35,6 +35,7 @@ def git_commit():
 
 class Inventory:
     fingerprint = staticmethod(go.tool)
+    source_fingerprints = staticmethod(source_fingerprints)
 
     def __init__(self, owner, worker, tc, sysctl, binaries):
         self.owner, self.binaries, self.session = owner, binaries.resolve(strict=True), None
@@ -44,7 +45,7 @@ class Inventory:
         for name, filename in (("agent", "coopace"), ("target", "coopace-lab-tcp"), ("load", "coopace-lab-load")):
             require(self.tools[name]["path"] == str(self.binaries / filename), "Binaire de trafic canonique sans redirection requis.")
         owner.namespaces.ip = self.tools["ip"]["path"]
-        self.sources, self.commit = source_fingerprints(), git_commit()
+        self.sources, self.commit = self.source_fingerprints(), git_commit()
 
     def metadata(self):
         versions = {}
@@ -63,7 +64,7 @@ class Inventory:
         self.owner.check()
         for spec in self.tools.values():
             require(self.fingerprint(spec["path"]) == spec, "Exécutable modifié pendant le contrôle combiné.")
-        require(source_fingerprints() == self.sources, "Sources modifiées pendant le contrôle combiné.")
+        require(self.source_fingerprints() == self.sources, "Sources modifiées pendant le contrôle combiné.")
 
 
 class Journal:
@@ -94,7 +95,8 @@ def phase_evidence(folder, expected=None):
 
 
 def run(mode, namespaces, worker, tc, sysctl, binaries, artifacts, *, timeout=180, tempdir=None,
-        session_factory=go.Session, inventory_factory=Inventory, collector_factory=collect.Collector):
+        session_factory=go.Session, inventory_factory=Inventory, collector_factory=collect.Collector,
+        path_factory=None):
     require(mode in ("check", "check-crash"), "Mode combiné inconnu.")
     require(artifacts.is_dir() and not any(artifacts.iterdir()), "Dossier de preuves neuf et vide requis.")
     go.guards.enable_subreaper()
@@ -104,6 +106,8 @@ def run(mode, namespaces, worker, tc, sysctl, binaries, artifacts, *, timeout=18
               "traffic_generated": False, "go_phase": None, "traffic_group": None, "topology": None,
               "queue_samples": [], "traffic_statistics_delta": None, "flow": None,
               "congestion": "not_assessed", "traffic_coverage": "synthetic_ipv4_only"}
+    if path_factory is not None:
+        result.update(kind="lab_cake_go_path_check", path_check=None)
     previous, journal, inventory, collector, phase_session, failure = {}, None, None, None, None, None
     def interrupted(signum, _frame):
         owner.interruption = owner.interruption or 128 + signum
@@ -115,7 +119,7 @@ def run(mode, namespaces, worker, tc, sysctl, binaries, artifacts, *, timeout=18
                 journal = Journal(artifacts / "supervisor.jsonl")
                 inventory = inventory_factory(owner, worker, tc, sysctl, binaries)
                 environment = inventory.metadata()
-                environment["invocation"] = {"mode": mode, "purpose": "cake_go_then_traffic", "reference": go.protocol.REFERENCE}
+                environment["invocation"] = {"mode": mode, "purpose": "cake_go_path_then_traffic" if path_factory is not None else "cake_go_then_traffic", "reference": go.protocol.REFERENCE}
                 go.save(artifacts / "environment.json", environment)
                 result["environment"] = environment
                 folder = artifacts / "go"
@@ -138,6 +142,14 @@ def run(mode, namespaces, worker, tc, sysctl, binaries, artifacts, *, timeout=18
                 journal.write({"event": "go_phase_finished", "phase": result["go_phase"], "evidence": frozen})
                 inventory.verify()
                 activated = collect.topology.activate_after_phase(owner, down, inventory.tools["sysctl"], journal.write)
+                if path_factory is not None:
+                    result["topology"] = activated.report
+                    path_check = path_factory(owner, activated, inventory, journal.write)
+                    result["path_check"] = path_check.report
+                    path_check.run()
+                    require(path_check.report.get("state") == "verified" and path_check.report.get("path_verified") is True,
+                            "Passage IPv4 non confirmé ; trafic TCP interdit.")
+                    inventory.verify()
                 collector = collector_factory(owner, activated, inventory, artifacts, journal.write)
                 result["traffic_group"] = collector.report
                 collector.run(mode)
@@ -200,5 +212,5 @@ def plan():
             "check-crash tue seulement le pilote de trafic en attente ; trois outils orphelins à récupérer.\n"
             "Relevés CAKE bornés, compteurs monotones, vidage normal et nettoyage global avant succès.\n"
             "Superviseur 180s, pilote 45s et nettoyage 10s ; aucune interface physique ni accès Internet.\n"
-            "Preuves exclusives dans --artifacts ; essais réseau combinés natifs non encore validés.\n"
+            "Preuves exclusives dans --artifacts ; référence native combinée documentée, foyer non validé.\n"
             "Le mode plan ne crée aucune ressource et ne requiert aucun privilège.")
