@@ -19,9 +19,10 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 | [LAB_CAKE_ENTRY.md](LAB_CAKE_ENTRY.md) | Processus interne, journal hérité synchronisé, signaux, limites et sortie locale distincte du nettoyage. |
 | [LAB_CAKE_GO_GUARD.md](LAB_CAKE_GO_GUARD.md) | Raccordement Python du processus Go, dialogue, preuves, récupération du groupe et contrôles simulés. |
 | [LAB_CAKE_GO_NATIVE.md](LAB_CAKE_GO_NATIVE.md) | Préparation figée et critères des deux contrôles natifs DOWN ; première exécution validée. |
-| [LAB_CAKE_GO_ACTIVE.md](LAB_CAKE_GO_ACTIVE.md) | Contrat Go puis trafic : phase Go et activation implémentées en simulation ; pilote et contrôle combiné à développer. |
+| [LAB_CAKE_GO_ACTIVE.md](LAB_CAKE_GO_ACTIVE.md) | Contrat Go puis trafic : phase Go, activation et pilote à accusé implémentés avec réseau simulé ; collecte et contrôle combinés à développer. |
 | [LAB_CAKE_GO_PHASE.md](LAB_CAKE_GO_PHASE.md) | Phase Go réutilisable et groupes de processus, récupération avant transition et espaces conservés ; tests en simulation. |
 | [LAB_CAKE_GO_TOPOLOGY.md](LAB_CAKE_GO_TOPOLOGY.md) | Activation après Go, interfaces/adresses/routes et continuité CAKE ; tests en simulation, transfert à raccorder. |
+| [LAB_CAKE_GO_TRAFFIC.md](LAB_CAKE_GO_TRAFFIC.md) | Pilote à accusé : session, trois outils avant accord, sondes après accord et récupération après SIGKILL ; réseau simulé, vrais processus. |
 | [VALIDATION_CAKE_GO_DOWN_2026-11-01.md](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) | Deux contrôles Go DOWN avec vrais outils : ajout/relecture, journal durable et nettoyage normal ou après SIGKILL. |
 | [TECH_STACK.md](TECH_STACK.md) | Choix de Go et Kotlin, outils et décisions différées. |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | Installation locale, commandes, compilation et tests. |
