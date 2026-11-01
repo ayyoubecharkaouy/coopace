@@ -2,7 +2,7 @@
 
 ## État et portée
 
-Le [raccordement au superviseur](LAB_CAKE_GO_GUARD.md) passe ses tests avec réseau et programme du contrôle simulés. Cette procédure prépare sa première vérification avec le véritable binaire Go, l’entrée `setns`, les descripteurs hérités et les outils `ip`/`tc` du laboratoire. **Les résultats natifs restent en attente jusqu’à exécution et relecture des preuves.**
+Le [raccordement au superviseur](LAB_CAKE_GO_GUARD.md) passe ses tests avec réseau et programme du contrôle simulés. Cette procédure décrit sa vérification avec le véritable binaire Go, l’entrée `setns`, les descripteurs hérités et les outils `ip`/`tc` du laboratoire. **Les deux contrôles natifs ont réussi le 1er novembre 2026 ; le [bilan et les preuves vérifiées](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) sont consignés.**
 
 Deux contrôles distincts sont prévus : `check`, puis `check-crash`. Chacun possède trois espaces réseau neufs et un veth `wan`/`eth0` laissé DOWN. Le profil reste `cake-ipv4-lab-4mbit-v1`, sans adresse, route ni transfert. Seul le processus Go ajoute CAKE après l’instruction `apply` du superviseur.
 
@@ -49,6 +49,6 @@ Le nombre de descendants récupérés est conservé tel qu’observé. Il n’es
 
 ## Résultat et suite
 
-`validation.json` est créé uniquement après relecture réussie des deux contrôles. Il conserve le commit, les synthèses recalculées, les observations d’absence et les empreintes des pièces. `prepared.json` garde son état initial. Les preuves restent locales et exclues de Git ; un bilan documentaire natif sera ajouté après examen des résultats.
+`validation.json` est créé uniquement après relecture réussie des deux contrôles. Il conserve le commit, les synthèses recalculées, les observations d’absence et les empreintes des pièces. `prepared.json` garde son état initial. Les preuves restent locales et exclues de Git ; le [bilan documentaire natif](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) consigne les deux exécutions et leurs limites.
 
 Un succès valide ce cycle de vie DOWN. Le chemin actif avec le nouveau contrôle Go, le bénéfice propre à Coopace, la couverture du foyer et la restauration d’une passerelle réelle restent des activités distinctes.

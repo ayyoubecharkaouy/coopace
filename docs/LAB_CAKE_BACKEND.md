@@ -2,11 +2,11 @@
 
 ## État et portée
 
-Le backend natif est implémenté dans `platforms/linux`, avec assemblage privé dans `apps/gateway/internal/labcontrol/native_linux.go`. Il fournit au [pilote interne](LAB_CAKE_TRANSPORT.md) les opérations de préparation, ajout/relecture et vérification finale. **Les essais positifs utilisent des exécutables ELF simulant `ip` et `tc`, des relevés synthétiques et les fixtures CAKE. Aucun vrai appel `ip`/`tc` ni changement réseau n’est effectué par ces essais.**
+Le backend natif est implémenté dans `platforms/linux`, avec assemblage privé dans `apps/gateway/internal/labcontrol/native_linux.go`. Il fournit au [pilote interne](LAB_CAKE_TRANSPORT.md) les opérations de préparation, ajout/relecture et vérification finale. **Les tests automatiques positifs utilisent des exécutables ELF simulant `ip` et `tc`, des relevés synthétiques et les fixtures CAKE. Aucun vrai appel `ip`/`tc` ni changement réseau n’est effectué par ces essais.**
 
 Le chemin par défaut utilise les vérifications natives des espaces réseau ; il n’accepte aucun vérificateur fourni par l’appelant. Un test confirme le refus de l’espace d’origine avant tout outil. Le vérificateur permissif des essais positifs est privé au paquet et n’existe dans aucune option CLI, JSON ou variable d’environnement du produit.
 
-La première cible est Linux amd64. La passerelle publique conserve `inspect` et `plan`. L’[entrée interne et le journal durable](LAB_CAKE_ENTRY.md) sont maintenant livrés ; le [raccordement au superviseur](LAB_CAKE_GO_GUARD.md) est maintenant implémenté et testé en simulation, selon le [contrat d’exécuteur](LAB_CAKE_EXECUTOR.md). Cette livraison n’est pas une validation native de l’application CAKE ni du nettoyage du nouveau contrôle.
+La première cible est Linux amd64. La passerelle publique conserve `inspect` et `plan`. L’[entrée interne et le journal durable](LAB_CAKE_ENTRY.md) sont maintenant livrés ; le [raccordement au superviseur](LAB_CAKE_GO_GUARD.md) est maintenant implémenté et testé en simulation, selon le [contrat d’exécuteur](LAB_CAKE_EXECUTOR.md). Les [deux contrôles natifs DOWN](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) valident maintenant l’ajout/relecture CAKE et le nettoyage supervisé ; le chemin actif Go reste à développer.
 
 ## Rangement et API
 
@@ -35,7 +35,7 @@ Les requêtes sont fixes : `ip -j -d link show` et `ip -j address show dev wan`.
 
 `wan` doit être un veth Ethernet, état opérationnel DOWN, avec MTU et indice de pair valides et MAC unicast non nulle. Le relevé d’adresses doit confirmer son indice et une liste `addr_info` explicitement vide. Indices de `lo`/`wan`, indice du pair, MTU et MAC sont conservés et comparés aux lectures suivantes. Les JSON sont limités à 64 Kio et soumis au contrôle de syntaxe strict des relevés natifs.
 
-Ces observations ne prouvent pas la propriété du pair ni une création récente. Les routes, le forwarding, l’espace serveur et le journal de création restent sous la responsabilité du superviseur. Le backend ne crée ni lien ni adresse et n’active aucun forwarding. La compatibilité des nouveaux relevés `ip` avec l’hôte de laboratoire reste à confirmer lors du futur contrôle natif.
+Ces observations ne prouvent pas la propriété du pair ni une création récente. Les routes, le forwarding, l’espace serveur et le journal de création restent sous la responsabilité du superviseur. Le backend ne crée ni lien ni adresse et n’active aucun forwarding. La compatibilité de ces relevés `ip` avec l’hôte de laboratoire est confirmée par les [contrôles natifs DOWN](VALIDATION_CAKE_GO_DOWN_2026-11-01.md).
 
 ## Exécutables et appels bornés
 
@@ -64,4 +64,4 @@ sh scripts/go.sh test -race -count=1 ./platforms/linux ./apps/gateway/internal/l
 
 Les tests vérifient le cycle complet, l’absence d’ajout pendant `Prepare`, les arguments fixes, la relecture finale, la copie des traces, les refus de version/empreinte/lien/adresses/file préexistante, les sorties excessives, la limite exacte de bannière, les échecs partiels d’ajout, l’expiration et la récupération des outils. Les références de namespace positives et les relevés réseau sont simulés ; les processus, exécutions ELF, limites et attentes sont réels.
 
-L’[entrée interne et le journal durable](LAB_CAKE_ENTRY.md) sont maintenant livrés. Le [raccordement au superviseur Python](LAB_CAKE_GO_GUARD.md) est implémenté et testé en simulation, sans modification des contrôles historiques. La suite exécute et relit les [validations natives figées](LAB_CAKE_GO_NATIVE.md). Elle doit démontrer l’héritage des descripteurs à travers l’entrée dans un espace neuf, la récupération d’un outil après mort forcée du processus Go et les deux contrôles natifs DOWN. Le chemin actif, la restauration du foyer et le pilotage automatique restent ultérieurs.
+L’[entrée interne et le journal durable](LAB_CAKE_ENTRY.md) sont maintenant livrés. Le [raccordement au superviseur Python](LAB_CAKE_GO_GUARD.md) est implémenté et testé en simulation, sans modification des contrôles historiques. Les [validations natives figées](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) confirment l’héritage des descripteurs, l’ajout/relecture et le nettoyage après fin normale ou SIGKILL. La récupération d’un outil encore actif lors de la mort du processus Go reste à valider séparément. La suite définit le contrôle Go de chemin actif. Le chemin actif, la restauration du foyer et le pilotage automatique restent ultérieurs.

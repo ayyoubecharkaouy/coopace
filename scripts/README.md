@@ -23,7 +23,7 @@ Exécuter les commandes ci-dessous depuis la racine du dépôt ; les scripts `.s
 | `lab-cake-campaign.py plan` | Prévisualiser les trois paires CAKE et leur qualification de charge, sans création de ressource. |
 | `lab-cake-campaign.py run` / `check-crash` | Collecter six phases CAKE, ou vérifier le nettoyage après mort forcée ; preuves conservées dans `--artifacts`. |
 | `lab-cake-go.py plan` | Prévisualiser le raccordement du processus Go au superviseur, sans ressource réseau. |
-| `lab-cake-go.py check` / `check-crash` | Contrôler Go sur lien DOWN avec `--worker` et `--artifacts` ; raccordement testé en simulation, [protocole des validations natives](../docs/LAB_CAKE_GO_NATIVE.md), résultats en attente. |
+| `lab-cake-go.py check` / `check-crash` | Contrôler Go sur lien DOWN avec `--worker` et `--artifacts` ; raccordement testé en simulation et [validé en natif sur lien DOWN](../docs/VALIDATION_CAKE_GO_DOWN_2026-11-01.md). |
 | `lab-cake.py plan` | Prévisualiser le contrôle CAKE sur lien désactivé, sans création de ressource. |
 | `lab-cake.py check` / `check-crash` | Ajouter et relire CAKE/statistiques sur lien DOWN, puis récupérer pilote/descendant et supprimer les espaces possédés. |
 | `lab-cake-active.py plan` | Prévisualiser le contrôle fonctionnel CAKE avec transfert et sondes, sans création de ressource. |

@@ -2,7 +2,7 @@
 
 ## État
 
-Le transport Linux et un pilote interne de séquence sont implémentés dans `apps/gateway/internal/labcontrol`. Les tests lancent un vrai processus Go et des outils simulés. Ils vérifient les canaux hérités, les événements, l’annulation des I/O et la fermeture des descripteurs. Le [backend natif borné](LAB_CAKE_BACKEND.md) est maintenant implémenté et assemblé en privé ; l’[entrée interne et le journal durable](LAB_CAKE_ENTRY.md) sont maintenant livrés, sans intégration au superviseur Python.
+Le transport Linux et un pilote interne de séquence sont implémentés dans `apps/gateway/internal/labcontrol`. Les tests lancent un vrai processus Go et des outils simulés. Ils vérifient les canaux hérités, les événements, l’annulation des I/O et la fermeture des descripteurs. Le [backend natif borné](LAB_CAKE_BACKEND.md) est maintenant implémenté et assemblé en privé ; l’[entrée interne et le journal durable](LAB_CAKE_ENTRY.md) sont maintenant livrés ; le [raccordement au superviseur Python](LAB_CAKE_GO_GUARD.md) et ses [deux contrôles natifs DOWN](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) sont validés.
 
 Cette livraison prolonge le [contexte de session](LAB_CAKE_CONTEXT.md) et le [contrat d’exécuteur](LAB_CAKE_EXECUTOR.md). La passerelle publique conserve `inspect` et `plan` ; le pilote `runWorker` reste privé et est assemblé par l’entrée interne. Aucun réglage réseau n’est appliqué par les essais.
 
@@ -18,7 +18,7 @@ Cette livraison prolonge le [contexte de session](LAB_CAKE_CONTEXT.md) et le [co
 
 `OpenInheritedTransport` est réservé au montage initial des I/O pollables d’un processus dédié dont le lanceur possède ces quatre emplacements. Il les consomme, y compris après un échec, et les ferme après usage. Il ne doit pas servir de sonde dans un autre processus en cours d’exécution. Aucun numéro de descripteur ni chemin d’espace ne provient du JSON.
 
-Les quatre emplacements sont examinés avant l’enregistrement des canaux auprès du poller Go, pour qu’un descripteur manquant ne soit pas confondu avec une nouvelle allocation interne. Le contrôle et les événements doivent être deux objets FIFO distincts, respectivement ouverts en lecture seule et en écriture seule. Le futur lanceur doit créer ces canaux anonymes ; leur type seul ne prouve pas leur origine.
+Les quatre emplacements sont examinés avant l’enregistrement des canaux auprès du poller Go, pour qu’un descripteur manquant ne soit pas confondu avec une nouvelle allocation interne. Le contrôle et les événements doivent être deux objets FIFO distincts, respectivement ouverts en lecture seule et en écriture seule. Le lanceur doit créer ces canaux anonymes ; leur type seul ne prouve pas leur origine.
 
 Les deux références d’espace sont contrôlées en lecture seule avec `platforms/linux.InspectNetworkNamespaceDescriptor`, avant l’initialisation JSON. Leur liaison à l’espace courant et leur différence avec l’origine restent vérifiées par `Session.BindNamespace`. La première version exige Linux amd64. Aucun changement d’espace ni création de ressource n’est effectué par ce transport.
 
@@ -41,9 +41,9 @@ Les événements ont un préfixe uint32 big-endian puis un objet JSON v1 `lab_ca
 - `ready` : après liaison de session et validation du relevé initial fourni par le backend ; aucun relevé appliqué attaché.
 - `applied` : après `apply` et validation du relevé fourni ; contient `producer_profile` et `qdisc`.
 
-Le relevé est revérifié avant encodage. Le JSON embarqué conserve champs et nombres sans conversion flottante, mais son espacement et ses échappements sont normalisés par l’encodeur ; il ne remplace pas l’archivage futur des octets source. La taille est contrôlée après encodage, car l’échappement peut agrandir une entrée valide.
+Le relevé est revérifié avant encodage. Le JSON embarqué conserve champs et nombres sans conversion flottante, mais son espacement et ses échappements sont normalisés par l’encodeur ; il ne remplace pas les octets source conservés dans le journal durable. La taille est contrôlée après encodage, car l’échappement peut agrandir une entrée valide.
 
-La limite est de 128 Kio de JSON par événement et 512 Kio au total, préfixes inclus dans le budget total. Les événements ne portent aucune attestation de nettoyage ni autorisation d’une autre action. Leur lecture stricte, ordre et journalisation côté superviseur restent à raccorder.
+La limite est de 128 Kio de JSON par événement et 512 Kio au total, préfixes inclus dans le budget total. Les événements ne portent aucune attestation de nettoyage ni autorisation d’une autre action. Leur lecture stricte, ordre et journalisation sont raccordés au superviseur.
 
 Le pilote privé enchaîne initialisation, liaison, lecture initiale, `ready`, réception de `apply`, opération d’application, validation, `applied`, réception de `finish`, puis relecture finale conforme et fermeture des quatre références. La relecture finale conserve la frontière précédant `finish` : aucune nouvelle fenêtre de cinq secondes n’est accordée. Une erreur de fermeture empêche également un succès du pilote.
 
@@ -64,4 +64,4 @@ Un autre essai annule un outil simulé bloqué et constate sa récupération. La
 
 ## Suite
 
-Le [backend natif borné](LAB_CAKE_BACKEND.md) est maintenant implémenté et testé avec des outils simulés. L’[entrée interne et son journal durable](LAB_CAKE_ENTRY.md) sont livrés. Le [raccordement au superviseur](LAB_CAKE_GO_GUARD.md) est implémenté et testé en simulation. Il reste à démontrer l’héritage des références à travers l’entrée dans un espace réseau neuf, puis les deux contrôles natifs DOWN. Les commandes et preuves Python historiques restent distinctes.
+Le [backend natif borné](LAB_CAKE_BACKEND.md) est maintenant implémenté et testé avec des outils simulés. L’[entrée interne et son journal durable](LAB_CAKE_ENTRY.md) sont livrés. Le [raccordement au superviseur](LAB_CAKE_GO_GUARD.md) est implémenté et testé en simulation. Les [deux contrôles natifs DOWN](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) confirment maintenant l’héritage à travers l’entrée dans un espace neuf et le nettoyage. Le chemin actif Go reste à développer. Les commandes et preuves Python historiques restent distinctes.

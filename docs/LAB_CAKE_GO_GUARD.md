@@ -4,13 +4,13 @@
 
 Le raccordement est implémenté dans `scripts/lab_cake_go.py`, avec contrat de messages et relecture des preuves dans `lab_cake_go_protocol.py`. L’entrée `lab-cake-go.py` expose `plan`, `check` et `check-crash`. Les contrôles Python historiques sont conservés sans modification.
 
-**Les essais positifs simulent les namespaces, l’entrée réseau et le processus du contrôle.** Ils exécutent réellement la duplication des descripteurs, les pipes, `exec`, les signaux, la récupération des processus et les écritures de preuves. Ils ne valident pas encore l’entrée dans un namespace neuf ni le cycle complet avec le vrai processus Go et les vrais outils `ip`/`tc`. Le [protocole natif DOWN](LAB_CAKE_GO_NATIVE.md) est défini ; les deux exécutions restent à réaliser.
+**Les tests automatiques positifs simulent les namespaces, l’entrée réseau et le processus du contrôle.** Ils exécutent réellement les descripteurs, pipes, `exec`, signaux, récupérations et écritures. Les [deux contrôles natifs DOWN](VALIDATION_CAKE_GO_DOWN_2026-11-01.md), réalisés séparément selon le [protocole figé](LAB_CAKE_GO_NATIVE.md), confirment le cycle avec le véritable processus Go et les vrais outils `ip`/`tc`, en fin normale et après SIGKILL.
 
 ## Responsabilités
 
 Le raccordement réutilise `Guard` pour la possession des trois espaces, son échéance indépendante de 180s et son budget de nettoyage de 10s. Le superviseur crée uniquement le veth `wan`/`eth0`, laissé DOWN sans adresse ni route. Il ne configure pas CAKE : l’ajout appartient au backend Go après `apply`.
 
-Les chemins canoniques et SHA-256 du processus Go, de `ip`, de `tc` et de Python sont enregistrés avant création des ressources, puis revérifiés. Les scripts du raccordement et les dépendances de supervision sont également identifiés. Cette provenance conserve le binaire sélectionné et les informations de compilation retournées ; elle ne remplace pas le futur gel d’une expérience native sur un commit donné.
+Les chemins canoniques et SHA-256 du processus Go, de `ip`, de `tc` et de Python sont enregistrés avant création des ressources, puis revérifiés. Les scripts du raccordement et les dépendances de supervision sont également identifiés. Cette provenance conserve le binaire sélectionné et les informations de compilation retournées ; elle complète le gel d’une expérience native sur un commit donné.
 
 Le lanceur ouvre la cible réseau, vérifie son type noyau et son identité contre l’objet possédé, puis ouvre l’espace d’origine du superviseur. La cible doit différer de l’origine. Les références restent conservées jusqu’à l’arrêt du groupe, puis sont fermées avant suppression des espaces.
 
@@ -56,4 +56,4 @@ python3 -B -m unittest discover -s scripts/tests -p 'test_lab_cake_go.py' -v
 
 Les tests utilisent des espaces représentés par des fichiers et remplacent seulement l’entrée réseau ainsi que le programme du contrôle. Ils vérifient fin normale, panne après `applied`, journal incompatible, mauvais jeton, trame excessive, échéance, outil orphelin, erreur de relecture et nettoyage incomplet. Les PID réels sont vérifiés absents avant suppression simulée des espaces.
 
-Les modes natifs demandent les privilèges du laboratoire, Python avec `setns`, un binaire Go compilé et un dossier d’expérience neuf via `--worker` et `--artifacts`. Le [protocole des deux exécutions figées normales/panne](LAB_CAKE_GO_NATIVE.md) décrit la préparation et la relecture sur la machine Linux de laboratoire. Leur validation devra confirmer l’héritage à travers `setns`, la conformité des nouveaux relevés et l’absence des ressources après nettoyage ; aucun de ces résultats n’est déduit des essais simulés.
+Les modes natifs demandent les privilèges du laboratoire, Python avec `setns`, un binaire Go compilé et un dossier d’expérience neuf via `--worker` et `--artifacts`. Le [protocole des deux exécutions figées normales/panne](LAB_CAKE_GO_NATIVE.md) décrit la préparation et la relecture sur la machine Linux de laboratoire. Leur [validation native](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) confirme l’héritage à travers `setns`, les relevés et le nettoyage dans les deux modes. La panne intervient après récupération des outils ; elle ne valide pas un outil encore actif lors de la mort du processus Go. La suite définit le contrôle de chemin actif.
