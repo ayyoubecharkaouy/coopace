@@ -1,5 +1,6 @@
 """Go CAKE DOWN control under the existing independent namespace guard."""
 
+from copy import deepcopy
 import fcntl
 import hashlib
 import importlib.util
@@ -70,7 +71,7 @@ def exclusive(path, flags=0):
 
 def source_fingerprints():
     return {str(Path(__file__).with_name(name)): hashlib.sha256(read(Path(__file__).with_name(name), 1024*1024)).hexdigest()
-            for name in ("lab-cake-go.py", "lab_cake_go.py", "lab_cake_go_protocol.py", "lab-guard.py", "lab_queue.py", "lab_cake.py")}
+            for name in ("lab-cake-go.py", "lab_cake_go.py", "lab_cake_go_protocol.py", "lab-guard.py", "lab_process_group.py", "lab_queue.py", "lab_cake.py")}
 
 
 def save(path, value):
@@ -108,8 +109,25 @@ class GoGuard(guards.Guard):
         super().__init__(*args, **kwargs)
         self.session = None
         self.post_exit_error = None
+        self.phase_failure = None
+        self.phase_verified = False
+        self._phase_stopped = False
+        self._phase_cleanup_error = None
+
+    def advance_group(self):
+        require(self.phase_verified and self.phase_failure is None and self.post_exit_error is None,
+                "Phase Go non confirmée ; transition interdite.")
+        super().advance_group()
+        self.session = None
+        self.phase_verified = False
+        self._phase_stopped = False
 
     def stop_group(self, deadline):
+        if self._phase_cleanup_error is not None:
+            raise self._phase_cleanup_error
+        if self._phase_stopped:
+            super().stop_group(deadline)
+            return
         try:
             super().stop_group(deadline)
             if self.session is not None:
@@ -127,10 +145,15 @@ class GoGuard(guards.Guard):
                     # while retaining this verification failure in the result.
                     self.post_exit_error = error
         finally:
-            if self.session is not None:
-                self.session.close()
-            if self.child is not None and self.child.stderr is not None:
-                self.child.stderr.close()
+            self._phase_stopped = True
+            try:
+                if self.session is not None:
+                    self.session.close()
+                if self.child is not None and self.child.stderr is not None:
+                    self.child.stderr.close()
+            except (OSError, Error) as error:
+                self._phase_cleanup_error = guards.GuardError("Fermeture des références de phase non confirmée.")
+                raise self._phase_cleanup_error from error
 
 
 class Session:
@@ -143,6 +166,9 @@ class Session:
         self.applied = None
         self.target, self.original = None, None
         self.summary = None
+        self._close_error = None
+        self._evidence_saved = False
+        self._evidence_error = None
         self.token = owner.workspace.name.removeprefix("coopace-guard.")
 
     def keep(self, fd):
@@ -188,7 +214,8 @@ class Session:
             require(hashlib.sha256(stream.read(64 * 1024 * 1024 + 1)).hexdigest() == self.tools["worker"]["sha256"], "Binaire Go modifié avant exec.")
         sources = [control_read, event_write, target, original, journal, worker_fd]
         owner.check()
-        require(owner.child is None, "Un processus est déjà possédé.")
+        require(not owner.closed and owner.process_group.state == "new" and owner.child is None,
+                "Un groupe neuf et un superviseur ouvert sont requis.")
         owner.child = subprocess.Popen(self.launch_args(sources), stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE, pass_fds=tuple(sources), start_new_session=True,
                                        env={"LANG": "C", "LC_ALL": "C"})
@@ -280,13 +307,85 @@ class Session:
             time.sleep(0.005)
         self.drain(); self.no_extra_event()
 
+    def persist(self):
+        if self._evidence_error is not None:
+            raise self._evidence_error
+        if self._evidence_saved:
+            return
+        try:
+            for filename, data in (("worker.stderr", self.stderr_bytes), ("events.bin", self.raw_events)):
+                descriptor = exclusive(self.folder / filename)
+                with os.fdopen(descriptor, "wb") as stream:
+                    stream.write(data); stream.flush(); os.fsync(stream.fileno())
+            self._evidence_saved = True
+        except BaseException as error:
+            self._evidence_error = error
+            raise
+
     def close(self):
+        if self._close_error is not None:
+            raise self._close_error
         failures = []
         for fd in self.fds:
             try: os.close(fd)
             except OSError as error: failures.append(error)
         self.fds.clear()
-        if failures: raise Error("Fermeture des références non confirmée.") from failures[0]
+        if failures:
+            self._close_error = Error("Fermeture des références non confirmée.")
+            raise self._close_error from failures[0]
+
+
+def run_phase(owner, tools, artifacts, link, *, sources=None, mode="check", session_factory=Session):
+    """Finish a DOWN worker group while retaining the owner's namespaces.
+
+    A failure closes the owner; only a verified normal phase allows transition.
+    This function does not create resources or install signal handlers.
+    """
+    try:
+        require(mode in ("check", "check-crash") and not owner.closed
+                and owner.child is None and owner.session is None,
+                "Phase Go neuve requise.")
+        require(len(owner.owned) == 3 and link.owner is owner, "Ressources de phase non possédées.")
+        require(artifacts.is_dir(), "Dossier de preuves de phase requis.")
+        for name in ("worker.jsonl", "events.bin", "worker.stderr"):
+            require(not os.path.lexists(artifacts / name), "Des preuves de phase existent déjà.")
+        sources = source_fingerprints() if sources is None else sources
+        owner.check()
+        for name, expected in owner.owned:
+            require(expected is not None and owner.namespaces.identity(name) == expected,
+                    "Identité d’espace modifiée avant la phase Go.")
+        for spec in tools.values(): require(tool(spec["path"]) == spec, "Exécutable modifié avant la phase Go.")
+        require(source_fingerprints() == sources, "Sources modifiées avant la phase Go.")
+        owner.session = session_factory(owner, tools, artifacts, link)
+        owner.session.start(); owner.session.monitor(mode)
+        owner.stop_group(min(owner.deadline, time.monotonic() + owner.cleanup_timeout))
+        owner.check()
+        require(owner.post_exit_error is None, f"Relecture après arrêt non confirmée : {owner.post_exit_error}")
+        require(owner.driver_code == (-9 if mode == "check-crash" else 0), "Code réel Go incompatible.")
+        summary = owner.session.validate("applied" if mode == "check-crash" else "finished")
+        for spec in tools.values(): require(tool(spec["path"]) == spec, "Exécutable modifié pendant la phase Go.")
+        require(source_fingerprints() == sources, "Sources modifiées pendant la phase Go.")
+        for name, expected in owner.owned:
+            require(owner.namespaces.identity(name) == expected, "Espace modifié avant la transition.")
+        owner.session.persist()
+        result = {"schema_version": 1, "kind": "lab_cake_go_down_phase", "state": "finished", "mode": mode,
+                  "reference": protocol.REFERENCE, "session_id": owner.session.token,
+                  "worker_pid": owner.child.pid, "worker_exit_code": owner.driver_code,
+                  "reaped_descendants": owner.reaped_descendants, "journal": summary,
+                  "cleanup": "deferred_to_supervisor", "namespaces": [name for name, _ in owner.owned],
+                  "namespace_identity": dict(owner.session.target), "original_namespace": dict(owner.session.original),
+                  "queue": deepcopy(owner.queue_report)}
+        owner.check()
+        owner.phase_verified = mode == "check"
+        return result
+    except BaseException as error:
+        owner.phase_failure = error
+        try:
+            owner.close()
+        finally:
+            if owner.session is not None:
+                owner.session.persist()
+        raise
 
 
 def run(mode, namespaces, worker, tc, artifacts, *, session_factory=Session, timeout=180, tempdir=None):
@@ -316,8 +415,7 @@ def run(mode, namespaces, worker, tc, artifacts, *, session_factory=Session, tim
                 require(namespaces.identity(name) == expected, "Identité d’espace modifiée avant lancement.")
             for name, spec in tools.items(): require(tool(spec["path"]) == spec, "Exécutable modifié avant lancement.")
             require(source_fingerprints() == sources, "Sources modifiées avant lancement.")
-            owner.session = session_factory(owner, tools, artifacts, link)
-            owner.session.start(); owner.session.monitor(mode)
+            run_phase(owner, tools, artifacts, link, sources=sources, mode=mode, session_factory=session_factory)
         finally:
             owner.close()
             result["cleanup_verified"] = True
@@ -334,11 +432,12 @@ def run(mode, namespaces, worker, tc, artifacts, *, session_factory=Session, tim
     finally:
         try:
             if owner.session is not None:
-                owner.session.close()
-                for filename, data in (("worker.stderr", owner.session.stderr_bytes), ("events.bin", owner.session.raw_events)):
-                    descriptor = exclusive(artifacts / filename)
-                    with os.fdopen(descriptor, "wb") as stream:
-                        stream.write(data); stream.flush(); os.fsync(stream.fileno())
+                for action in (owner.session.close, owner.session.persist):
+                    try:
+                        action()
+                    except (OSError, ValueError, Error) as error:
+                        failure = failure or error
+                        result.update(state="failed", error=str(error))
             result.update(worker_pid=owner.child.pid if owner.child else None, worker_exit_code=owner.driver_code,
                           reaped_descendants=owner.reaped_descendants, namespaces=[name for name, _ in owner.owned],
                           workspace=str(owner.workspace), queue=owner.queue_report)

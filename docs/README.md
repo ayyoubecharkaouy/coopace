@@ -19,7 +19,8 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 | [LAB_CAKE_ENTRY.md](LAB_CAKE_ENTRY.md) | Processus interne, journal hérité synchronisé, signaux, limites et sortie locale distincte du nettoyage. |
 | [LAB_CAKE_GO_GUARD.md](LAB_CAKE_GO_GUARD.md) | Raccordement Python du processus Go, dialogue, preuves, récupération du groupe et contrôles simulés. |
 | [LAB_CAKE_GO_NATIVE.md](LAB_CAKE_GO_NATIVE.md) | Préparation figée et critères des deux contrôles natifs DOWN ; première exécution validée. |
-| [LAB_CAKE_GO_ACTIVE.md](LAB_CAKE_GO_ACTIVE.md) | Contrat défini : cycle Go DOWN puis activation, transfert et mesures sur les mêmes ressources ; implémentation à réaliser. |
+| [LAB_CAKE_GO_ACTIVE.md](LAB_CAKE_GO_ACTIVE.md) | Contrat Go puis trafic : phase Go extraite ; activation et contrôle actif combiné à développer. |
+| [LAB_CAKE_GO_PHASE.md](LAB_CAKE_GO_PHASE.md) | Phase Go réutilisable et groupes de processus, récupération avant transition et espaces conservés ; tests en simulation. |
 | [VALIDATION_CAKE_GO_DOWN_2026-11-01.md](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) | Deux contrôles Go DOWN avec vrais outils : ajout/relecture, journal durable et nettoyage normal ou après SIGKILL. |
 | [TECH_STACK.md](TECH_STACK.md) | Choix de Go et Kotlin, outils et décisions différées. |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | Installation locale, commandes, compilation et tests. |

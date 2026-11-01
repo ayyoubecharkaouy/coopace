@@ -20,6 +20,10 @@ _queue_spec = importlib.util.spec_from_file_location("lab_queue", Path(__file__)
 lab_queue = importlib.util.module_from_spec(_queue_spec)
 _queue_spec.loader.exec_module(lab_queue)
 
+_group_spec = importlib.util.spec_from_file_location("lab_process_group", Path(__file__).with_name("lab_process_group.py"))
+processes = importlib.util.module_from_spec(_group_spec)
+_group_spec.loader.exec_module(processes)
+
 
 LIMIT = 4096
 PR_SET_CHILD_SUBREAPER = 36
@@ -41,8 +45,7 @@ if sys.argv[1] == "check-crash":
 '''
 
 
-class GuardError(Exception):
-    pass
+GuardError = processes.GroupError
 
 
 class Interrupted(GuardError):
@@ -98,14 +101,43 @@ class Guard:
         self.workspace = None
         self.owned = []
         self.uncertain = []
-        self.child = None
+        self.process_group = processes.ProcessGroup()
+        self.process_groups = [self.process_group]
         self.output = bytearray()
         self.descendant = None
-        self.driver_code = None
-        self.reaped_descendants = 0
         self.closed = False
+        self.close_error = None
         self.queue_report = None
         self.command_child = None
+
+    @property
+    def child(self):
+        return self.process_group.child
+
+    @child.setter
+    def child(self, value):
+        if self.closed:
+            raise GuardError("Superviseur fermé ; lancement interdit.")
+        self.process_group.attach(value)
+
+    @property
+    def driver_code(self):
+        return self.process_group.driver_code
+
+    @property
+    def reaped_descendants(self):
+        return self.process_group.reaped_descendants
+
+    def advance_group(self):
+        self.check()
+        if self.closed or self.command_child is not None:
+            raise GuardError("Transition interdite pendant une commande ou après fermeture.")
+        for group in self.process_groups:
+            group.require_stopped()
+        self.process_group = processes.ProcessGroup()
+        self.process_groups.append(self.process_group)
+        self.output = bytearray()
+        self.descendant = None
 
     def check(self):
         if self.interruption:
@@ -159,8 +191,8 @@ class Guard:
         self.journal("armed")
 
     def start(self, args, *, stdin=subprocess.DEVNULL):
-        if self.child is not None:
-            raise GuardError("Un pilote est déjà enregistré.")
+        if self.closed or self.process_group.state != "new" or self.child is not None:
+            raise GuardError("Un groupe neuf et un superviseur ouvert sont requis.")
         self.check()
         self.child = subprocess.Popen(args, stdin=stdin,
                                       stdout=subprocess.PIPE, start_new_session=True)
@@ -171,8 +203,7 @@ class Guard:
         self.check()
 
     def exited(self):
-        return os.waitid(os.P_PID, self.child.pid,
-                         os.WEXITED | os.WNOHANG | os.WNOWAIT) is not None
+        return self.process_group.exited()
 
     def drain(self):
         # Limit work as well as retained bytes, including a continuously writing child.
@@ -212,41 +243,9 @@ class Guard:
             time.sleep(0.01)
 
     def stop_group(self, deadline):
-        if self.child is None:
-            return
-        child = self.child
-        try:
-            # Do not call poll()/wait() before the last group signal: either
-            # would release the PID used as our process-group ownership anchor.
-            try:
-                os.killpg(child.pid, signal.SIGTERM)
-            except ProcessLookupError:
-                pass
-            grace = min(deadline, time.monotonic() + 0.2)
-            while time.monotonic() < grace:
-                time.sleep(0.01)
-            try:
-                os.killpg(child.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-            self.driver_code = child.wait(timeout=max(0.001, deadline - time.monotonic()))
-            # Subreaper adoption lets us reap the orphaned helpers too. Never
-            # wait for arbitrary children or signal a group after releasing PID.
-            while True:
-                try:
-                    pid, _status = os.waitpid(-child.pid, os.WNOHANG)
-                except ChildProcessError:
-                    break
-                if pid:
-                    self.reaped_descendants += 1
-                elif time.monotonic() >= deadline:
-                    raise GuardError("Arrêt des descendants non confirmé.")
-                else:
-                    time.sleep(0.01)
-        finally:
-            child.stdout.close()
-            if child.stdin is not None:
-                child.stdin.close()
+        self.process_group.stop(deadline)
+        for group in self.process_groups:
+            group.require_stopped()
 
     def stop_command(self, deadline):
         child = self.command_child
@@ -261,6 +260,8 @@ class Guard:
 
     def close(self):
         if self.closed:
+            if self.close_error is not None:
+                raise self.close_error
             return
         self.closed = True
         deadline = time.monotonic() + self.cleanup_timeout
@@ -296,8 +297,9 @@ class Guard:
             except (OSError, GuardError) as error:
                 errors.append(str(error))
         if errors:
+            self.close_error = GuardError("Nettoyage incomplet : " + "; ".join(errors))
             self.journal("cleanup_failed")
-            raise GuardError("Nettoyage incomplet : " + "; ".join(errors))
+            raise self.close_error
         print("Processus récupérés et espaces du contrôle supprimés.", file=sys.stderr, flush=True)
 
 

@@ -4,7 +4,7 @@ Date : 1er novembre 2026.
 
 ## État et objectif
 
-**Contrat défini ; implémentation et validation native à réaliser.** Les [deux contrôles Go DOWN](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) et le [contrôle CAKE actif Python](VALIDATION_LAB_CAKE_ACTIVE_2026-10-30.md) sont les preuves préalables. Leur réussite séparée ne valide pas leur enchaînement sur les mêmes ressources.
+**Contrat défini ; [phase Go et gestion des groupes](LAB_CAKE_GO_PHASE.md) implémentées et testées avec ressources simulées. Activation, pilote de trafic et validation native combinée restent à réaliser.** Les [deux contrôles Go DOWN](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) et le [contrôle CAKE actif Python](VALIDATION_LAB_CAKE_ACTIVE_2026-10-30.md) sont les preuves préalables. Leur réussite séparée ne valide pas leur enchaînement sur les mêmes ressources.
 
 La première intégration doit vérifier un transfert sur le veth dont Go vient d’ajouter CAKE. Le processus Go termine son cycle DOWN avant activation. Le superviseur conserve les espaces et le lien, active la topologie, puis pilote le trafic et les mesures. Le backend Go garde ses exigences DOWN et son protocole actuel ; aucun contrôleur Go permanent n’est ajouté.
 
@@ -16,7 +16,8 @@ L’intervention relève d’une invocation locale explicite de ce contrôle de 
 | --- | --- |
 | `apps/gateway/cmd/coopace-cake-worker` et `internal/labcontrol` | Cycle Go DOWN existant : initialisation, `ready`, `apply`, `applied`, `finish`, sortie. |
 | `platforms/linux/cake_control*.go` | Ajout unique et relecture du profil fixe sur lien DOWN. |
-| `scripts/lab_cake_go.py` | Transport, preuves Go et relecture indépendante à réutiliser dans une phase sans suppression des espaces. |
+| `scripts/lab_cake_go.py` | Transport, preuves Go et relecture indépendante ; `run_phase` conserve maintenant les espaces après récupération du groupe. |
+| `scripts/lab_process_group.py` | Cycle de vie d’un groupe sans possession des namespaces ; utilisé par le superviseur. |
 | `scripts/lab_cake_go_active.py`, à créer | Enchaînement, possession unique des ressources, groupes de processus, pilote de trafic et preuves combinées. |
 | `scripts/lab-cake-go-active.py`, à créer | Entrée séparée prévue : `plan`, `check`, `check-crash`, avec `--worker`, `--binaries` et `--artifacts`. |
 | `scripts/lab_active.py`, `lab_cake.py`, `lab-series.py` | Activation, collecte, validation CAKE et mesure de charge à réutiliser. |
@@ -46,7 +47,7 @@ flowchart LR
 6. Démarrer le pilote de trafic dans un nouveau groupe. Effectuer le contrôle normal ou la panne définis ci-dessous, puis récupérer le groupe.
 7. Relire la file après arrêt confirmé des outils, vérifier les preuves et empreintes, fermer les références restantes, puis retirer les seuls espaces possédés. Publier le succès uniquement après nettoyage confirmé.
 
-`lab_cake_go.run` et `lab_active.run` suppriment actuellement leurs espaces dans `finally`. Leur appel successif ne réalise pas ce contrat. L’implémentation doit extraire une phase Go réutilisable et une gestion de groupe sans transfert de propriété des namespaces. Un résultat de phase ne peut pas publier le `cleanup_verified: true` d’un contrôle complet tant que les espaces sont conservés.
+`lab_cake_go.run` et `lab_active.run` suppriment actuellement leurs espaces dans `finally`. Leur appel successif ne réalise pas ce contrat. Cette extraction est maintenant [implémentée et testée en simulation](LAB_CAKE_GO_PHASE.md) : `run_phase` conserve les espaces et `advance_group` réserve le groupe suivant sans transfert de propriété des namespaces. Un résultat de phase ne peut pas publier le `cleanup_verified: true` d’un contrôle complet tant que les espaces sont conservés.
 
 Les deux groupes ont des dossiers de suivi distincts : PID du leader, code OS et descendants récupérés. Le leader reste non récupéré jusqu’au dernier signal collectif ; aucun groupe n’est signalé après libération de son leader. Un groupe dont l’arrêt reste incertain interdit la phase suivante et la suppression des espaces concernés. Les PID annoncés par un enfant ne servent pas à signaler individuellement des processus étrangers.
 
@@ -110,11 +111,11 @@ Le rapport conserve séparément : référence native validée, invocation local
 
 ## Ordre de réalisation et critères de validation
 
-1. Extraire la gestion d’une phase de processus et la phase Go DOWN sans suppression des espaces. Tester récupération avant transition, fermeture répétée, absence de signal après récupération du leader et refus d’une seconde phase après arrêt incertain. Les commandes existantes gardent leurs tests et contrats.
+1. **Implémenté et testé en simulation** : [gestion d’une phase de processus et phase Go DOWN](LAB_CAKE_GO_PHASE.md) sans suppression des espaces. Tester récupération avant transition, fermeture répétée, absence de signal après récupération du leader et refus d’une seconde phase après arrêt incertain. Les commandes existantes gardent leurs tests et contrats.
 2. Ajouter l’activation et les validations de continuité, puis le pilote à accusé de disponibilité et la collecte combinée. Tester échecs Go, code réel incompatible, identité/file modifiée, erreur d’activation, mauvais jeton/PID/groupe, EOF, délais, baisse des compteurs, vidage absent et panne pendant attente.
 3. Vérifier les deux groupes avec de vrais processus et trois outils orphelins ; les tests réseau positifs peuvent rester simulés, avec cette limite explicite. Vérifier absence de succès après preuves ou nettoyage défaillants.
 4. Figer un commit, quatre binaires Go, sources/outils et un dossier neuf par mode. Exécuter les deux contrôles natifs et leur relecture, sans réutiliser les rapports actifs Python comme résultats du nouveau contrôle.
 
 La validation native normale exigera mêmes ressources entre phases, unique ajout Go, réception complète, dix sondes réussies et recouvertes, progression cohérente, vidage et nettoyage. La panne exigera Go `0`, pilote `-9`, trois descendants récupérés et nettoyage. Les journaux, codes, empreintes et absence des noms/réservations/PID seront relus hors ligne.
 
-Cette livraison documentaire termine la définition du contrat. La prochaine sous-étape est l’extraction de la phase Go et de la gestion de groupe, avant activation ou trafic. Le bénéfice propre à Coopace, l’automatisation, la restauration réelle, les autres plateformes et le ML restent ultérieurs.
+Le contrat et sa [première sous-étape d’extraction](LAB_CAKE_GO_PHASE.md) sont livrés. La prochaine sous-étape ajoute l’activation et les validations de continuité sur les ressources conservées ; pilote de trafic et collecte combinée viendront ensuite. Le bénéfice propre à Coopace, l’automatisation, la restauration réelle, les autres plateformes et le ML restent ultérieurs.
