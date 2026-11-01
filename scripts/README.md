@@ -26,6 +26,8 @@ Exécuter les commandes ci-dessous depuis la racine du dépôt ; les scripts `.s
 | `lab-cake-go.py check` / `check-crash` | Contrôler Go sur lien DOWN avec `--worker` et `--artifacts` ; raccordement testé en simulation et [validé en natif sur lien DOWN](../docs/VALIDATION_CAKE_GO_DOWN_2026-11-01.md). |
 | `lab-cake-go-active.py plan` | Prévisualiser Go DOWN, activation des mêmes ressources, trafic à accusé et collecte CAKE. |
 | `lab-cake-go-active.py check` / `check-crash` | Contrôle combiné avec `--worker`, `--binaries` et `--artifacts` ; testé avec réseau simulé, validation native à réaliser. |
+| `prepare-cake-go-active.py` | Compiler quatre binaires depuis un arbre propre, figer les entrées et préparer le lanceur natif sans privilèges. |
+| `lab-cake-go-active-review.py --artifacts DOSSIER` | Recalculer les preuves des deux contrôles figés et observer les absences, sans commande réseau. |
 | `lab-cake.py plan` | Prévisualiser le contrôle CAKE sur lien désactivé, sans création de ressource. |
 | `lab-cake.py check` / `check-crash` | Ajouter et relire CAKE/statistiques sur lien DOWN, puis récupérer pilote/descendant et supprimer les espaces possédés. |
 | `lab-cake-active.py plan` | Prévisualiser le contrôle fonctionnel CAKE avec transfert et sondes, sans création de ressource. |
@@ -69,3 +71,5 @@ Le [contrat Go puis trafic](../docs/LAB_CAKE_GO_ACTIVE.md) est défini. Les modu
 Le module interne [`lab_cake_go_topology.py`](../docs/LAB_CAKE_GO_TOPOLOGY.md) active les ressources conservées après Go et relit interfaces, adresses IPv4, routes principales, forwarding et CAKE. Il est testé en simulation ; le transfert combiné dispose maintenant de son [raccordement testé avec réseau simulé](../docs/LAB_CAKE_GO_COLLECT.md), sans validation native à ce stade.
 
 Le [pilote de trafic à accusé](../docs/LAB_CAKE_GO_TRAFFIC.md) utilise le module interne `lab_cake_go_traffic.py` et l’entrée privée `lab-cake-go-traffic.py`. Il réutilise les trois outils de charge et lance les sondes uniquement après un accusé valide lié à la session. Les tests utilisent des pipes et processus réels avec outils réseau simulés ; un SIGKILL du pilote laisse trois outils au superviseur subreaper. Le [contrôle combiné](../docs/LAB_CAKE_GO_COLLECT.md) est désormais raccordé et testé avec réseau simulé ; les commandes actives restent à valider en natif.
+
+Le [protocole natif Go puis trafic](../docs/LAB_CAKE_GO_ACTIVE_NATIVE.md) utilise un dossier neuf et un arbre Git propre. Le préparateur compile et inspecte les binaires sans privilèges ; son `run.sh` réserve le lancement et appelle sudo uniquement pour les deux contrôles. Les relecteurs sont testés avec preuves synthétiques ; aucun résultat natif combiné n’est encore consigné.

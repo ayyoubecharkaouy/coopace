@@ -23,7 +23,8 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 | [LAB_CAKE_GO_PHASE.md](LAB_CAKE_GO_PHASE.md) | Phase Go réutilisable et groupes de processus, récupération avant transition et espaces conservés ; tests en simulation. |
 | [LAB_CAKE_GO_TOPOLOGY.md](LAB_CAKE_GO_TOPOLOGY.md) | Activation après Go, interfaces/adresses/routes et continuité CAKE ; tests en simulation, transfert à raccorder. |
 | [LAB_CAKE_GO_TRAFFIC.md](LAB_CAKE_GO_TRAFFIC.md) | Pilote à accusé : session, trois outils avant accord, sondes après accord et récupération après SIGKILL ; réseau simulé, vrais processus. |
-| [LAB_CAKE_GO_COLLECT.md](LAB_CAKE_GO_COLLECT.md) | Enchaînement Go/activation/trafic, contrôle des PID, collecte CAKE, preuves et rapport global ; réseau simulé, validation native à réaliser. |
+| [LAB_CAKE_GO_COLLECT.md](LAB_CAKE_GO_COLLECT.md) | Enchaînement Go/activation/trafic, contrôle des PID, collecte CAKE, preuves et rapport global ; réseau simulé, exécution native en attente. |
+| [LAB_CAKE_GO_ACTIVE_NATIVE.md](LAB_CAKE_GO_ACTIVE_NATIVE.md) | Préparation figée de quatre binaires Go, lanceur des deux contrôles et relecture indépendante ; essais natifs combinés non encore exécutés. |
 | [VALIDATION_CAKE_GO_DOWN_2026-11-01.md](VALIDATION_CAKE_GO_DOWN_2026-11-01.md) | Deux contrôles Go DOWN avec vrais outils : ajout/relecture, journal durable et nettoyage normal ou après SIGKILL. |
 | [TECH_STACK.md](TECH_STACK.md) | Choix de Go et Kotlin, outils et décisions différées. |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | Installation locale, commandes, compilation et tests. |

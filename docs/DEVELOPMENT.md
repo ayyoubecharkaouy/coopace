@@ -156,6 +156,8 @@ Les contrôles CAKE [DOWN](LAB_CAKE.md), [actif](LAB_CAKE_ACTIVE.md), [en trois 
 
 Le [pilote Go puis trafic à accusé](LAB_CAKE_GO_TRAFFIC.md) est testé séparément avec de vrais processus et des outils réseau simulés. Sa suite dédiée est `python3 -B -m unittest discover -s scripts/tests -p 'test_lab_cake_go_traffic.py' -v`. L’entrée `lab-cake-go-traffic.py` reste un sous-processus privé, sans création de réseau ; le [raccordement au contrôle global](LAB_CAKE_GO_COLLECT.md) est maintenant testé avec réseau simulé, et les essais natifs restent à réaliser.
 
+La [préparation native Go puis trafic](LAB_CAKE_GO_ACTIVE_NATIVE.md) est disponible avec `python3 -I -B scripts/prepare-cake-go-active.py` depuis un arbre Git propre. Elle compile quatre binaires et fige leur provenance ; les contrôles privilégiés restent à lancer séparément depuis le terminal utilisateur. La relecture n’exécute aucune commande réseau.
+
 ## Sous Windows
 
 Un exécutable Windows x64 est disponible dans `.local/bin/coopace-windows-amd64.exe`, accompagné de son empreinte SHA-256. La [procédure Windows](WINDOWS_VALIDATION.md) explique comment le compiler depuis Linux et le tester sur un PC Windows sans installer Go.

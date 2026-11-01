@@ -2,7 +2,7 @@
 
 ## État
 
-L’enchaînement du [contrat fonctionnel](LAB_CAKE_GO_ACTIVE.md) est implémenté avec un seul propriétaire des espaces. Les tests utilisent un noyau réseau et des outils simulés, mais de vrais processus, descripteurs, pipes, signaux et groupes Linux. La validation réseau native combinée reste à préparer et à exécuter sur une révision figée.
+L’enchaînement du [contrat fonctionnel](LAB_CAKE_GO_ACTIVE.md) est implémenté avec un seul propriétaire des espaces. Les tests utilisent un noyau réseau et des outils simulés, mais de vrais processus, descripteurs, pipes, signaux et groupes Linux. La [préparation et la relecture natives](LAB_CAKE_GO_ACTIVE_NATIVE.md) sont livrées ; les contrôles combinés restent à exécuter sur une révision figée.
 
 L’entrée `scripts/lab-cake-go-active.py` fournit `plan`, `check` et `check-crash`. `plan` reste sans privilèges ni création de ressource :
 
@@ -65,4 +65,4 @@ Les tests dédiés du pilote vérifient aussi l’inventaire avant chaque lancem
 
 Validation locale du 1er novembre 2026 : la suite Python complète passe avec 168 tests en 365,645 s. Elle inclut huit tests du contrôle combiné et onze tests dédiés du pilote. Les limites de simulation décrites ci-dessus restent applicables.
 
-La prochaine étape fige une révision et quatre binaires Go, prépare deux dossiers de preuve neufs, puis valide `check` et `check-crash` avec relecture native indépendante. Ces tests simulés n’autorisent aucune conclusion sur le trafic du foyer, la restauration d’une passerelle réelle ou le bénéfice du pilotage Coopace.
+Les [outils de préparation figée et de relecture indépendante](LAB_CAKE_GO_ACTIVE_NATIVE.md) sont livrés. La prochaine étape exécute les contrôles natifs `check` et `check-crash` préparés et analyse leurs preuves. Ces tests simulés n’autorisent aucune conclusion sur le trafic du foyer, la restauration d’une passerelle réelle ou le bénéfice du pilotage Coopace.
