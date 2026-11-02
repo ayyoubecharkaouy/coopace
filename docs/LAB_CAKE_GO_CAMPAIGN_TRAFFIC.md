@@ -4,7 +4,7 @@
 
 Le pilote `scripts/lab_cake_go_campaign_traffic.py` et son entrée privée `scripts/lab-cake-go-campaign-traffic.py` sont implémentés. Ils utilisent les [lecteurs et l’automate de campagne](LAB_CAKE_GO_CAMPAIGN_PROTOCOL.md). Les tests exécutent de vrais processus, pipes et groupes Linux ; les outils réseau et leurs rapports sont simulés.
 
-**Le [collecteur interne](LAB_CAKE_GO_CAMPAIGN_COLLECT.md) est implémenté et testé avec réseau simulé ; l’évaluation et la commande publique restent à développer. Aucune campagne réseau native n’a été exécutée.** Ce pilote ne possède, ne crée ni ne supprime de namespace et ne modifie aucune file ou route. Le superviseur établit le contexte Go, l’activation et le passage IPv4 avant son lancement.
+**Le [collecteur interne](LAB_CAKE_GO_CAMPAIGN_COLLECT.md) est implémenté et testé avec réseau simulé ; l’[évaluation pure](LAB_CAKE_GO_CAMPAIGN_ASSESS.md) est testée séparément, son raccordement global et la commande publique restent à développer. Aucune campagne réseau native n’a été exécutée.** Ce pilote ne possède, ne crée ni ne supprime de namespace et ne modifie aucune file ou route. Le superviseur établit le contexte Go, l’activation et le passage IPv4 avant son lancement.
 
 ## Entrée et inventaire
 
@@ -56,4 +56,4 @@ Les tests de l’inventaire vérifient le périmètre de campagne et l’ordre f
 
 Validation locale du 1er novembre 2026 : les 33 tests ciblés passent en 76,734 s, dont huit nouveaux (six tests de processus et deux d’inventaire), quatorze de dialogue de campagne et onze du pilote à flux unique. L’aide de l’entrée privée est également vérifiée. La suite complète du dépôt n’a pas été relancée pour cet ajout isolé.
 
-Ce pilote est raccordé au [collecteur interne](LAB_CAKE_GO_CAMPAIGN_COLLECT.md), avec contrôles de PID, journal durable et vidage entre phases testés en simulation. L’évaluation pure, la préparation figée/relecture puis les essais natifs restent à réaliser avant toute conclusion expérimentale.
+Ce pilote est raccordé au [collecteur interne](LAB_CAKE_GO_CAMPAIGN_COLLECT.md), avec contrôles de PID, journal durable et vidage entre phases testés en simulation. Le raccordement global de l’[évaluation pure](LAB_CAKE_GO_CAMPAIGN_ASSESS.md), la préparation figée/relecture puis les essais natifs restent à réaliser avant toute conclusion expérimentale.
