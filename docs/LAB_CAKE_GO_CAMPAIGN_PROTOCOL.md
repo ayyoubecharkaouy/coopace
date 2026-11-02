@@ -2,7 +2,7 @@
 
 ## État et portée
 
-Le [contrat de campagne v1](LAB_CAKE_GO_CAMPAIGN.md) dispose de ses lecteurs et de son automate dans `scripts/lab_cake_go_campaign_protocol.py`. **Le [pilote privé](LAB_CAKE_GO_CAMPAIGN_TRAFFIC.md) est maintenant implémenté et testé avec outils simulés. Le collecteur et l’entrée publique restent à développer ; aucune campagne réseau native n’a été exécutée.**
+Le [contrat de campagne v1](LAB_CAKE_GO_CAMPAIGN.md) dispose de ses lecteurs et de son automate dans `scripts/lab_cake_go_campaign_protocol.py`. **Le [pilote privé](LAB_CAKE_GO_CAMPAIGN_TRAFFIC.md) est maintenant implémenté et testé avec outils simulés. Le [collecteur interne](LAB_CAKE_GO_CAMPAIGN_COLLECT.md) est également implémenté et testé en simulation ; l’évaluation et l’entrée publique restent à développer ; aucune campagne réseau native n’a été exécutée.**
 
 Ce module traite uniquement des octets et des états. Il ne lance aucun processus, ne lit pas d’horloge, ne crée aucun réseau et n’exécute ni sonde ni nettoyage. Les aides métier du pilote à flux unique sont importées pour valider les sous-rapports ; son code et son dialogue restent inchangés.
 
@@ -18,7 +18,7 @@ Ce module traite uniquement des octets et des états. Il ne lance aucun processu
 
 Les enveloppes sont fermées aux champs inconnus, avec version et indice de paire entiers stricts. Les clés dupliquées sont refusées à toute profondeur ; UTF-8 invalide, JSON non objet, NaN/Infinity et débordement flottant sont rejetés. Les lignes multiples, incomplètes et CRLF ne sont pas acceptées comme une ligne de protocole.
 
-`ready` exige un PID pour idle, trois pour loaded, tous entiers positifs distincts dans la phase. Ces valeurs ne prouvent pas l’identité ni l’état d’un processus. Une réutilisation de PID entre phases n’est pas interdite par le lecteur ; le futur superviseur devra vérifier les identités réelles.
+`ready` exige un PID pour idle, trois pour loaded, tous entiers positifs distincts dans la phase. Ces valeurs ne prouvent pas l’identité ni l’état d’un processus. Une réutilisation de PID entre phases n’est pas interdite par le lecteur ; le superviseur vérifie les identités réelles.
 
 Le résultat idle contient exactement `latency` et `measurement_exit_code`, validés avec `lab_active.latency_document`. Le résultat loaded utilise les six champs et la validation de `lab_cake_go_traffic.validated_flow`, notamment volumes, débits applicatifs et indicateurs recalculés. Les sous-rapports gardent les règles existantes ; leurs métadonnées ne deviennent pas de nouveaux champs de dialogue autorisés.
 
@@ -32,7 +32,7 @@ Les limites incluent LF : 1 024 octets pour événements courts et contrôles, 2
 
 Une erreur de lecture est permanente : ajouter les octets manquants ou fournir ensuite une ligne correcte ne répare pas le lecteur. `finish()` refuse une ligne partielle. Un EOF de cadrage avec zéro ligne reste possible ; il ne prouve pas la fin du dialogue.
 
-Le futur code d’I/O devra conserver le temps monotone de réception des octets terminant la ligne **avant** d’appeler les lecteurs et leurs validations. Cette observation alimentera `phase_end_observed`. Le module pur ne mesure ni les échéances ni le vidage.
+Le collecteur conserve le temps monotone de réception des octets terminant la ligne **avant** d’appeler les lecteurs et leurs validations. Cette observation alimente `phase_end_observed`. Le module pur ne mesure ni les échéances ni le vidage.
 
 ## Ordre et fin du dialogue
 
@@ -47,7 +47,7 @@ Un indice ne progresse qu’après `advance`. Après le sixième, un unique `com
 
 `finish_events()` est permis après `complete`. `finish_controls()` est permis après le dernier `advance`, y compris avant réception de `complete`. La propriété `Dialogue.complete` exige l’événement final et les deux EOF ; elle décrit seulement la complétude du dialogue. Les observations EOF répétées sont idempotentes ; un message ultérieur reste interdit.
 
-Les vérifications de possession, outils/PID, arrêt des helpers et vidage doivent être réalisées **avant** que le futur superviseur enregistre les contrôles correspondants dans l’automate. Accepter un `continue` ou un `advance` au bon endroit ne constitue aucune autorisation réseau produite par ce module.
+Les vérifications de possession, outils/PID, arrêt des helpers et vidage doivent être réalisées **avant** que le superviseur enregistre les contrôles correspondants dans l’automate. Accepter un `continue` ou un `advance` au bon endroit ne constitue aucune autorisation réseau produite par ce module.
 
 ## Vérification et suite
 
@@ -59,4 +59,4 @@ Les quatorze tests couvrent le parcours des six phases, les données de mesure �
 
 Les six tests purs du protocole à flux unique restent également vérifiés. Ces vingt tests ciblés ne lancent aucune expérience réseau et ne produisent aucun certificat natif. Les preuves de la [validation du passage IPv4](VALIDATION_CAKE_GO_PATH_2026-11-01.md) restent distinctes.
 
-Le [pilote privé des six phases](LAB_CAKE_GO_CAMPAIGN_TRAFFIC.md) est livré avec I/O annulables et tests de processus à outils simulés. La prochaine sous-étape le raccorde au collecteur de campagne avec contrôle des PID, journal durable et vidage entre phases. L’évaluation, puis préparation/relecture et essais natifs suivront séparément.
+Le [pilote privé des six phases](LAB_CAKE_GO_CAMPAIGN_TRAFFIC.md) est livré avec I/O annulables et tests de processus à outils simulés. Le [collecteur interne](LAB_CAKE_GO_CAMPAIGN_COLLECT.md) le raccorde au superviseur, avec contrôle des PID, journal durable et vidage entre phases testés en simulation. L’évaluation, puis préparation/relecture et essais natifs suivront séparément.

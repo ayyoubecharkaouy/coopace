@@ -68,8 +68,8 @@ class Inventory:
 
 
 class Journal:
-    def __init__(self, path):
-        self.capture = collect.Capture(path, 4 * 1024 * 1024)
+    def __init__(self, path, limit=4 * 1024 * 1024):
+        self.capture = collect.Capture(path, limit)
         self.started, self.sequence = time.monotonic_ns(), 0
 
     def write(self, event):
@@ -96,8 +96,9 @@ def phase_evidence(folder, expected=None):
 
 def run(mode, namespaces, worker, tc, sysctl, binaries, artifacts, *, timeout=180, tempdir=None,
         session_factory=go.Session, inventory_factory=Inventory, collector_factory=collect.Collector,
-        path_factory=None):
-    require(mode in ("check", "check-crash"), "Mode combiné inconnu.")
+        path_factory=None, journal_factory=Journal, report_kind=None):
+    require(mode in ("check", "check-crash") or (mode == "run" and report_kind == "lab_cake_go_campaign_collection"),
+            "Mode combiné inconnu.")
     require(artifacts.is_dir() and not any(artifacts.iterdir()), "Dossier de preuves neuf et vide requis.")
     go.guards.enable_subreaper()
     owner = go.GoGuard(namespaces, timeout=timeout, tempdir=tempdir)
@@ -108,6 +109,8 @@ def run(mode, namespaces, worker, tc, sysctl, binaries, artifacts, *, timeout=18
               "congestion": "not_assessed", "traffic_coverage": "synthetic_ipv4_only"}
     if path_factory is not None:
         result.update(kind="lab_cake_go_path_check", path_check=None)
+    if report_kind is not None:
+        result["kind"] = report_kind
     previous, journal, inventory, collector, phase_session, failure = {}, None, None, None, None, None
     def interrupted(signum, _frame):
         owner.interruption = owner.interruption or 128 + signum
@@ -116,10 +119,11 @@ def run(mode, namespaces, worker, tc, sysctl, binaries, artifacts, *, timeout=18
             previous[signum] = signal.signal(signum, interrupted)
         try:
             try:
-                journal = Journal(artifacts / "supervisor.jsonl")
+                journal = journal_factory(artifacts / "supervisor.jsonl")
                 inventory = inventory_factory(owner, worker, tc, sysctl, binaries)
                 environment = inventory.metadata()
-                environment["invocation"] = {"mode": mode, "purpose": "cake_go_path_then_traffic" if path_factory is not None else "cake_go_then_traffic", "reference": go.protocol.REFERENCE}
+                purpose = report_kind.removeprefix("lab_") if report_kind is not None else "cake_go_path_then_traffic" if path_factory is not None else "cake_go_then_traffic"
+                environment["invocation"] = {"mode": mode, "purpose": purpose, "reference": go.protocol.REFERENCE}
                 go.save(artifacts / "environment.json", environment)
                 result["environment"] = environment
                 folder = artifacts / "go"
