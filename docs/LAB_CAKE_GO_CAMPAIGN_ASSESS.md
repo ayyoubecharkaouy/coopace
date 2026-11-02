@@ -4,7 +4,7 @@
 
 `scripts/lab_cake_go_campaign_assess.py` fournit `assess(phases, crash=False)`. Ce module est autonome : aucune lecture de preuves, horloge, création de processus ou action réseau. Il reçoit les six dictionnaires de phase du [collecteur](LAB_CAKE_GO_CAMPAIGN_COLLECT.md), sans les modifier. Il réutilise les validations des résultats du [dialogue v1](LAB_CAKE_GO_CAMPAIGN_PROTOCOL.md).
 
-**Le raccordement au rapport global reste à réaliser.** Le collecteur conserve donc son rapport intermédiaire et `assessment: not_implemented`. L’évaluateur produit un objet distinct `lab_cake_go_campaign_measurements`, jamais un certificat ni le rapport final `lab_cake_go_campaign`.
+**Le [raccordement au rapport global](LAB_CAKE_GO_CAMPAIGN_REPORT.md) est livré.** L’entrée `collect(...)` conserve son rapport intermédiaire et `assessment: not_implemented`, tandis que `run(...)` construit le verdict global après fermeture des preuves et nettoyage. L’évaluateur produit un objet distinct `lab_cake_go_campaign_measurements`, jamais un certificat ni le rapport final `lab_cake_go_campaign`.
 
 ## Calculs
 
@@ -30,7 +30,7 @@ Pour chaque phase chargée, la stabilisation doit être d’au moins une seconde
 | `phases`, `pairs` | Résumés recalculés et différences signées ; en cas d’erreur, les résumés déjà calculés peuvent rester partiels |
 | `reasons` | Diagnostic d’inexploitabilité |
 
-Ces décisions portent seulement sur les données reçues. Elles ne remplacent pas la validité technique globale du contrat : provenance, identité des processus et ressources, dialogue durable, délais monotones, vidages et nettoyage devront être vérifiés lors du raccordement puis de la relecture indépendante. Aucun champ `technical_valid` n’est produit. Les décisions finales de charge/connexions devront rester non évaluées si ces preuves globales manquent. `congestion`, `comparison` et `coopace_benefit` restent `not_assessed`.
+Ces décisions portent seulement sur les données reçues. Elles ne remplacent pas la validité technique globale du contrat : provenance, identité des processus et ressources, dialogue durable, délais monotones, vidages et nettoyage sont vérifiés lors du raccordement dans le superviseur, puis devront être revérifiés par la relecture indépendante. Aucun champ `technical_valid` n’est produit. Les décisions finales de charge/connexions restent non évaluées si ces preuves globales manquent. `congestion`, `comparison` et `coopace_benefit` restent `not_assessed`.
 
 Le mode panne ne valide pas les preuves de récupération ; il laisse simplement les décisions de mesure non évaluées. La commande publique, la préparation figée et les essais natifs de campagne restent ultérieurs.
 
@@ -42,4 +42,4 @@ PYTHONPATH=scripts/tests python3 -B -m unittest test_lab_cake_go_campaign_assess
 
 Validation locale du 2 novembre 2026 : 29 tests ciblés passent en 0,388 s, dont neuf nouveaux pour les calculs, quatorze de dialogue de campagne et six du protocole à flux unique. Les cas couvrent les percentiles, les différences signées, les échecs partiels/totaux, les bornes exactes et leurs voisins, la charge insuffisante, les horodatages, volumes et compteurs incohérents, le mode panne et la conservation des entrées. Aucun processus ni réseau n’est lancé par les nouveaux tests de calcul. La suite complète n’a pas été relancée pour cet ajout autonome.
 
-Prochaine sous-étape : raccorder cet objet de calcul aux preuves du superviseur pour construire le rapport global, avec tests d’intégration, avant la commande publique et la préparation/relecture natives.
+Le [raccordement global et ses tests d’intégration](LAB_CAKE_GO_CAMPAIGN_REPORT.md) sont livrés. La prochaine sous-étape est la commande publique interne, avant la préparation/relecture natives.

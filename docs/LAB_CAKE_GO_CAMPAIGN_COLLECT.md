@@ -4,7 +4,7 @@
 
 Le raccordement interne est implémenté dans `scripts/lab_cake_go_campaign.py` et `scripts/lab_cake_go_campaign_collect.py`. Il réutilise le propriétaire unique, la phase Go sur lien DOWN, l’activation et le contrôle de passage IPv4, puis lance le [pilote privé des six phases](LAB_CAKE_GO_CAMPAIGN_TRAFFIC.md). Les paramètres et les bornes du [contrat v1](LAB_CAKE_GO_CAMPAIGN.md) sont conservés.
 
-Les tests utilisent des processus, pipes et groupes Linux réels, avec outils et noyau réseau simulés. **Aucune campagne réseau native après Go n’a été exécutée.** L’[évaluation pure des mesures](LAB_CAKE_GO_CAMPAIGN_ASSESS.md) est livrée séparément ; son raccordement global, la commande publique, la préparation figée et la relecture indépendante restent à développer.
+Les tests utilisent des processus, pipes et groupes Linux réels, avec outils et noyau réseau simulés. **Aucune campagne réseau native après Go n’a été exécutée.** L’[évaluation pure des mesures](LAB_CAKE_GO_CAMPAIGN_ASSESS.md) est livrée séparément ; son [raccordement global](LAB_CAKE_GO_CAMPAIGN_REPORT.md) est livré. La commande publique, la préparation figée et la relecture indépendante restent à développer.
 
 ## Répartition des responsabilités
 
@@ -40,7 +40,7 @@ Le rapport porte `kind: lab_cake_go_campaign_collection`. Les six phases et leur
 
 `traffic_group.state` vaut `collected`, `crash_verified` ou `failed`. `assessment` reste `not_implemented` et `congestion`, `comparison`, `coopace_benefit` restent `not_assessed`. L’état global `complete` indique la réussite opérationnelle et le nettoyage ; il ne constitue aucune qualification scientifique.
 
-Le rapport final `lab_cake_go_campaign` prévu par le contrat n’est pas encore produit. Stabilisation, recouvrement, fenêtres chargées, percentiles, débit qualifié et décisions séparées seront recalculés par l’évaluation. Des tentatives TCP toutes échouées mais cohérentes restent collectées sans décision positive. Les relecteurs natifs historiques ne doivent pas accepter ce type intermédiaire.
+L’entrée `collect(...)` ne produit pas le rapport final. L’entrée `run(...)` produit maintenant le [rapport global](LAB_CAKE_GO_CAMPAIGN_REPORT.md) `lab_cake_go_campaign` après contrôle des preuves et nettoyage. Stabilisation, recouvrement, fenêtres chargées, percentiles, débit qualifié et décisions séparées seront recalculés par l’évaluation. Des tentatives TCP toutes échouées mais cohérentes restent collectées sans décision positive. Les relecteurs natifs historiques ne doivent pas accepter ce type intermédiaire.
 
 ## Vérification et suite
 
@@ -52,4 +52,4 @@ Les tests couvrent les six phases, les trois résultats chargés, l’ordre apr�
 
 Validation locale du 2 novembre 2026 : la suite Python complète passe, avec 239 tests en 744,506 s. Après resserrement de l’échéance jusqu’à l’envoi de `advance` et ajout du cas de vérifications tardives, les sept tests ciblés du collecteur passent en 235,443 s. La suite complète n’a pas été répétée après cette correction isolée au collecteur de campagne. Les outils réseau sont simulés ; aucun certificat natif de campagne n’est produit. Le certificat historique du passage IPv4 et ses 46 empreintes d’artefacts restent conformes.
 
-La prochaine sous-étape raccordera l’[évaluation pure des mesures](LAB_CAKE_GO_CAMPAIGN_ASSESS.md), maintenant livrée et testée séparément, aux preuves globales du superviseur. La commande publique et la préparation/relecture précéderont ensuite les essais natifs dans des dossiers neufs. Les validations natives historiques et leurs certificats restent distincts.
+Le [raccordement global](LAB_CAKE_GO_CAMPAIGN_REPORT.md) de l’évaluation est livré et testé. La prochaine sous-étape est la commande publique interne. La commande publique et la préparation/relecture précéderont ensuite les essais natifs dans des dossiers neufs. Les validations natives historiques et leurs certificats restent distincts.

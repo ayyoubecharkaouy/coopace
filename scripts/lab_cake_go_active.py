@@ -96,7 +96,7 @@ def phase_evidence(folder, expected=None):
 
 def run(mode, namespaces, worker, tc, sysctl, binaries, artifacts, *, timeout=180, tempdir=None,
         session_factory=go.Session, inventory_factory=Inventory, collector_factory=collect.Collector,
-        path_factory=None, journal_factory=Journal, report_kind=None):
+        path_factory=None, journal_factory=Journal, report_kind=None, finalizer=None):
     require(mode in ("check", "check-crash") or (mode == "run" and report_kind == "lab_cake_go_campaign_collection"),
             "Mode combiné inconnu.")
     require(artifacts.is_dir() and not any(artifacts.iterdir()), "Dossier de preuves neuf et vide requis.")
@@ -200,6 +200,17 @@ def run(mode, namespaces, worker, tc, sysctl, binaries, artifacts, *, timeout=18
                     failure = failure or error
                     result.update(state="failed", error=str(failure))
                     journal.capture.close()
+            if finalizer is not None:
+                try:
+                    finalizer(result, artifacts, operational_success=failure is None)
+                    if failure is None:
+                        inventory.verify()
+                        owner.check()
+                except BaseException as error:
+                    failure = failure or error
+                    result.update(state="failed", error=str(failure))
+                    if result.get("kind") == "lab_cake_go_campaign":
+                        result.update(technical_valid=False, load_scenario="non_exploitable", connections="not_assessed")
             go.save(artifacts / "report.json", result)
     finally:
         for signum, handler in previous.items():

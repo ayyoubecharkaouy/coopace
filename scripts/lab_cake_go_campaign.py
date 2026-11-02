@@ -1,4 +1,4 @@
-"""Internal Go/path/campaign collection; scientific assessment is not delivered."""
+"""Internal Go/path campaign: collection and final report after cleanup."""
 
 import hashlib
 import importlib.util
@@ -14,6 +14,7 @@ def sibling(name, filename):
 
 path = sibling("campaign_path", "lab_cake_go_path_control.py")
 collection = sibling("campaign_collection", "lab_cake_go_campaign_collect.py")
+verdict = sibling("campaign_verdict", "lab_cake_go_campaign_report.py")
 active = path.active
 
 
@@ -21,6 +22,7 @@ def source_fingerprints():
     return {**path.source_fingerprints(), **{
         str(Path(__file__).with_name(name)): hashlib.sha256(active.go.read(Path(__file__).with_name(name), 1024 * 1024)).hexdigest()
         for name in ("lab_cake_go_campaign.py", "lab_cake_go_campaign_collect.py", "lab_cake_go_campaign_protocol.py",
+                     "lab_cake_go_campaign_assess.py", "lab_cake_go_campaign_report.py",
                      "lab_cake_go_campaign_traffic.py", "lab-cake-go-campaign-traffic.py")}}
 
 
@@ -33,9 +35,9 @@ class Journal(active.Journal):
         super().__init__(target, limit=16 * 1024 * 1024)
 
 
-def run(mode, namespaces, worker, tc, sysctl, ping, binaries, artifacts, *, timeout=180, tempdir=None,
+def collect(mode, namespaces, worker, tc, sysctl, ping, binaries, artifacts, *, timeout=180, tempdir=None,
         session_factory=active.go.Session, inventory_factory=None, collector_factory=collection.Collector, journal_factory=Journal,
-        path_factory=path.PathCheck):
+        path_factory=path.PathCheck, finalizer=None):
     active.require(mode in ("run", "check-crash"), "Mode de campagne inconnu.")
     if inventory_factory is None:
         def inventory_factory(*args):
@@ -43,4 +45,10 @@ def run(mode, namespaces, worker, tc, sysctl, ping, binaries, artifacts, *, time
     return active.run(mode, namespaces, worker, tc, sysctl, binaries, artifacts, timeout=timeout, tempdir=tempdir,
                       session_factory=session_factory, inventory_factory=inventory_factory,
                       collector_factory=collector_factory, path_factory=path_factory, journal_factory=journal_factory,
-                      report_kind="lab_cake_go_campaign_collection")
+                      report_kind="lab_cake_go_campaign_collection", finalizer=finalizer)
+
+
+def run(*args, **kwargs):
+    """Publish decisions only after operational cleanup and closed evidence."""
+    active.require("finalizer" not in kwargs, "Finaliseur de campagne réservé.")
+    return collect(*args, **kwargs, finalizer=verdict.finalize)

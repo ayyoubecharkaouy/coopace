@@ -60,7 +60,7 @@ if mode=='check':mode='run'
 '''
 HARNESS = fixtures.HARNESS.replace("kernel=Kernel();failure=None", ADAPTER + "\nkernel=Kernel();failure=None")
 HARNESS = HARNESS.replace("combined.run(mode,kernel,sys.executable,sys.executable,sys.executable,root/'bin',artifacts,",
-                          "campaign.run(mode,kernel,sys.executable,sys.executable,sys.executable,sys.executable,root/'bin',artifacts,")
+                          "campaign.collect(mode,kernel,sys.executable,sys.executable,sys.executable,sys.executable,root/'bin',artifacts,")
 HARNESS = HARNESS.replace("inventory_factory=PathInventory,collector_factory=Collector,path_factory=PathCheck,",
                           "inventory_factory=CampaignInventory,collector_factory=CampaignCollector,path_factory=PathCheck,journal_factory=CampaignJournal,")
 # Complete campaigns need more time than a single-flow fixture. Keep the
