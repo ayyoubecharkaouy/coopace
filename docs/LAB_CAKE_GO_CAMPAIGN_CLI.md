@@ -4,7 +4,7 @@
 
 `scripts/lab-cake-go-campaign.py` expose les modes `plan`, `run` et `check-crash`. Elle appelle le [rapport global](LAB_CAKE_GO_CAMPAIGN_REPORT.md) et conserve les paramètres du [contrat v1](LAB_CAKE_GO_CAMPAIGN.md). L’entrée est incluse dans les empreintes de sources vérifiées pendant l’exécution.
 
-La commande est implémentée et testée. La préparation figée et la relecture indépendante restent à développer ; aucune campagne réseau native après Go n’a été exécutée.
+La commande est implémentée et testée. La [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée séparément ; la relecture indépendante et le lanceur natif restent à développer ; aucune campagne réseau native après Go n’a été exécutée.
 
 ## Lecture sans privilèges
 
@@ -31,7 +31,7 @@ Les chemins sont rendus canoniques. Une entrée absente, un worker non exécutab
 
 L’exécution exige Linux amd64, Python avec `os.setns`, les privilèges du [garde](LAB_GUARD.md) et les outils `ip`, `tc`, `sysctl`, `ping`. Le dossier de preuves n’est ni créé ni vidé par la commande. Chaque mode et chaque nouvel essai utilisent leur propre dossier.
 
-Formes des commandes, avec chemins à fournir par la future préparation figée :
+Formes des commandes, avec chemins vers les binaires et des dossiers neufs à fournir explicitement :
 
 ```sh
 python3 -B scripts/lab-cake-go-campaign.py run \
@@ -61,4 +61,4 @@ Les huit tests de l’entrée couvrent le plan par défaut, l’aide, les argume
 
 Validation locale du 3 novembre 2026 : 47 tests ciblés passent en 93,895 s, dont les huit nouveaux tests de l’entrée, neuf du rapport global, neuf des calculs, quatorze du dialogue de campagne, six du protocole à flux unique et un contrôle de régression de l’entrée IPv4 historique. La suite complète n’a pas été relancée pour cet ajout. Le plan a également été exécuté directement, sans privilèges et sans action réseau.
 
-La prochaine sous-étape est la préparation figée, suivie de la relecture indépendante avant les essais natifs dans des dossiers neufs.
+La [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée. La prochaine sous-étape est la relecture indépendante avec lanceur, avant les essais natifs dans des dossiers neufs.

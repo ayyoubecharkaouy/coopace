@@ -32,7 +32,7 @@ Pour chaque phase chargée, la stabilisation doit être d’au moins une seconde
 
 Ces décisions portent seulement sur les données reçues. Elles ne remplacent pas la validité technique globale du contrat : provenance, identité des processus et ressources, dialogue durable, délais monotones, vidages et nettoyage sont vérifiés lors du raccordement dans le superviseur, puis devront être revérifiés par la relecture indépendante. Aucun champ `technical_valid` n’est produit. Les décisions finales de charge/connexions restent non évaluées si ces preuves globales manquent. `congestion`, `comparison` et `coopace_benefit` restent `not_assessed`.
 
-Le mode panne ne valide pas les preuves de récupération ; il laisse simplement les décisions de mesure non évaluées. La [commande de campagne](LAB_CAKE_GO_CAMPAIGN_CLI.md) est livrée ; la préparation figée et les essais natifs restent ultérieurs.
+Le mode panne ne valide pas les preuves de récupération ; il laisse simplement les décisions de mesure non évaluées. La [commande de campagne](LAB_CAKE_GO_CAMPAIGN_CLI.md) est livrée ; la [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée, la relecture et les essais natifs restent ultérieurs.
 
 ## Vérification et suite
 
@@ -42,4 +42,4 @@ PYTHONPATH=scripts/tests python3 -B -m unittest test_lab_cake_go_campaign_assess
 
 Validation locale du 2 novembre 2026 : 29 tests ciblés passent en 0,388 s, dont neuf nouveaux pour les calculs, quatorze de dialogue de campagne et six du protocole à flux unique. Les cas couvrent les percentiles, les différences signées, les échecs partiels/totaux, les bornes exactes et leurs voisins, la charge insuffisante, les horodatages, volumes et compteurs incohérents, le mode panne et la conservation des entrées. Aucun processus ni réseau n’est lancé par les nouveaux tests de calcul. La suite complète n’a pas été relancée pour cet ajout autonome.
 
-Le [raccordement global et ses tests d’intégration](LAB_CAKE_GO_CAMPAIGN_REPORT.md) sont livrés. La [commande de campagne](LAB_CAKE_GO_CAMPAIGN_CLI.md) est livrée. La prochaine sous-étape est la préparation figée, avant la relecture native.
+Le [raccordement global et ses tests d’intégration](LAB_CAKE_GO_CAMPAIGN_REPORT.md) sont livrés. La [commande de campagne](LAB_CAKE_GO_CAMPAIGN_CLI.md) est livrée. La [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée. La prochaine sous-étape est la relecture indépendante avec lanceur natif.
