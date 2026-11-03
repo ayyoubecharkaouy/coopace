@@ -4,7 +4,7 @@
 
 Le raccordement interne est implémenté dans `scripts/lab_cake_go_campaign.py` et `scripts/lab_cake_go_campaign_collect.py`. Il réutilise le propriétaire unique, la phase Go sur lien DOWN, l’activation et le contrôle de passage IPv4, puis lance le [pilote privé des six phases](LAB_CAKE_GO_CAMPAIGN_TRAFFIC.md). Les paramètres et les bornes du [contrat v1](LAB_CAKE_GO_CAMPAIGN.md) sont conservés.
 
-Les tests utilisent des processus, pipes et groupes Linux réels, avec outils et noyau réseau simulés. **Aucune campagne réseau native après Go n’a été exécutée.** L’[évaluation pure des mesures](LAB_CAKE_GO_CAMPAIGN_ASSESS.md) est livrée séparément ; son [raccordement global](LAB_CAKE_GO_CAMPAIGN_REPORT.md) est livré. La commande publique, la préparation figée et la relecture indépendante restent à développer.
+Les tests utilisent des processus, pipes et groupes Linux réels, avec outils et noyau réseau simulés. **Aucune campagne réseau native après Go n’a été exécutée.** L’[évaluation pure des mesures](LAB_CAKE_GO_CAMPAIGN_ASSESS.md) est livrée séparément ; son [raccordement global](LAB_CAKE_GO_CAMPAIGN_REPORT.md) est livré. La [commande de campagne](LAB_CAKE_GO_CAMPAIGN_CLI.md) est livrée ; la préparation figée et la relecture indépendante restent à développer.
 
 ## Répartition des responsabilités
 
@@ -52,4 +52,4 @@ Les tests couvrent les six phases, les trois résultats chargés, l’ordre apr�
 
 Validation locale du 2 novembre 2026 : la suite Python complète passe, avec 239 tests en 744,506 s. Après resserrement de l’échéance jusqu’à l’envoi de `advance` et ajout du cas de vérifications tardives, les sept tests ciblés du collecteur passent en 235,443 s. La suite complète n’a pas été répétée après cette correction isolée au collecteur de campagne. Les outils réseau sont simulés ; aucun certificat natif de campagne n’est produit. Le certificat historique du passage IPv4 et ses 46 empreintes d’artefacts restent conformes.
 
-Le [raccordement global](LAB_CAKE_GO_CAMPAIGN_REPORT.md) de l’évaluation est livré et testé. La prochaine sous-étape est la commande publique interne. La commande publique et la préparation/relecture précéderont ensuite les essais natifs dans des dossiers neufs. Les validations natives historiques et leurs certificats restent distincts.
+Le [raccordement global](LAB_CAKE_GO_CAMPAIGN_REPORT.md) de l’évaluation est livré et testé. La [commande de campagne](LAB_CAKE_GO_CAMPAIGN_CLI.md) est livrée. La prochaine sous-étape est la préparation figée, puis la relecture indépendante avant les essais natifs dans des dossiers neufs. Les validations natives historiques et leurs certificats restent distincts.

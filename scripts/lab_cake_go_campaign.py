@@ -22,7 +22,7 @@ def source_fingerprints():
     return {**path.source_fingerprints(), **{
         str(Path(__file__).with_name(name)): hashlib.sha256(active.go.read(Path(__file__).with_name(name), 1024 * 1024)).hexdigest()
         for name in ("lab_cake_go_campaign.py", "lab_cake_go_campaign_collect.py", "lab_cake_go_campaign_protocol.py",
-                     "lab_cake_go_campaign_assess.py", "lab_cake_go_campaign_report.py",
+                     "lab_cake_go_campaign_assess.py", "lab_cake_go_campaign_report.py", "lab-cake-go-campaign.py",
                      "lab_cake_go_campaign_traffic.py", "lab-cake-go-campaign-traffic.py")}}
 
 
@@ -52,3 +52,17 @@ def run(*args, **kwargs):
     """Publish decisions only after operational cleanup and closed evidence."""
     active.require("finalizer" not in kwargs, "Finaliseur de campagne réservé.")
     return collect(*args, **kwargs, finalizer=verdict.finalize)
+
+
+def plan():
+    return ("Campagne CAKE après Go — trois paires repos/charge sur trois espaces neufs.\n"
+            "Une installation CAKE 4mbit par Go sur wan DOWN ; activation et passage IPv4 contrôlés.\n"
+            "Ordre : idle/loaded, loaded/idle, idle/loaded ; outils neufs et vidage entre phases.\n"
+            "60 tentatives TCP, trois transferts de 8 Mio, soit 24 Mio utiles en mode run.\n"
+            "check-crash : après la première phase idle, tuer le pilote au ready chargé avant continue ;\n"
+            "récupérer ses trois outils et nettoyer, sans qualification des mesures.\n"
+            "Propriétaire 180s, pilote 150s, nettoyage 10s ; aucune interface physique ni accès Internet.\n"
+            "--worker, --binaries et --artifacts DOSSIER_NEUF_VIDE requis pour exécuter.\n"
+            "Rapport global après preuves et nettoyage ; charge et connexions évaluées séparément.\n"
+            "Commande livrée, préparation figée et relecture indépendante à développer ; bénéfice du foyer non validé.\n"
+            "Le mode plan ne crée aucune ressource et ne requiert aucun privilège.")

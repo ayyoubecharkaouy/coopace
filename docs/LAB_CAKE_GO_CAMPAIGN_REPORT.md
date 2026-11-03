@@ -9,7 +9,7 @@ Le raccordement est implémenté dans `lab_cake_go_campaign.py` et `lab_cake_go_
 | `lab_cake_go_campaign.collect(...)` | Collecte intermédiaire `lab_cake_go_campaign_collection`, sans verdict scientifique |
 | `lab_cake_go_campaign.run(...)` | Rapport global `lab_cake_go_campaign`, après collecte, nettoyage et contrôle des preuves |
 
-Aucune commande publique de campagne ni préparation/relecture native n’est livrée dans cette étape. Aucun certificat natif de campagne n’est produit.
+La [commande de campagne](LAB_CAKE_GO_CAMPAIGN_CLI.md) est maintenant livrée séparément ; la préparation/relecture native reste à développer. Aucun certificat natif de campagne n’est produit.
 
 ## Moment de publication
 
@@ -44,4 +44,4 @@ Les tests utilisent des données synthétiques pour le verdict positif et les al
 
 Validation locale du 2 novembre 2026 : 39 tests ciblés passent en 95,628 s, comprenant huit nouveaux tests du rapport, les calculs et lecteurs purs, ainsi que deux contrôles historiques Go/trafic. Après conservation stricte des fins de ligne lors de la lecture des captures et ajout d’un neuvième test (CRLF/troncature, empreinte mise à jour), les cinq tests de verdict et le contrôle intégré de panne passent en 16,612 s. La suite complète n’a pas été relancée pour cette étape. Aucune validation réseau native de campagne n’est produite.
 
-La prochaine sous-étape est la commande publique interne `plan/run/check-crash`, puis la préparation figée et la relecture indépendante avant les essais natifs dans des dossiers neufs.
+La [commande de campagne `plan/run/check-crash`](LAB_CAKE_GO_CAMPAIGN_CLI.md) est livrée. La prochaine sous-étape est la préparation figée, puis la relecture indépendante avant les essais natifs dans des dossiers neufs.

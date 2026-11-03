@@ -4,7 +4,7 @@
 
 Le pilote `scripts/lab_cake_go_campaign_traffic.py` et son entrée privée `scripts/lab-cake-go-campaign-traffic.py` sont implémentés. Ils utilisent les [lecteurs et l’automate de campagne](LAB_CAKE_GO_CAMPAIGN_PROTOCOL.md). Les tests exécutent de vrais processus, pipes et groupes Linux ; les outils réseau et leurs rapports sont simulés.
 
-**Le [collecteur interne](LAB_CAKE_GO_CAMPAIGN_COLLECT.md) est implémenté et testé avec réseau simulé ; l’[évaluation pure](LAB_CAKE_GO_CAMPAIGN_ASSESS.md) est testée séparément, son [raccordement global](LAB_CAKE_GO_CAMPAIGN_REPORT.md) est livré ; la commande publique reste à développer. Aucune campagne réseau native n’a été exécutée.** Ce pilote ne possède, ne crée ni ne supprime de namespace et ne modifie aucune file ou route. Le superviseur établit le contexte Go, l’activation et le passage IPv4 avant son lancement.
+**Le [collecteur interne](LAB_CAKE_GO_CAMPAIGN_COLLECT.md) est implémenté et testé avec réseau simulé ; l’[évaluation pure](LAB_CAKE_GO_CAMPAIGN_ASSESS.md) est testée séparément, son [raccordement global](LAB_CAKE_GO_CAMPAIGN_REPORT.md) est livré ; la [commande de campagne](LAB_CAKE_GO_CAMPAIGN_CLI.md) est livrée. Aucune campagne réseau native n’a été exécutée.** Ce pilote ne possède, ne crée ni ne supprime de namespace et ne modifie aucune file ou route. Le superviseur établit le contexte Go, l’activation et le passage IPv4 avant son lancement.
 
 ## Entrée et inventaire
 
