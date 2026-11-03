@@ -45,3 +45,5 @@ Les tests utilisent des données synthétiques pour le verdict positif et les al
 Validation locale du 2 novembre 2026 : 39 tests ciblés passent en 95,628 s, comprenant huit nouveaux tests du rapport, les calculs et lecteurs purs, ainsi que deux contrôles historiques Go/trafic. Après conservation stricte des fins de ligne lors de la lecture des captures et ajout d’un neuvième test (CRLF/troncature, empreinte mise à jour), les cinq tests de verdict et le contrôle intégré de panne passent en 16,612 s. La suite complète n’a pas été relancée pour cette étape. Aucune validation réseau native de campagne n’est produite.
 
 La [commande de campagne `plan/run/check-crash`](LAB_CAKE_GO_CAMPAIGN_CLI.md) est livrée. La [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée. La prochaine sous-étape est la relecture indépendante et le lanceur natif, avant les essais dans des dossiers neufs.
+
+La [relecture indépendante des phases](LAB_CAKE_GO_CAMPAIGN_PHASE_REVIEW.md) est maintenant livrée comme première sous-étape. Elle ne publie aucun certificat : le raccordement au contexte Go/IPv4 et au dossier figé, ainsi que le lanceur, restent à développer.

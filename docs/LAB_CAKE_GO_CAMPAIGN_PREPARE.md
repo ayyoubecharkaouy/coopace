@@ -47,3 +47,5 @@ Les tests simulent la compilation et les sorties d’outils, mais écrivent de v
 Validation locale du 3 novembre 2026 : 25 tests ciblés passent en 5,398 s, dont cinq nouveaux tests de préparation, sept tests des préparateurs historiques, huit tests de l’entrée de campagne et cinq tests du verdict global. La compilation est simulée dans ces tests ; la suite complète n’a pas été relancée pour cet ajout. Aucun essai réseau natif n’est produit.
 
 Prochaine sous-étape : relecture indépendante des preuves de campagne et lanceur des deux modes, avant toute exécution native.
+
+La [relecture indépendante des phases](LAB_CAKE_GO_CAMPAIGN_PHASE_REVIEW.md) est maintenant livrée comme première sous-étape. Elle ne publie aucun certificat : le raccordement au contexte Go/IPv4 et au dossier figé, ainsi que le lanceur, restent à développer.

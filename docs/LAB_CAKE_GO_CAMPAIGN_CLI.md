@@ -62,3 +62,5 @@ Les huit tests de l’entrée couvrent le plan par défaut, l’aide, les argume
 Validation locale du 3 novembre 2026 : 47 tests ciblés passent en 93,895 s, dont les huit nouveaux tests de l’entrée, neuf du rapport global, neuf des calculs, quatorze du dialogue de campagne, six du protocole à flux unique et un contrôle de régression de l’entrée IPv4 historique. La suite complète n’a pas été relancée pour cet ajout. Le plan a également été exécuté directement, sans privilèges et sans action réseau.
 
 La [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée. La prochaine sous-étape est la relecture indépendante avec lanceur, avant les essais natifs dans des dossiers neufs.
+
+La [relecture indépendante des phases](LAB_CAKE_GO_CAMPAIGN_PHASE_REVIEW.md) est maintenant livrée comme première sous-étape. Elle ne publie aucun certificat : le raccordement au contexte Go/IPv4 et au dossier figé, ainsi que le lanceur, restent à développer.
