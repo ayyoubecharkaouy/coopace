@@ -1,4 +1,4 @@
-"""Freeze campaign inputs only; native launcher and independent replay follow."""
+"""Freeze campaign inputs, a one-shot native launcher and its offline reviewer."""
 
 import argparse
 import importlib.util

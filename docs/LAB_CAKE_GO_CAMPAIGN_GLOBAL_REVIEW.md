@@ -4,7 +4,7 @@
 
 `scripts/lab_cake_go_campaign_native_review.py` raccorde la [relecture des phases](LAB_CAKE_GO_CAMPAIGN_PHASE_REVIEW.md) aux preuves Go, à la topologie et au passage IPv4, puis aux entrées du [dossier figé](LAB_CAKE_GO_CAMPAIGN_PREPARE.md). L’entrée `lab-cake-go-campaign-review.py` expose cette relecture sans privilèges.
 
-La relecture est implémentée et testée. **Le lanceur natif reste à développer.** La préparation garde `native_launcher_available: false`. Les anciens dossiers restent inchangés ; le futur lanceur demandera une nouvelle préparation depuis son propre commit.
+La relecture est implémentée et testée. **Le [lanceur natif](LAB_CAKE_GO_CAMPAIGN_RUN.md) est maintenant livré.** Les nouvelles préparations portent `native_launcher_available: true`. Les anciens dossiers restent inchangés ; le lanceur exige un dossier neuf de son propre commit.
 
 Cette version n’écrit aucun certificat ni fichier de preuve. Elle retourne `state: campaign_evidence_reviewed` et `native_certificate: false` après acceptation des deux contrôles. Aucun essai réseau natif de cette campagne n’est validé à ce stade.
 
@@ -62,4 +62,4 @@ Les tests couvrent les décisions synthétiques, les altérations de préparatio
 
 Validation locale du 5 novembre 2026 : 31 tests ciblés passent en 116,990 s, dont douze nouveaux tests de relecture globale et du dossier, six tests du relecteur Go/trafic historique, sept du passage IPv4 et six de la relecture des phases. Les provenances de compilation des tests de dossier sont simulées ; aucune validation native n’est publiée. La suite complète n’a pas été relancée pour cet ajout.
 
-Prochaine sous-étape : raccorder le lanceur aux deux modes et à cette relecture, puis préparer un nouveau dossier avant les essais natifs.
+Prochaine étape : exécuter le nouveau dossier avec le [lanceur](LAB_CAKE_GO_CAMPAIGN_RUN.md), puis examiner et consigner les preuves natives.

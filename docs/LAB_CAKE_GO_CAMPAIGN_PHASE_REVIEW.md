@@ -4,7 +4,7 @@
 
 Le module `scripts/lab_cake_go_campaign_review.py` expose `replay(folder, report, tools, owned)`. Cette première sous-étape de relecture traite les preuves des six phases, ou de la première phase idle suivie du premier ready chargé en mode panne. Elle ne réutilise pas le verdict du [rapport global](LAB_CAKE_GO_CAMPAIGN_REPORT.md).
 
-**Le [raccordement global et au dossier figé](LAB_CAKE_GO_CAMPAIGN_GLOBAL_REVIEW.md) est maintenant livré.** Le lanceur natif reste à développer. Ce module ne publie ni `validation.json`, ni certificat natif. La [préparation seule](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) conserve `native_launcher_available: false`.
+**Le [raccordement global et au dossier figé](LAB_CAKE_GO_CAMPAIGN_GLOBAL_REVIEW.md) est maintenant livré.** Le [lanceur natif](LAB_CAKE_GO_CAMPAIGN_RUN.md) est livré. Ce module ne publie ni `validation.json`, ni certificat natif. La [préparation](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) produit maintenant le lanceur avec `native_launcher_available: true`.
 
 ## Entrées et sortie
 
@@ -45,4 +45,4 @@ Les tests synthétiques couvrent les six phases, les altérations avec empreinte
 
 Validation locale du 3 novembre 2026 : 40 tests ciblés passent en 43,684 s, dont six nouveaux pour la relecture des phases, neuf de calcul, quatorze du dialogue de campagne, six du protocole à flux unique et cinq du verdict global. Le test des journaux réels utilise des processus Linux et un noyau réseau simulé. La suite complète n’a pas été relancée pour cet ajout autonome.
 
-Le [raccordement Go/IPv4 et au dossier figé](LAB_CAKE_GO_CAMPAIGN_GLOBAL_REVIEW.md) est livré. Prochaine sous-étape : lanceur des deux modes et nouvelle préparation avant les essais natifs.
+Le [raccordement Go/IPv4 et au dossier figé](LAB_CAKE_GO_CAMPAIGN_GLOBAL_REVIEW.md) est livré. Prochaine étape : [exécution des deux modes](LAB_CAKE_GO_CAMPAIGN_RUN.md) dans un dossier neuf, puis revue des preuves.

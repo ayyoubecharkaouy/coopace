@@ -1,4 +1,4 @@
-"""Preparation only: simulated build, real files/hashes, no native launcher."""
+"""Campaign bundle: simulated build and native-launcher generation, real hashes."""
 from contextlib import ExitStack
 import ast
 import hashlib
@@ -70,7 +70,7 @@ class PreparationTests(unittest.TestCase):
         stack.enter_context(patch('sys.stdout',new=io.StringIO()))
         return calls
 
-    def test_campaign_freezes_four_builds_sources_tools_and_manifests_without_launcher(self):
+    def test_campaign_freezes_four_builds_sources_tools_manifests_and_launcher(self):
         with tempfile.TemporaryDirectory(prefix='campaign prepare ') as directory,ExitStack() as stack:
             root=Path(directory);calls=self.environment(stack,root);case=prepare.prepare(campaign=True)
             data=json.loads((case/'prepared.json').read_text())
@@ -78,7 +78,7 @@ class PreparationTests(unittest.TestCase):
             self.assertEqual(data['kind'],'lab_cake_go_campaign_preparation')
             self.assertEqual(data['native_steps'],['run','check-crash'])
             self.assertEqual(data['state'],'not_run');self.assertEqual(data['native_execution'],'not_run')
-            self.assertFalse(data['native_launcher_available'])
+            self.assertTrue(data['native_launcher_available'])
             self.assertEqual(len(data['build_info']),4);self.assertEqual(len(data['tools']),9)
             self.assertTrue(data['ping_version']['stdout'].startswith('ping from iputils'))
             self.assertEqual(data['source_commit'],REVISION)
@@ -86,9 +86,14 @@ class PreparationTests(unittest.TestCase):
                 p=Path(name) if Path(name).is_absolute() else root/name
                 self.assertEqual(hashlib.sha256(p.read_bytes()).hexdigest(),digest,name)
             self.assertEqual((case/'prepared.sha256').read_text().split()[0],hashlib.sha256((case/'prepared.json').read_bytes()).hexdigest())
-            for name in ('run.sh','review-native.py','run','check-crash','validation.json','runtime.json'):
+            for name in ('run','check-crash','validation.json','runtime.json'):
                 self.assertFalse((case/name).exists(),name)
             self.assertTrue((case/'prepare-campaign.py').is_file())
+            ast.parse((case/'review-native.py').read_text())
+            self.assertIn('lab-cake-go-campaign-review.py',(case/'review-native.py').read_text())
+            self.assertIn('for coopace_mode in run check-crash;',(case/'run.sh').read_text())
+            self.assertIn(str(case.relative_to(root)/'run.sh'),data['inputs_sha256'])
+            self.assertIn(str(case.relative_to(root)/'review-native.py'),data['inputs_sha256'])
             self.assertFalse(any('sudo' in str(c[0]) or 'netns' in c for c in calls))
             self.assertEqual(len([c for c in calls if 'build' in c]),4)
 

@@ -91,7 +91,33 @@ exit "$coopace_result"
 
 
 
-def runner_template(path_control=False):
+def runner_template(path_control=False, campaign=False):
+    model.require(not (path_control and campaign), 'Profils IPv4 et campagne incompatibles.')
+    if campaign:
+        runner=RUNNER.replace('scripts/lab-cake-go-active.py','scripts/lab-cake-go-campaign.py')
+        runner=runner.replace('runtime.json check check-crash check.stdout.json check.log check.exit',
+                              'runtime.json run check-crash run.stdout.json run.log run.exit')
+        runner=runner.replace('for coopace_mode in check check-crash;', 'for coopace_mode in run check-crash;')
+        # Link the checksum file to the sealed manifest before privileged work.
+        manifest_check=r'''    "$coopace_python" -I -B -c 'import json,sys; from pathlib import Path; c=Path(sys.argv[1]); p=json.loads((c/"prepared.json").read_text()); lines=(c/"inputs.sha256").read_text().splitlines(); assert p["native_launcher_available"] is True and p["native_steps"]==["run","check-crash"]; assert len(lines)==len(p["inputs_sha256"]) and {line[66:]:line[:64] for line in lines}==p["inputs_sha256"]' "$coopace_case" &&
+'''
+        revision_check='    [ "$(git rev-parse HEAD)" = "$coopace_revision" ]'
+        runner=runner.replace(revision_check,manifest_check+revision_check)
+        runner=runner.replace('Deux contrôles Go puis trafic : fin normale, puis mort forcée du pilote de trafic.',
+                              'Campagne Go/CAKE : trois paires repos/charge, puis contrôle de panne dans un laboratoire neuf.')
+        runner=runner.replace('Un transfert complet de 8 Mio attendu ; prévoir environ une minute, puis relecture hors ligne.',
+                              'Trois transferts de 8 Mio attendus ; prévoir deux à trois minutes, puis relecture hors ligne.')
+        marker='if "$coopace_python" -I -B "$coopace_case/review-native.py"'
+        check="""if ! coopace_inputs; then
+    printf '%s\\n' 'Entrées modifiées ; relecture refusée et résultats conservés.' >&2
+    exit 2
+fi
+"""
+        runner=runner.replace(marker,check+marker)
+        # Also recheck after the unprivileged reviewer has returned.
+        end_marker=r'''printf 'Code relecture : %s\n' "$coopace_result"'''
+        runner=runner.replace(end_marker,check+end_marker)
+        return runner
     if not path_control:
         return RUNNER
     return RUNNER.replace('scripts/lab-cake-go-active.py', 'scripts/lab-cake-go-path.py').replace(
@@ -105,7 +131,7 @@ def profile(path_control=False, campaign=False):
     model.require(not (path_control and campaign), 'Profils IPv4 et campagne incompatibles.')
     if campaign:
         return {'prefix':'go-campaign-native-validation-', 'entry':'lab-cake-go-campaign.py',
-                'protocol':'LAB_CAKE_GO_CAMPAIGN_PREPARE.md', 'review_entry':None,
+                'protocol':'LAB_CAKE_GO_CAMPAIGN_PREPARE.md', 'review_entry':'lab-cake-go-campaign-review.py',
                 'kind':'lab_cake_go_campaign_preparation', 'steps':['run','check-crash']}
     return {'prefix':'go-path-native-validation-' if path_control else 'go-active-native-validation-',
             'entry':'lab-cake-go-path.py' if path_control else 'lab-cake-go-active.py',
@@ -178,8 +204,7 @@ def prepare(destination=None, *, path_control=False, campaign=False):
     write(case/'plan.txt',command([tools['python']['path'],'-I','-B',str(ROOT/'scripts'/entry),'plan']))
     write(case/'protocol.md',(ROOT/'docs'/protocol).read_bytes())
     write(case/'prepare.py',Path(__file__).read_bytes())
-    if not campaign:
-        wrapper='''from pathlib import Path
+    wrapper='''from pathlib import Path
 import importlib.util,json
 case=Path(__file__).resolve().parent
 prepared=json.loads((case/'prepared.json').read_text())
@@ -188,13 +213,13 @@ spec=importlib.util.spec_from_file_location('frozen_review',source)
 module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 raise SystemExit(module.main(['--artifacts',str(case)]))
 '''
-        wrapper=wrapper.replace('lab-cake-go-active-review.py',review_entry)
-        write(case/'review-native.py',wrapper)
-        runner=runner_template(path_control)
-        for token,value in (('PROJECT',ROOT),('CASE',case),('PYTHON',tools['python']['path']),
-                             ('WORKER',case/'bin/coopace-cake-worker'),('REVISION',revision)):
-            runner=runner.replace('='+token+'\n','='+shlex.quote(str(value))+'\n')
-        write(case/'run.sh',runner);subprocess.run(['sh','-n',str(case/'run.sh')],check=True,timeout=3)
+    wrapper=wrapper.replace('lab-cake-go-active-review.py',review_entry)
+    write(case/'review-native.py',wrapper)
+    runner=runner_template(path_control, campaign)
+    for token,value in (('PROJECT',ROOT),('CASE',case),('PYTHON',tools['python']['path']),
+                         ('WORKER',case/'bin/coopace-cake-worker'),('REVISION',revision)):
+        runner=runner.replace('='+token+'\n','='+shlex.quote(str(value))+'\n')
+    write(case/'run.sh',runner);subprocess.run(['sh','-n',str(case/'run.sh')],check=True,timeout=3)
     ping_version=None
     sources=supervisor_sources(path_control, campaign)
     if path_control or campaign:
@@ -227,7 +252,7 @@ raise SystemExit(module.main(['--artifacts',str(case)]))
               'reference':model.go.protocol.REFERENCE,'native_execution':'not_run',
               'limits':['synthetic_ipv4_only','no_Coopace_benefit','no_household_restoration','no_Go_kill_during_tool']}
     if path_control or campaign:prepared['ping_version']=ping_version
-    if campaign:prepared['native_launcher_available']=False
+    if campaign:prepared['native_launcher_available']=True
     write(case/'prepared.json',json.dumps(prepared,ensure_ascii=False,indent=2)+'\n')
     write(case/'prepared.sha256',hashlib.sha256((case/'prepared.json').read_bytes()).hexdigest()+'  prepared.json\n')
     write(case/'inputs.sha256',''.join(f'{value}  {name}\n' for name,value in inputs.items()))

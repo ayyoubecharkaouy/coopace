@@ -64,5 +64,5 @@ def plan():
             "Propriétaire 180s, pilote 150s, nettoyage 10s ; aucune interface physique ni accès Internet.\n"
             "--worker, --binaries et --artifacts DOSSIER_NEUF_VIDE requis pour exécuter.\n"
             "Rapport global après preuves et nettoyage ; charge et connexions évaluées séparément.\n"
-            "Préparation des entrées livrée ; relecture indépendante et lanceur natif à développer ; bénéfice du foyer non validé.\n"
+            "Préparation, lanceur et relecture disponibles ; validation native de campagne et bénéfice du foyer à confirmer.\n"
             "Le mode plan ne crée aucune ressource et ne requiert aucun privilège.")
