@@ -6,7 +6,7 @@
 
 La relecture est implémentée et testée. **Le [lanceur natif](LAB_CAKE_GO_CAMPAIGN_RUN.md) est maintenant livré.** Les nouvelles préparations portent `native_launcher_available: true`. Les anciens dossiers restent inchangés ; le lanceur exige un dossier neuf de son propre commit.
 
-Cette version n’écrit aucun certificat ni fichier de preuve. Elle retourne `state: campaign_evidence_reviewed` et `native_certificate: false` après acceptation des deux contrôles. Aucun essai réseau natif de cette campagne n’est validé à ce stade.
+Cette version n’écrit aucun certificat ni fichier de preuve. Elle retourne `state: campaign_evidence_reviewed` et `native_certificate: false` après acceptation des deux contrôles. La [première campagne Go native](VALIDATION_CAKE_GO_CAMPAIGN_2026-11-05.md) est maintenant validée dans les deux modes.
 
 ## Interfaces
 
@@ -62,4 +62,4 @@ Les tests couvrent les décisions synthétiques, les altérations de préparatio
 
 Validation locale du 5 novembre 2026 : 31 tests ciblés passent en 116,990 s, dont douze nouveaux tests de relecture globale et du dossier, six tests du relecteur Go/trafic historique, sept du passage IPv4 et six de la relecture des phases. Les provenances de compilation des tests de dossier sont simulées ; aucune validation native n’est publiée. La suite complète n’a pas été relancée pour cet ajout.
 
-Prochaine étape : exécuter le nouveau dossier avec le [lanceur](LAB_CAKE_GO_CAMPAIGN_RUN.md), puis examiner et consigner les preuves natives.
+Les deux contrôles et la seconde relecture sont [validés en natif](VALIDATION_CAKE_GO_CAMPAIGN_2026-11-05.md). Le certificat local a été publié manuellement après cette revue ; le relecteur conserve son comportement sans écriture.

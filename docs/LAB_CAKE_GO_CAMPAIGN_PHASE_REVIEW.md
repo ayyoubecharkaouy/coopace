@@ -45,4 +45,4 @@ Les tests synthétiques couvrent les six phases, les altérations avec empreinte
 
 Validation locale du 3 novembre 2026 : 40 tests ciblés passent en 43,684 s, dont six nouveaux pour la relecture des phases, neuf de calcul, quatorze du dialogue de campagne, six du protocole à flux unique et cinq du verdict global. Le test des journaux réels utilise des processus Linux et un noyau réseau simulé. La suite complète n’a pas été relancée pour cet ajout autonome.
 
-Le [raccordement Go/IPv4 et au dossier figé](LAB_CAKE_GO_CAMPAIGN_GLOBAL_REVIEW.md) est livré. Prochaine étape : [exécution des deux modes](LAB_CAKE_GO_CAMPAIGN_RUN.md) dans un dossier neuf, puis revue des preuves.
+Le [raccordement Go/IPv4 et au dossier figé](LAB_CAKE_GO_CAMPAIGN_GLOBAL_REVIEW.md) est livré. La [première campagne native](VALIDATION_CAKE_GO_CAMPAIGN_2026-11-05.md) confirme les deux modes et leur relecture.

@@ -4,7 +4,7 @@
 
 `scripts/lab-cake-go-campaign.py` expose les modes `plan`, `run` et `check-crash`. Elle appelle le [rapport global](LAB_CAKE_GO_CAMPAIGN_REPORT.md) et conserve les paramètres du [contrat v1](LAB_CAKE_GO_CAMPAIGN.md). L’entrée est incluse dans les empreintes de sources vérifiées pendant l’exécution.
 
-La commande est implémentée et testée. La [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée séparément ; la relecture et le [lanceur natif](LAB_CAKE_GO_CAMPAIGN_RUN.md) sont livrés ; aucune campagne réseau native après Go n’a été exécutée.
+La commande est implémentée et testée. La [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée séparément ; la relecture et le [lanceur natif](LAB_CAKE_GO_CAMPAIGN_RUN.md) sont livrés ; la [première validation native](VALIDATION_CAKE_GO_CAMPAIGN_2026-11-05.md) confirme les deux modes après Go.
 
 ## Lecture sans privilèges
 
@@ -61,6 +61,6 @@ Les huit tests de l’entrée couvrent le plan par défaut, l’aide, les argume
 
 Validation locale du 3 novembre 2026 : 47 tests ciblés passent en 93,895 s, dont les huit nouveaux tests de l’entrée, neuf du rapport global, neuf des calculs, quatorze du dialogue de campagne, six du protocole à flux unique et un contrôle de régression de l’entrée IPv4 historique. La suite complète n’a pas été relancée pour cet ajout. Le plan a également été exécuté directement, sans privilèges et sans action réseau.
 
-La [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée. La prochaine étape est l’exécution du [lanceur](LAB_CAKE_GO_CAMPAIGN_RUN.md) dans un dossier neuf, puis la revue des preuves.
+La [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée. Le [lanceur](LAB_CAKE_GO_CAMPAIGN_RUN.md) et la relecture sont maintenant [validés en natif](VALIDATION_CAKE_GO_CAMPAIGN_2026-11-05.md) dans les deux modes.
 
 La [relecture indépendante des phases](LAB_CAKE_GO_CAMPAIGN_PHASE_REVIEW.md) est maintenant livrée comme première sous-étape. Elle ne publie aucun certificat. Le [raccordement Go/IPv4 et au dossier figé](LAB_CAKE_GO_CAMPAIGN_GLOBAL_REVIEW.md) est maintenant livré ; le [lanceur natif](LAB_CAKE_GO_CAMPAIGN_RUN.md) est livré.

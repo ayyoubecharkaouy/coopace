@@ -4,7 +4,7 @@
 
 Le [préparateur de campagne](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) génère maintenant `run.sh` et `review-native.py` dans chaque nouveau dossier figé. Le manifeste porte `native_launcher_available: true`. Les deux fichiers générés sont inclus dans les empreintes des entrées.
 
-Le lanceur est implémenté et testé avec un faux sudo. Aucun essai réseau natif de cette campagne n’est validé à ce stade. Les anciens dossiers préparés sans lanceur restent inchangés ; un nouveau dossier doit être préparé depuis le commit courant propre.
+Le lanceur est implémenté et testé avec un faux sudo. La [première campagne Go native](VALIDATION_CAKE_GO_CAMPAIGN_2026-11-05.md) est maintenant validée dans les deux modes. Les anciens dossiers préparés sans lanceur restent inchangés ; un nouveau dossier doit être préparé depuis le commit courant propre.
 
 ## Préparation et exécution
 
@@ -48,7 +48,7 @@ Les contrôles restent limités aux namespaces, liens et groupes jetables possé
 
 Un échec de contrôle interrompt la suite et conserve son code. Un refus d’entrées ou de réutilisation donne le code 2. Après les deux contrôles, un refus du relecteur est conservé dans `review.exit` et propagé à la sortie. Une modification des entrées après la revue interdit un succès du lanceur.
 
-Trois codes 0 signifient que la collecte et la revue ont été acceptées. Le relecteur garde `native_certificate: false` et ne publie pas `validation.json` ; les preuves seront examinées pour consigner la première validation native. Aucun gain du pilotage Coopace ni bénéfice du foyer n’est déduit automatiquement.
+Trois codes 0 signifient que la collecte et la revue ont été acceptées. Le relecteur garde `native_certificate: false` et ne publie pas `validation.json` ; la [première validation native](VALIDATION_CAKE_GO_CAMPAIGN_2026-11-05.md) a ensuite été consignée manuellement après une seconde relecture. Aucun gain du pilotage Coopace ni bénéfice du foyer n’est déduit automatiquement.
 
 ## Vérification et suite
 
@@ -56,4 +56,4 @@ Les tests du lanceur utilisent un faux sudo qui vérifie l’entrée appelée, l
 
 Validation locale du 5 novembre 2026 : 32 tests ciblés passent en 6,207 s, dont sept nouveaux tests du lanceur, cinq tests de préparation de campagne, sept des préparateurs historiques, huit de la commande de campagne et cinq du raccordement au dossier figé. Les contrôles sudo, la compilation et les rapports réseau sont simulés dans ces tests. La suite complète n’a pas été relancée pour cet ajout.
 
-Prochaine étape : exécuter le nouveau dossier sur l’hôte Linux, relire les preuves et consigner les résultats, y compris tout refus, sans réécrire les essais précédents.
+Les deux modes et la seconde relecture sont [validés](VALIDATION_CAKE_GO_CAMPAIGN_2026-11-05.md). Les validations du réseau réel et de sa restauration restent à préparer.

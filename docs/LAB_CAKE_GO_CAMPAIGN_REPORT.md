@@ -9,7 +9,7 @@ Le raccordement est implémenté dans `lab_cake_go_campaign.py` et `lab_cake_go_
 | `lab_cake_go_campaign.collect(...)` | Collecte intermédiaire `lab_cake_go_campaign_collection`, sans verdict scientifique |
 | `lab_cake_go_campaign.run(...)` | Rapport global `lab_cake_go_campaign`, après collecte, nettoyage et contrôle des preuves |
 
-La [commande de campagne](LAB_CAKE_GO_CAMPAIGN_CLI.md) est maintenant livrée séparément ; la [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée, la relecture et le [lanceur natif](LAB_CAKE_GO_CAMPAIGN_RUN.md) sont livrés. Aucun certificat natif de campagne n’est produit.
+La [commande de campagne](LAB_CAKE_GO_CAMPAIGN_CLI.md) est maintenant livrée séparément ; la [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée, la relecture et le [lanceur natif](LAB_CAKE_GO_CAMPAIGN_RUN.md) sont livrés. Ce module ne publie pas de certificat ; la [première validation native](VALIDATION_CAKE_GO_CAMPAIGN_2026-11-05.md) a été consignée manuellement après relecture des preuves.
 
 ## Moment de publication
 
@@ -44,6 +44,6 @@ Les tests utilisent des données synthétiques pour le verdict positif et les al
 
 Validation locale du 2 novembre 2026 : 39 tests ciblés passent en 95,628 s, comprenant huit nouveaux tests du rapport, les calculs et lecteurs purs, ainsi que deux contrôles historiques Go/trafic. Après conservation stricte des fins de ligne lors de la lecture des captures et ajout d’un neuvième test (CRLF/troncature, empreinte mise à jour), les cinq tests de verdict et le contrôle intégré de panne passent en 16,612 s. La suite complète n’a pas été relancée pour cette étape. Aucune validation réseau native de campagne n’est produite.
 
-La [commande de campagne `plan/run/check-crash`](LAB_CAKE_GO_CAMPAIGN_CLI.md) est livrée. La [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée. La prochaine étape est l’exécution du [lanceur](LAB_CAKE_GO_CAMPAIGN_RUN.md) dans un dossier neuf, puis la revue des preuves.
+La [commande de campagne `plan/run/check-crash`](LAB_CAKE_GO_CAMPAIGN_CLI.md) est livrée. La [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée. La [première validation native](VALIDATION_CAKE_GO_CAMPAIGN_2026-11-05.md) confirme les deux modes et leur relecture.
 
 La [relecture indépendante des phases](LAB_CAKE_GO_CAMPAIGN_PHASE_REVIEW.md) est maintenant livrée comme première sous-étape. Elle ne publie aucun certificat. Le [raccordement Go/IPv4 et au dossier figé](LAB_CAKE_GO_CAMPAIGN_GLOBAL_REVIEW.md) est maintenant livré ; le [lanceur natif](LAB_CAKE_GO_CAMPAIGN_RUN.md) est livré.

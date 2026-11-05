@@ -27,6 +27,7 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 | [REVIEW_CAKE_GO_PATH_FAILURE_2026-11-01.md](REVIEW_CAKE_GO_PATH_FAILURE_2026-11-01.md) | Premier essai IPv4 refusé, interaction des options ping corrigée et preuves conservées ; nouvelle exécution distincte ensuite validée. |
 | [VALIDATION_CAKE_GO_PATH_2026-11-01.md](VALIDATION_CAKE_GO_PATH_2026-11-01.md) | Passage IPv4 avant TCP validé : une requête sans réponse à forwarding 0, trois réponses à forwarding 1, transfert complet et nettoyage après panne. |
 | [REVIEW_CAKE_GO_CAMPAIGN_FAILURE_2026-11-05.md](REVIEW_CAKE_GO_CAMPAIGN_FAILURE_2026-11-05.md) | Premier essai Go/campagne refusé après six phases : durée EOF mal interprétée, correction et nouvelle collecte requise. |
+| [VALIDATION_CAKE_GO_CAMPAIGN_2026-11-05.md](VALIDATION_CAKE_GO_CAMPAIGN_2026-11-05.md) | Première campagne Go native : six phases, 24 Mio, charge et 60 connexions confirmées ; panne, nettoyage et seconde relecture validés. |
 | [LAB_CAKE_GO_CAMPAIGN_RUN.md](LAB_CAKE_GO_CAMPAIGN_RUN.md) | Lanceur des deux modes et relecture, empreintes et refus d’écrasement ; essais natifs à réaliser. |
 | [LAB_CAKE_GO_CAMPAIGN_GLOBAL_REVIEW.md](LAB_CAKE_GO_CAMPAIGN_GLOBAL_REVIEW.md) | Raccordement Go/IPv4/phases et dossier figé ; relecture sans certificat, lanceur livré séparément. |
 | [LAB_CAKE_GO_CAMPAIGN_PHASE_REVIEW.md](LAB_CAKE_GO_CAMPAIGN_PHASE_REVIEW.md) | Relecture des phases depuis les captures et sorties CAKE ; raccordement global/figé livré séparément, lanceur livré séparément, sans certificat natif. |

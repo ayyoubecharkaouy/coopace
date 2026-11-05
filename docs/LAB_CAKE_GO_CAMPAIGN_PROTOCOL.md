@@ -2,7 +2,7 @@
 
 ## État et portée
 
-Le [contrat de campagne v1](LAB_CAKE_GO_CAMPAIGN.md) dispose de ses lecteurs et de son automate dans `scripts/lab_cake_go_campaign_protocol.py`. **Le [pilote privé](LAB_CAKE_GO_CAMPAIGN_TRAFFIC.md) est maintenant implémenté et testé avec outils simulés. Le [collecteur interne](LAB_CAKE_GO_CAMPAIGN_COLLECT.md) est également implémenté et testé en simulation ; l’[évaluation pure](LAB_CAKE_GO_CAMPAIGN_ASSESS.md) est testée séparément, son [raccordement global](LAB_CAKE_GO_CAMPAIGN_REPORT.md) est livré ; l’[entrée de campagne](LAB_CAKE_GO_CAMPAIGN_CLI.md) est livrée ; aucune campagne réseau native n’a été exécutée.**
+Le [contrat de campagne v1](LAB_CAKE_GO_CAMPAIGN.md) dispose de ses lecteurs et de son automate dans `scripts/lab_cake_go_campaign_protocol.py`. **Le [pilote privé](LAB_CAKE_GO_CAMPAIGN_TRAFFIC.md) est maintenant implémenté et testé avec outils simulés. Le [collecteur interne](LAB_CAKE_GO_CAMPAIGN_COLLECT.md) est également implémenté et testé en simulation ; l’[évaluation pure](LAB_CAKE_GO_CAMPAIGN_ASSESS.md) est testée séparément, son [raccordement global](LAB_CAKE_GO_CAMPAIGN_REPORT.md) est livré ; l’[entrée de campagne](LAB_CAKE_GO_CAMPAIGN_CLI.md) est livrée ; la [première validation native](VALIDATION_CAKE_GO_CAMPAIGN_2026-11-05.md) confirme les deux modes.**
 
 Ce module traite uniquement des octets et des états. Il ne lance aucun processus, ne lit pas d’horloge, ne crée aucun réseau et n’exécute ni sonde ni nettoyage. Les aides métier du pilote à flux unique sont importées pour valider les sous-rapports ; son code et son dialogue restent inchangés.
 
