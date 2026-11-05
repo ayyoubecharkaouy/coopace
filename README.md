@@ -1,4 +1,6 @@
-# Coopace
+<div align="center">
+    <img src="assets/coopace-removebg.png" placeholder="coopace" width="100%"/>
+</div>
 
 Coopace vise à améliorer la latence sous charge et le partage de la connexion Internet d'un foyer, grâce à une passerelle et à des agents coopératifs facultatifs.
 
