@@ -2,6 +2,8 @@
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 import importlib.util
+import json
+import math
 from pathlib import Path
 import unittest
 
@@ -118,7 +120,7 @@ class AssessmentTests(unittest.TestCase):
         def reset(p):p[1]['samples'][2]['statistics']['counters']['bytes']=0
         def insufficient(p):p[1]['samples']=p[1]['samples'][:2]+p[1]['samples'][-1:]
         def wrong_time(p):p[1]['samples'][1]['collected_at']='invalid'
-        def duration(p):p[1]['result']['receive']['last_read_at']=p[1]['result']['receive']['first_read_at']
+        def duration(p):p[1]['result']['receive']['finished_at']=p[1]['result']['receive']['first_read_at']
         def volume(p):p[1]['result']['receive']['received_bytes']=1
         def overlap(p):p[1]['result']['send']['first_write_at']=p[1]['result']['latency']['started_at']
         def counts(p):p[0]['result']['latency']['successful']=False
@@ -142,6 +144,53 @@ class AssessmentTests(unittest.TestCase):
         self.assertEqual(result['load_scenario'],'not_assessed')
         self.assertEqual(result['connections'],'not_assessed')
         with self.assertRaises(model.Error):model.assess([],crash=1)
+
+    def test_receive_duration_includes_wait_for_eof_after_last_payload(self):
+        data=campaign()
+        for phase in data:
+            if phase['condition']=='loaded':
+                receive=phase['result']['receive']
+                last=datetime.fromisoformat(receive['first_read_at'].replace('Z','+00:00'))+timedelta(seconds=10)
+                receive['last_read_at']=last.isoformat().replace('+00:00','Z')
+        result=model.assess(data)
+        self.assertTrue(result['measurements_valid'],result)
+        self.assertEqual(result['load_scenario'],'qualified')
+        self.assertEqual(result['phases'][1]['received_bytes_per_second'],419430.4)
+
+    def test_serialized_utc_difference_does_not_replace_monotonic_duration(self):
+        data=campaign()
+        for phase in data:
+            if phase['condition']=='loaded':
+                receive=phase['result']['receive']
+                end=datetime.fromisoformat(receive['finished_at'].replace('Z','+00:00'))+timedelta(microseconds=10)
+                receive['finished_at']=end.isoformat().replace('+00:00','Z')
+        result=model.assess(data)
+        self.assertTrue(result['measurements_valid'],result)
+        self.assertEqual(result['phases'][1]['received_bytes_per_second'],419430.4)
+
+    def test_inconsistent_reported_rate_or_nonpositive_duration_is_still_refused(self):
+        for case in ('rate','zero','negative'):
+            with self.subTest(case=case):
+                data=campaign();receive=data[1]['result']['receive']
+                if case=='rate':receive['average_bytes_per_second']*=2
+                if case=='zero':receive['receive_elapsed_ms']=0
+                if case=='negative':receive['receive_elapsed_ms']=-1
+                self.assertFalse(model.assess(data)['measurements_valid'])
+
+    def test_native_0440c5d_receipt_regression_without_reclassifying_original_run(self):
+        fixture=json.loads((Path(__file__).with_name('fixtures')/'go-campaign-0440c5d-measurements.json').read_text())
+        self.assertEqual(fixture['original_state'],'failed')
+        self.assertFalse(fixture['native_certificate'])
+        phases=fixture['phases'];result=model.assess(phases)
+        self.assertTrue(result['measurements_valid'],result)
+        self.assertEqual(result['load_scenario'],'qualified')
+        self.assertEqual(result['connections'],'confirmed')
+        for phase,summary in zip(phases,result['phases']):
+            if phase['condition']=='loaded':
+                receive=phase['result']['receive']
+                wrong=(model.utc_ns(receive['last_read_at'])-model.utc_ns(receive['first_read_at']))/1000000
+                self.assertFalse(math.isclose(wrong,receive['receive_elapsed_ms'],rel_tol=1e-9))
+                self.assertTrue(math.isclose(summary['received_bytes_per_second'],receive['average_bytes_per_second'],rel_tol=1e-9))
 
 
 if __name__=='__main__':unittest.main()

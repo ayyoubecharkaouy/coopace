@@ -77,10 +77,12 @@ def _phase(phase, pair, condition):
         settle_ns = start - utc_ns(send["first_write_at"])
         require(settle_ns >= 1_000_000_000 and result["probe_window_inside_application_writes"],
                 "Stabilisation ou recouvrement insuffisant.")
-        duration = utc_ns(receive["last_read_at"]) - utc_ns(receive["first_read_at"])
-        require(duration > 0 and math.isclose(receive["receive_elapsed_ms"], duration / 1_000_000, rel_tol=1e-9),
-                "Durée de réception incompatible avec les horodatages.")
-        rate = Fraction(receive["received_bytes"] * 1_000_000_000, duration)
+        # readReceipt measures from the first progressing Read through EOF,
+        # using Go's monotonic clock. last_read_at marks the last payload Read;
+        # serialized UTC times do not retain the monotonic clock component.
+        require(utc_ns(receive["finished_at"]) > utc_ns(receive["first_read_at"]), "Fenêtre de réception vide.")
+        duration = Fraction(Decimal(str(receive["receive_elapsed_ms"]))) * 1_000_000
+        rate = Fraction(receive["received_bytes"] * 1_000_000_000) / duration
         require(math.isclose(receive["average_bytes_per_second"], float(rate), rel_tol=1e-9), "Débit de réception incohérent.")
         window = [s for s in samples if start <= utc_ns(s["collected_at"]) <= end]
         progress = statistics(window)

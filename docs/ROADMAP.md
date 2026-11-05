@@ -176,3 +176,5 @@ Cette automatisation dépend de la validation des mesures et de la restauration 
 Tester d'abord un tunnel manuel sur un véritable chemin alternatif. Étudier ensuite sa sélection automatique. Le ML ne sera envisagé qu'avec des données autorisées et un bénéfice reproductible face aux solutions existantes.
 
 Le dossier [`ml/`](../ml/README.md) réserve ce module et décrit son périmètre ainsi que ses conditions d'intégration. Son développement reste différé.
+
+Le [premier essai de campagne Go refusé](REVIEW_CAKE_GO_CAMPAIGN_FAILURE_2026-11-05.md) a collecté les six phases et nettoyé les ressources, puis révélé une confusion entre dernier octet et EOF dans le calcul du débit reçu. La correction conserve les seuils et demande un nouveau dossier pour les deux modes.

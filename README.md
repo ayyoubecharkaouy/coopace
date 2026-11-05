@@ -94,3 +94,5 @@ La [mesure TCP et le protocole de référence](docs/LATENCY.md) expliquent `coop
 L'[identité locale et les contrats du groupe](docs/IDENTITY_AND_GROUP.md) décrivent les permissions et les messages. La [procédure du premier échange TLS](docs/GROUP_EXCHANGE.md) explique comment tester deux instances sur un PC Linux avec `identity export-cert` et `group configure/listen/exchange/revoke`. Les compteurs et le stockage privé Windows restent indisponibles.
 
 Le dépôt Git est propre à ce dossier et utilise la branche `main`. La commande `git remote -v` permet de consulter les dépôts distants configurés dans chaque copie locale.
+
+Le [premier essai de campagne Go refusé](docs/REVIEW_CAKE_GO_CAMPAIGN_FAILURE_2026-11-05.md) a collecté les six phases et nettoyé les ressources, puis révélé une confusion entre dernier octet et EOF dans le calcul du débit reçu. La correction conserve les seuils et demande un nouveau dossier pour les deux modes.

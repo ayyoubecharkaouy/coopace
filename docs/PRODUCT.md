@@ -115,3 +115,5 @@ Coopace ne dépasse pas la capacité physique de l'accès Internet et ne contrô
 Le projet ne prévoit ni interception TLS, ni déchiffrement des contenus, ni réhébergement de vidéos privées, ni identification certaine des applications chiffrées. Les relais et leur usage demandent un consentement distinct ; le ML reste facultatif.
 
 Voir l'[architecture](ARCHITECTURE.md), les [choix techniques](TECH_STACK.md), la [feuille de route](ROADMAP.md) et les [instructions de développement](DEVELOPMENT.md).
+
+Le [premier essai de campagne Go refusé](REVIEW_CAKE_GO_CAMPAIGN_FAILURE_2026-11-05.md) a collecté les six phases et nettoyé les ressources, puis révélé une confusion entre dernier octet et EOF dans le calcul du débit reçu. La correction conserve les seuils et demande un nouveau dossier pour les deux modes.

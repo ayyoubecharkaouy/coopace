@@ -12,7 +12,7 @@ Les p50/p95/p99 sont recalculés au rang le plus proche depuis les seules tentat
 
 Les trois différences signées loaded − idle sont calculées séparément, sans moyenne de percentiles. Les soustractions utilisent les valeurs décimales avant conversion d’affichage, pour préserver les petits écarts entre grandes valeurs.
 
-Le débit utile reçu est recalculé depuis le volume et la durée entre première et dernière lecture, en nanosecondes. La durée et le débit déclarés sont contrôlés avec la tolérance relative existante de 1e-9. Les bornes inclusives [350 000 ; 525 000] octets/s sont comparées avec des produits entiers ; un arrondi du débit affiché ne détermine pas la qualification.
+Le débit utile reçu est recalculé depuis le volume et `receive_elapsed_ms`, durée monotone de la première lecture ayant progressé jusqu’à EOF, conformément au [contrat v1.1](LAB_CAKE_GO_CAMPAIGN.md). Elle inclut l’attente après le dernier octet. Cette valeur positive et bornée est convertie en fraction exacte depuis sa représentation décimale JSON. Le débit déclaré reste contrôlé avec la tolérance relative existante de 1e-9. Les bornes inclusives [350 000 ; 525 000] octets/s sont comparées sans arrondi du débit affiché. Les UTC contrôlent l’ordre et les fenêtres ; leur différence ne doit pas être confondue avec cette durée monotone.
 
 ## Vérifications des mesures
 
@@ -43,3 +43,5 @@ PYTHONPATH=scripts/tests python3 -B -m unittest test_lab_cake_go_campaign_assess
 Validation locale du 2 novembre 2026 : 29 tests ciblés passent en 0,388 s, dont neuf nouveaux pour les calculs, quatorze de dialogue de campagne et six du protocole à flux unique. Les cas couvrent les percentiles, les différences signées, les échecs partiels/totaux, les bornes exactes et leurs voisins, la charge insuffisante, les horodatages, volumes et compteurs incohérents, le mode panne et la conservation des entrées. Aucun processus ni réseau n’est lancé par les nouveaux tests de calcul. La suite complète n’a pas été relancée pour cet ajout autonome.
 
 Le [raccordement global et ses tests d’intégration](LAB_CAKE_GO_CAMPAIGN_REPORT.md) sont livrés. La [commande de campagne](LAB_CAKE_GO_CAMPAIGN_CLI.md) est livrée. La [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée. La relecture et le [lanceur natif](LAB_CAKE_GO_CAMPAIGN_RUN.md) sont livrés ; les essais natifs de campagne restent à réaliser.
+
+La [revue de l’essai refusé 0440c5d](REVIEW_CAKE_GO_CAMPAIGN_FAILURE_2026-11-05.md) documente la correction du point de fin de réception et la fixture native de régression, sans requalifier l’ancien dossier.

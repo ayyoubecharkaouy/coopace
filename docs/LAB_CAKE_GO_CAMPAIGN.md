@@ -1,4 +1,4 @@
-# Campagne CAKE après Go — contrat v1
+# Campagne CAKE après Go — contrat v1.1
 
 ## État et objectif
 
@@ -9,6 +9,10 @@ La [validation native du passage IPv4](VALIDATION_CAKE_GO_PATH_2026-11-01.md) co
 L’objectif est de valider la collecte répétée et de qualifier le scénario de charge de cette intégration. Les écarts repos/charge seront descriptifs. Une comparaison de politiques ou un bénéfice propre au pilotage Coopace demandera un autre protocole et des bras neufs. Les [campagnes CAKE Python](LAB_CAKE_CAMPAIGN.md) et la [comparaison TBF/CAKE historique](CAKE_COMPARISON.md) fournissent les paramètres de référence, pas les données de cette nouvelle campagne.
 
 Une modification de l’ordre, des paramètres, des bornes ou des critères devra être consignée dans une nouvelle révision de ce protocole avant collecte, avec un dossier neuf. Les résultats défavorables ne justifient ni changement de seuil après coup ni choix du meilleur essai.
+
+## Révision v1.1 — 5 novembre 2026
+
+Après le [premier essai refusé](REVIEW_CAKE_GO_CAMPAIGN_FAILURE_2026-11-05.md), la durée du débit reçu est clarifiée : `receive_elapsed_ms` mesure, avec l’horloge monotone du récepteur Go, la première lecture ayant progressé jusqu’à EOF. `last_read_at` désigne le dernier octet, pas EOF. Le calcul depuis les UTC sérialisés ne doit pas remplacer cette durée. Cette correction aligne l’évaluation sur l’[instrumentation existante](LAB_INSTRUMENTATION.md), sans changer ordre, volumes, délais ni seuils. L’ancien essai reste refusé ; un nouveau dossier et une nouvelle collecte sont requis. Le dialogue JSON reste en version 1 et le profil CAKE reste `cake-ipv4-lab-4mbit-v1`.
 
 ## Ressources et ordre fixés
 
@@ -38,7 +42,7 @@ Chaque phase lance une cible TCP neuve sur `10.203.0.6:46001`, au plus 100 accep
 
 Chaque phase `loaded` ajoute une réception et une émission de 8 388 608 octets sur `10.203.0.6:46002`, plafond applicatif 1 048 576 octets/s, délais 28 s en réception et 25 s en émission. La mesure débute au moins 1 s après première écriture ; sa fenêtre complète doit rester dans les écritures applicatives.
 
-Une campagne normale attend donc **60 tentatives TCP et trois réceptions de 8 Mio, soit 24 Mio utiles**, hors contrôles de panne. Les échecs de connexion restent des tentatives échouées ; les durées indisponibles ne deviennent pas zéro. Le débit utile reçu est calculé sur la durée entre première et dernière lecture.
+Une campagne normale attend donc **60 tentatives TCP et trois réceptions de 8 Mio, soit 24 Mio utiles**, hors contrôles de panne. Les échecs de connexion restent des tentatives échouées ; les durées indisponibles ne deviennent pas zéro. Le débit utile reçu est calculé sur `receive_elapsed_ms`, durée monotone de la première lecture ayant progressé jusqu’à EOF, incluant l’attente après le dernier octet.
 
 Les cinq compteurs racine et les jauges CAKE sont relus avant/après chaque phase et périodiquement, avec pause minimale 250 ms après fin d’une lecture, sans rattrapage. Options, identités et monotonie sont contrôlées pendant toute la campagne. Les compteurs des classes ne sont pas ajoutés aux compteurs racine ; drops de file et octets de file restent distincts des pertes TCP et du volume utile.
 

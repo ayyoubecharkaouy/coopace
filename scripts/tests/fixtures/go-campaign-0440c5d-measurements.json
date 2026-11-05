@@ -1,0 +1,1473 @@
+{
+  "schema_version": 1,
+  "source_case": "go-campaign-native-validation-0440c5d",
+  "source_commit": "0440c5dcedd9c7f2b88a0f7e04e4beb82d00b638",
+  "source_report_sha256": "409cd4ec972c83d76de8d0ca8654642a494049b2506413e728e0f97b2539fae4",
+  "sampling": "before_start, probe-window readings, final drain",
+  "original_state": "failed",
+  "original_error": "Mesures de campagne inexploitables : Durée de réception incompatible avec les horodatages.",
+  "native_certificate": false,
+  "phases": [
+    {
+      "pair": 1,
+      "condition": "idle",
+      "state": "complete",
+      "result": {
+        "latency": {
+          "schema_version": 1,
+          "method": "tcp_connect",
+          "coopace_version": "dev",
+          "go_version": "go1.27.3",
+          "os": "linux",
+          "architecture": "amd64",
+          "target": "10.203.0.6:46001",
+          "declared_condition": "idle",
+          "requested_attempts": 10,
+          "timeout_ms": 1000,
+          "pause_between_attempts_ms": 250,
+          "started_at": "2026-11-05T16:35:50.631641395Z",
+          "finished_at": "2026-11-05T16:35:52.890761459Z",
+          "attempts": [
+            {
+              "started_at": "2026-11-05T16:35:50.631647724Z",
+              "connect_ms": 0.533122
+            },
+            {
+              "started_at": "2026-11-05T16:35:50.883082662Z",
+              "connect_ms": 0.323593
+            },
+            {
+              "started_at": "2026-11-05T16:35:51.133913788Z",
+              "connect_ms": 0.415453
+            },
+            {
+              "started_at": "2026-11-05T16:35:51.384804237Z",
+              "connect_ms": 0.253392
+            },
+            {
+              "started_at": "2026-11-05T16:35:51.635448592Z",
+              "connect_ms": 0.326311
+            },
+            {
+              "started_at": "2026-11-05T16:35:51.886644632Z",
+              "connect_ms": 0.837326
+            },
+            {
+              "started_at": "2026-11-05T16:35:52.137983116Z",
+              "connect_ms": 0.565378
+            },
+            {
+              "started_at": "2026-11-05T16:35:52.389028182Z",
+              "connect_ms": 0.235649
+            },
+            {
+              "started_at": "2026-11-05T16:35:52.639772351Z",
+              "connect_ms": 0.25442
+            },
+            {
+              "started_at": "2026-11-05T16:35:52.890507819Z",
+              "connect_ms": 0.217092
+            }
+          ],
+          "successful": 10,
+          "failed": 0,
+          "connect_ms": {
+            "min": 0.217092,
+            "p50": 0.323593,
+            "p95": 0.837326,
+            "p99": 0.837326,
+            "max": 0.837326
+          }
+        },
+        "measurement_exit_code": 0
+      },
+      "samples": [
+        {
+          "pair": 1,
+          "condition": "idle",
+          "phase": "before_start",
+          "collected_at": "2026-11-05T16:35:50.369106+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 922,
+              "packets": 11,
+              "drops": 0,
+              "overlimits": 4,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:50.650412+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 1194,
+              "packets": 15,
+              "drops": 0,
+              "overlimits": 4,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:50.936253+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 1466,
+              "packets": 19,
+              "drops": 0,
+              "overlimits": 12,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:51.222163+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 1738,
+              "packets": 23,
+              "drops": 0,
+              "overlimits": 20,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:51.506476+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 2010,
+              "packets": 27,
+              "drops": 0,
+              "overlimits": 28,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:51.797165+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 2282,
+              "packets": 31,
+              "drops": 0,
+              "overlimits": 30,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:52.083897+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 2554,
+              "packets": 35,
+              "drops": 0,
+              "overlimits": 33,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:52.368021+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 2826,
+              "packets": 39,
+              "drops": 0,
+              "overlimits": 39,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:52.651959+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 3370,
+              "packets": 47,
+              "drops": 0,
+              "overlimits": 52,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "idle",
+          "phase": "drain",
+          "collected_at": "2026-11-05T16:35:53.596419+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 3642,
+              "packets": 51,
+              "drops": 0,
+              "overlimits": 59,
+              "requeues": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "pair": 1,
+      "condition": "loaded",
+      "state": "complete",
+      "result": {
+        "send": {
+          "schema_version": 1,
+          "method": "synthetic_tcp_send",
+          "os": "linux",
+          "architecture": "amd64",
+          "go_version": "go1.27.3",
+          "target": "10.203.0.6:46002",
+          "requested_bytes": 8388608,
+          "written_bytes": 8388608,
+          "requested_bytes_per_second": 1048576,
+          "block_bytes": 16384,
+          "timeout_ms": 25000,
+          "started_at": "2026-11-05T16:35:54.309807351Z",
+          "first_write_at": "2026-11-05T16:35:54.310002024Z",
+          "last_write_at": "2026-11-05T16:36:11.644286426Z",
+          "finished_at": "2026-11-05T16:36:11.644310606Z",
+          "elapsed_ms": 17334.503259,
+          "average_bytes_per_second": 483925.4909508105
+        },
+        "receive": {
+          "schema_version": 1,
+          "method": "synthetic_tcp_receive",
+          "os": "linux",
+          "architecture": "amd64",
+          "go_version": "go1.27.3",
+          "listen": "10.203.0.6:46002",
+          "requested_bytes": 8388608,
+          "received_bytes": 8388608,
+          "block_bytes": 16384,
+          "timeout_ms": 28000,
+          "started_at": "2026-11-05T16:35:54.279709056Z",
+          "first_read_at": "2026-11-05T16:35:54.310209933Z",
+          "last_read_at": "2026-11-05T16:36:11.856073691Z",
+          "finished_at": "2026-11-05T16:36:11.856077119Z",
+          "elapsed_ms": 17576.367982,
+          "receive_elapsed_ms": 17545.867186,
+          "average_bytes_per_second": 478095.94767099025
+        },
+        "latency": {
+          "schema_version": 1,
+          "method": "tcp_connect",
+          "coopace_version": "dev",
+          "go_version": "go1.27.3",
+          "os": "linux",
+          "architecture": "amd64",
+          "target": "10.203.0.6:46001",
+          "declared_condition": "loaded",
+          "requested_attempts": 10,
+          "timeout_ms": 1000,
+          "pause_between_attempts_ms": 250,
+          "started_at": "2026-11-05T16:35:55.549316546Z",
+          "finished_at": "2026-11-05T16:35:57.817951751Z",
+          "attempts": [
+            {
+              "started_at": "2026-11-05T16:35:55.549321868Z",
+              "connect_ms": 1.510528
+            },
+            {
+              "started_at": "2026-11-05T16:35:55.801343955Z",
+              "connect_ms": 1.36081
+            },
+            {
+              "started_at": "2026-11-05T16:35:56.052973812Z",
+              "connect_ms": 1.641096
+            },
+            {
+              "started_at": "2026-11-05T16:35:56.305032743Z",
+              "connect_ms": 1.4979
+            },
+            {
+              "started_at": "2026-11-05T16:35:56.557167727Z",
+              "connect_ms": 1.247391
+            },
+            {
+              "started_at": "2026-11-05T16:35:56.808872819Z",
+              "connect_ms": 1.261611
+            },
+            {
+              "started_at": "2026-11-05T16:35:57.06051609Z",
+              "connect_ms": 1.478777
+            },
+            {
+              "started_at": "2026-11-05T16:35:57.312471007Z",
+              "connect_ms": 1.557093
+            },
+            {
+              "started_at": "2026-11-05T16:35:57.564516563Z",
+              "connect_ms": 1.316481
+            },
+            {
+              "started_at": "2026-11-05T16:35:57.816017424Z",
+              "connect_ms": 1.878413
+            }
+          ],
+          "successful": 10,
+          "failed": 0,
+          "connect_ms": {
+            "min": 1.247391,
+            "p50": 1.478777,
+            "p95": 1.878413,
+            "p99": 1.878413,
+            "max": 1.878413
+          }
+        },
+        "measurement_exit_code": 0,
+        "probe_window_inside_application_writes": true,
+        "has_successful_probe": true
+      },
+      "samples": [
+        {
+          "pair": 1,
+          "condition": "loaded",
+          "phase": "before_start",
+          "collected_at": "2026-11-05T16:35:54.205101+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 3642,
+              "packets": 51,
+              "drops": 0,
+              "overlimits": 59,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:55.660026+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 674286,
+              "packets": 501,
+              "drops": 14,
+              "overlimits": 1265,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:55.945130+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 816874,
+              "packets": 599,
+              "drops": 16,
+              "overlimits": 1526,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:56.228897+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 959462,
+              "packets": 697,
+              "drops": 19,
+              "overlimits": 1787,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:56.514286+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 1102050,
+              "packets": 795,
+              "drops": 22,
+              "overlimits": 2048,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:56.800080+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 1244638,
+              "packets": 893,
+              "drops": 24,
+              "overlimits": 2309,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:57.085740+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 1387498,
+              "packets": 995,
+              "drops": 27,
+              "overlimits": 2584,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:57.370207+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 1530086,
+              "packets": 1093,
+              "drops": 30,
+              "overlimits": 2845,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:35:57.649885+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 1669646,
+              "packets": 1189,
+              "drops": 32,
+              "overlimits": 3099,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "condition": "loaded",
+          "phase": "drain",
+          "collected_at": "2026-11-05T16:36:12.488965+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 8777716,
+              "packets": 5890,
+              "drops": 150,
+              "overlimits": 15596,
+              "requeues": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "pair": 2,
+      "condition": "loaded",
+      "state": "complete",
+      "result": {
+        "send": {
+          "schema_version": 1,
+          "method": "synthetic_tcp_send",
+          "os": "linux",
+          "architecture": "amd64",
+          "go_version": "go1.27.3",
+          "target": "10.203.0.6:46002",
+          "requested_bytes": 8388608,
+          "written_bytes": 8388608,
+          "requested_bytes_per_second": 1048576,
+          "block_bytes": 16384,
+          "timeout_ms": 25000,
+          "started_at": "2026-11-05T16:36:13.090826622Z",
+          "first_write_at": "2026-11-05T16:36:13.091044514Z",
+          "last_write_at": "2026-11-05T16:36:30.467712132Z",
+          "finished_at": "2026-11-05T16:36:30.467736991Z",
+          "elapsed_ms": 17376.910366,
+          "average_bytes_per_second": 482744.5053991481
+        },
+        "receive": {
+          "schema_version": 1,
+          "method": "synthetic_tcp_receive",
+          "os": "linux",
+          "architecture": "amd64",
+          "go_version": "go1.27.3",
+          "listen": "10.203.0.6:46002",
+          "requested_bytes": 8388608,
+          "received_bytes": 8388608,
+          "block_bytes": 16384,
+          "timeout_ms": 28000,
+          "started_at": "2026-11-05T16:36:13.060666438Z",
+          "first_read_at": "2026-11-05T16:36:13.091243373Z",
+          "last_read_at": "2026-11-05T16:36:30.637116805Z",
+          "finished_at": "2026-11-05T16:36:30.637120693Z",
+          "elapsed_ms": 17576.454251,
+          "receive_elapsed_ms": 17545.87732,
+          "average_bytes_per_second": 478095.6715363607
+        },
+        "latency": {
+          "schema_version": 1,
+          "method": "tcp_connect",
+          "coopace_version": "dev",
+          "go_version": "go1.27.3",
+          "os": "linux",
+          "architecture": "amd64",
+          "target": "10.203.0.6:46001",
+          "declared_condition": "loaded",
+          "requested_attempts": 10,
+          "timeout_ms": 1000,
+          "pause_between_attempts_ms": 250,
+          "started_at": "2026-11-05T16:36:14.336429981Z",
+          "finished_at": "2026-11-05T16:36:16.604839213Z",
+          "attempts": [
+            {
+              "started_at": "2026-11-05T16:36:14.336435473Z",
+              "connect_ms": 1.578628
+            },
+            {
+              "started_at": "2026-11-05T16:36:14.588431055Z",
+              "connect_ms": 1.480665
+            },
+            {
+              "started_at": "2026-11-05T16:36:14.840437221Z",
+              "connect_ms": 1.356727
+            },
+            {
+              "started_at": "2026-11-05T16:36:15.091973112Z",
+              "connect_ms": 1.778211
+            },
+            {
+              "started_at": "2026-11-05T16:36:15.344416099Z",
+              "connect_ms": 1.178898
+            },
+            {
+              "started_at": "2026-11-05T16:36:15.595929876Z",
+              "connect_ms": 1.533167
+            },
+            {
+              "started_at": "2026-11-05T16:36:15.847934323Z",
+              "connect_ms": 1.308201
+            },
+            {
+              "started_at": "2026-11-05T16:36:16.099715485Z",
+              "connect_ms": 1.395979
+            },
+            {
+              "started_at": "2026-11-05T16:36:16.351620096Z",
+              "connect_ms": 1.409119
+            },
+            {
+              "started_at": "2026-11-05T16:36:16.603501864Z",
+              "connect_ms": 1.316325
+            }
+          ],
+          "successful": 10,
+          "failed": 0,
+          "connect_ms": {
+            "min": 1.178898,
+            "p50": 1.395979,
+            "p95": 1.778211,
+            "p99": 1.778211,
+            "max": 1.778211
+          }
+        },
+        "measurement_exit_code": 0,
+        "probe_window_inside_application_writes": true,
+        "has_successful_probe": true
+      },
+      "samples": [
+        {
+          "pair": 2,
+          "condition": "loaded",
+          "phase": "before_start",
+          "collected_at": "2026-11-05T16:36:12.990787+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 8777716,
+              "packets": 5890,
+              "drops": 150,
+              "overlimits": 15596,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:14.426822+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 9440790,
+              "packets": 6335,
+              "drops": 164,
+              "overlimits": 16787,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:14.714352+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 9584962,
+              "packets": 6435,
+              "drops": 167,
+              "overlimits": 17055,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:15.000544+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 9727550,
+              "packets": 6533,
+              "drops": 170,
+              "overlimits": 17316,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:15.289996+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 9873166,
+              "packets": 6633,
+              "drops": 172,
+              "overlimits": 17587,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:15.575295+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 10015754,
+              "packets": 6731,
+              "drops": 176,
+              "overlimits": 17852,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:15.860172+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 10158614,
+              "packets": 6833,
+              "drops": 178,
+              "overlimits": 18126,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:16.144518+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 10301202,
+              "packets": 6931,
+              "drops": 181,
+              "overlimits": 18388,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:16.423904+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 10440762,
+              "packets": 7027,
+              "drops": 184,
+              "overlimits": 18644,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "loaded",
+          "phase": "drain",
+          "collected_at": "2026-11-05T16:36:31.288807+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17551790,
+              "packets": 11729,
+              "drops": 295,
+              "overlimits": 31134,
+              "requeues": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "pair": 2,
+      "condition": "idle",
+      "state": "complete",
+      "result": {
+        "latency": {
+          "schema_version": 1,
+          "method": "tcp_connect",
+          "coopace_version": "dev",
+          "go_version": "go1.27.3",
+          "os": "linux",
+          "architecture": "amd64",
+          "target": "10.203.0.6:46001",
+          "declared_condition": "idle",
+          "requested_attempts": 10,
+          "timeout_ms": 1000,
+          "pause_between_attempts_ms": 250,
+          "started_at": "2026-11-05T16:36:32.114321993Z",
+          "finished_at": "2026-11-05T16:36:34.374890519Z",
+          "attempts": [
+            {
+              "started_at": "2026-11-05T16:36:32.114327637Z",
+              "connect_ms": 0.161195
+            },
+            {
+              "started_at": "2026-11-05T16:36:32.365060825Z",
+              "connect_ms": 1.581812
+            },
+            {
+              "started_at": "2026-11-05T16:36:32.617027129Z",
+              "connect_ms": 0.20805
+            },
+            {
+              "started_at": "2026-11-05T16:36:32.867621653Z",
+              "connect_ms": 0.133172
+            },
+            {
+              "started_at": "2026-11-05T16:36:33.118038296Z",
+              "connect_ms": 1.040943
+            },
+            {
+              "started_at": "2026-11-05T16:36:33.369760392Z",
+              "connect_ms": 0.219625
+            },
+            {
+              "started_at": "2026-11-05T16:36:33.62045783Z",
+              "connect_ms": 0.220672
+            },
+            {
+              "started_at": "2026-11-05T16:36:33.870933576Z",
+              "connect_ms": 0.132088
+            },
+            {
+              "started_at": "2026-11-05T16:36:34.121581929Z",
+              "connect_ms": 0.207949
+            },
+            {
+              "started_at": "2026-11-05T16:36:34.372109158Z",
+              "connect_ms": 0.728545
+            }
+          ],
+          "successful": 10,
+          "failed": 0,
+          "connect_ms": {
+            "min": 0.132088,
+            "p50": 0.20805,
+            "p95": 1.581812,
+            "p99": 1.581812,
+            "max": 1.581812
+          }
+        },
+        "measurement_exit_code": 0
+      },
+      "samples": [
+        {
+          "pair": 2,
+          "condition": "idle",
+          "phase": "before_start",
+          "collected_at": "2026-11-05T16:36:31.883346+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17551790,
+              "packets": 11729,
+              "drops": 295,
+              "overlimits": 31134,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:32.164708+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17552062,
+              "packets": 11733,
+              "drops": 295,
+              "overlimits": 31142,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:32.460816+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17552334,
+              "packets": 11737,
+              "drops": 295,
+              "overlimits": 31142,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:32.754302+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17552606,
+              "packets": 11741,
+              "drops": 295,
+              "overlimits": 31150,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:33.058990+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17552878,
+              "packets": 11745,
+              "drops": 295,
+              "overlimits": 31158,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:33.349065+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17553150,
+              "packets": 11749,
+              "drops": 295,
+              "overlimits": 31160,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:33.635668+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17553694,
+              "packets": 11757,
+              "drops": 295,
+              "overlimits": 31174,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:33.922489+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17553966,
+              "packets": 11761,
+              "drops": 295,
+              "overlimits": 31182,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:34.207117+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17554238,
+              "packets": 11765,
+              "drops": 295,
+              "overlimits": 31189,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "condition": "idle",
+          "phase": "drain",
+          "collected_at": "2026-11-05T16:36:35.078080+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17554444,
+              "packets": 11768,
+              "drops": 295,
+              "overlimits": 31189,
+              "requeues": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "pair": 3,
+      "condition": "idle",
+      "state": "complete",
+      "result": {
+        "latency": {
+          "schema_version": 1,
+          "method": "tcp_connect",
+          "coopace_version": "dev",
+          "go_version": "go1.27.3",
+          "os": "linux",
+          "architecture": "amd64",
+          "target": "10.203.0.6:46001",
+          "declared_condition": "idle",
+          "requested_attempts": 10,
+          "timeout_ms": 1000,
+          "pause_between_attempts_ms": 250,
+          "started_at": "2026-11-05T16:36:35.978145993Z",
+          "finished_at": "2026-11-05T16:36:38.247323864Z",
+          "attempts": [
+            {
+              "started_at": "2026-11-05T16:36:35.978150534Z",
+              "connect_ms": 0.257122
+            },
+            {
+              "started_at": "2026-11-05T16:36:36.228687642Z",
+              "connect_ms": 0.142613
+            },
+            {
+              "started_at": "2026-11-05T16:36:36.47977889Z",
+              "connect_ms": 0.182191
+            },
+            {
+              "started_at": "2026-11-05T16:36:36.730916998Z",
+              "connect_ms": 0.212287
+            },
+            {
+              "started_at": "2026-11-05T16:36:36.984316293Z",
+              "connect_ms": 1.847717
+            },
+            {
+              "started_at": "2026-11-05T16:36:37.237437341Z",
+              "connect_ms": 1.681656
+            },
+            {
+              "started_at": "2026-11-05T16:36:37.489727548Z",
+              "connect_ms": 4.813926
+            },
+            {
+              "started_at": "2026-11-05T16:36:37.745740629Z",
+              "connect_ms": 0.27121
+            },
+            {
+              "started_at": "2026-11-05T16:36:37.996542852Z",
+              "connect_ms": 0.159224
+            },
+            {
+              "started_at": "2026-11-05T16:36:38.247127674Z",
+              "connect_ms": 0.160544
+            }
+          ],
+          "successful": 10,
+          "failed": 0,
+          "connect_ms": {
+            "min": 0.142613,
+            "p50": 0.212287,
+            "p95": 4.813926,
+            "p99": 4.813926,
+            "max": 4.813926
+          }
+        },
+        "measurement_exit_code": 0
+      },
+      "samples": [
+        {
+          "pair": 3,
+          "condition": "idle",
+          "phase": "before_start",
+          "collected_at": "2026-11-05T16:36:35.662427+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17554444,
+              "packets": 11768,
+              "drops": 295,
+              "overlimits": 31189,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:36.247351+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17554988,
+              "packets": 11776,
+              "drops": 295,
+              "overlimits": 31205,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:36.552482+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17555260,
+              "packets": 11780,
+              "drops": 295,
+              "overlimits": 31210,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:36.870748+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17555532,
+              "packets": 11784,
+              "drops": 295,
+              "overlimits": 31215,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:37.217123+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17555804,
+              "packets": 11788,
+              "drops": 295,
+              "overlimits": 31215,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:37.552763+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17556282,
+              "packets": 11795,
+              "drops": 295,
+              "overlimits": 31215,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:37.859022+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17556554,
+              "packets": 11799,
+              "drops": 295,
+              "overlimits": 31222,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "idle",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:38.143837+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17556826,
+              "packets": 11803,
+              "drops": 295,
+              "overlimits": 31230,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "idle",
+          "phase": "drain",
+          "collected_at": "2026-11-05T16:36:38.896352+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17557098,
+              "packets": 11807,
+              "drops": 295,
+              "overlimits": 31238,
+              "requeues": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "pair": 3,
+      "condition": "loaded",
+      "state": "complete",
+      "result": {
+        "send": {
+          "schema_version": 1,
+          "method": "synthetic_tcp_send",
+          "os": "linux",
+          "architecture": "amd64",
+          "go_version": "go1.27.3",
+          "target": "10.203.0.6:46002",
+          "requested_bytes": 8388608,
+          "written_bytes": 8388608,
+          "requested_bytes_per_second": 1048576,
+          "block_bytes": 16384,
+          "timeout_ms": 25000,
+          "started_at": "2026-11-05T16:36:39.667910121Z",
+          "first_write_at": "2026-11-05T16:36:39.668094933Z",
+          "last_write_at": "2026-11-05T16:36:57.020437545Z",
+          "finished_at": "2026-11-05T16:36:57.020468338Z",
+          "elapsed_ms": 17352.558211,
+          "average_bytes_per_second": 483421.97720923694
+        },
+        "receive": {
+          "schema_version": 1,
+          "method": "synthetic_tcp_receive",
+          "os": "linux",
+          "architecture": "amd64",
+          "go_version": "go1.27.3",
+          "listen": "10.203.0.6:46002",
+          "requested_bytes": 8388608,
+          "received_bytes": 8388608,
+          "block_bytes": 16384,
+          "timeout_ms": 28000,
+          "started_at": "2026-11-05T16:36:39.638208019Z",
+          "first_read_at": "2026-11-05T16:36:39.668294806Z",
+          "last_read_at": "2026-11-05T16:36:57.213031338Z",
+          "finished_at": "2026-11-05T16:36:57.213034059Z",
+          "elapsed_ms": 17574.826045,
+          "receive_elapsed_ms": 17544.739252,
+          "average_bytes_per_second": 478126.6839884068
+        },
+        "latency": {
+          "schema_version": 1,
+          "method": "tcp_connect",
+          "coopace_version": "dev",
+          "go_version": "go1.27.3",
+          "os": "linux",
+          "architecture": "amd64",
+          "target": "10.203.0.6:46001",
+          "declared_condition": "loaded",
+          "requested_attempts": 10,
+          "timeout_ms": 1000,
+          "pause_between_attempts_ms": 250,
+          "started_at": "2026-11-05T16:36:40.901870557Z",
+          "finished_at": "2026-11-05T16:36:43.169824191Z",
+          "attempts": [
+            {
+              "started_at": "2026-11-05T16:36:40.901875069Z",
+              "connect_ms": 0.983971
+            },
+            {
+              "started_at": "2026-11-05T16:36:41.153402926Z",
+              "connect_ms": 1.340776
+            },
+            {
+              "started_at": "2026-11-05T16:36:41.404954203Z",
+              "connect_ms": 1.732284
+            },
+            {
+              "started_at": "2026-11-05T16:36:41.657040499Z",
+              "connect_ms": 1.501898
+            },
+            {
+              "started_at": "2026-11-05T16:36:41.909107756Z",
+              "connect_ms": 1.284625
+            },
+            {
+              "started_at": "2026-11-05T16:36:42.160888882Z",
+              "connect_ms": 1.259148
+            },
+            {
+              "started_at": "2026-11-05T16:36:42.412626594Z",
+              "connect_ms": 1.41239
+            },
+            {
+              "started_at": "2026-11-05T16:36:42.664350032Z",
+              "connect_ms": 1.628893
+            },
+            {
+              "started_at": "2026-11-05T16:36:42.916483053Z",
+              "connect_ms": 1.27372
+            },
+            {
+              "started_at": "2026-11-05T16:36:43.168023547Z",
+              "connect_ms": 1.757886
+            }
+          ],
+          "successful": 10,
+          "failed": 0,
+          "connect_ms": {
+            "min": 0.983971,
+            "p50": 1.340776,
+            "p95": 1.757886,
+            "p99": 1.757886,
+            "max": 1.757886
+          }
+        },
+        "measurement_exit_code": 0,
+        "probe_window_inside_application_writes": true,
+        "has_successful_probe": true
+      },
+      "samples": [
+        {
+          "pair": 3,
+          "condition": "loaded",
+          "phase": "before_start",
+          "collected_at": "2026-11-05T16:36:39.582886+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 17557098,
+              "packets": 11807,
+              "drops": 295,
+              "overlimits": 31238,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:41.014895+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 18226228,
+              "packets": 12256,
+              "drops": 310,
+              "overlimits": 32440,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:41.299842+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 18368816,
+              "packets": 12354,
+              "drops": 311,
+              "overlimits": 32700,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:41.585115+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 18511404,
+              "packets": 12452,
+              "drops": 314,
+              "overlimits": 32961,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:41.870504+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 18653992,
+              "packets": 12550,
+              "drops": 317,
+              "overlimits": 33223,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:42.155290+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 18796580,
+              "packets": 12648,
+              "drops": 320,
+              "overlimits": 33485,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:42.440493+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 18939440,
+              "packets": 12750,
+              "drops": 322,
+              "overlimits": 33759,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:42.718572+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 19079000,
+              "packets": 12846,
+              "drops": 326,
+              "overlimits": 34018,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "loaded",
+          "phase": "running",
+          "collected_at": "2026-11-05T16:36:43.003225+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 19220074,
+              "packets": 12943,
+              "drops": 328,
+              "overlimits": 34280,
+              "requeues": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "condition": "loaded",
+          "phase": "drain",
+          "collected_at": "2026-11-05T16:36:57.852190+00:00",
+          "statistics": {
+            "counters": {
+              "bytes": 26331172,
+              "packets": 17646,
+              "drops": 441,
+              "overlimits": 46761,
+              "requeues": 0
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
