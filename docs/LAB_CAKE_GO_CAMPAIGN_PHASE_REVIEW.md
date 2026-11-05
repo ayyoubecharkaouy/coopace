@@ -4,7 +4,7 @@
 
 Le module `scripts/lab_cake_go_campaign_review.py` expose `replay(folder, report, tools, owned)`. Cette première sous-étape de relecture traite les preuves des six phases, ou de la première phase idle suivie du premier ready chargé en mode panne. Elle ne réutilise pas le verdict du [rapport global](LAB_CAKE_GO_CAMPAIGN_REPORT.md).
 
-**Le raccordement au dossier figé et au contexte global reste à développer**, ainsi que le lanceur natif. Ce module ne publie ni `validation.json`, ni certificat natif. La [préparation seule](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) conserve `native_launcher_available: false`.
+**Le [raccordement global et au dossier figé](LAB_CAKE_GO_CAMPAIGN_GLOBAL_REVIEW.md) est maintenant livré.** Le lanceur natif reste à développer. Ce module ne publie ni `validation.json`, ni certificat natif. La [préparation seule](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) conserve `native_launcher_available: false`.
 
 ## Entrées et sortie
 
@@ -31,7 +31,7 @@ En mode panne, le dialogue doit s’arrêter après la vérification des trois h
 
 ## Limites et raccordement restant
 
-Le futur relecteur global devra vérifier les manifestes et objets Git, les quatre provenances Go, la phase Go et ses appels, les commandes du passage IPv4, toute la topologie, les codes OS des deux modes, les groupes, le nettoyage et l’absence finale des ressources/PID. Il devra rapprocher les décisions recalculées avec le rapport final et figer les empreintes du dossier avant/après relecture.
+Le [relecteur global](LAB_CAKE_GO_CAMPAIGN_GLOBAL_REVIEW.md) vérifie les manifestes et objets Git, les quatre provenances Go, la phase Go et ses appels, les commandes du passage IPv4, toute la topologie, les codes OS des deux modes, les groupes, le nettoyage et l’absence finale des ressources/PID. Il rapproche les décisions recalculées avec le rapport final et fige les empreintes du dossier avant/après relecture.
 
 Ce module ne lance aucune commande Git, Go, ip, tc ou ping, n’envoie aucun signal, ne nettoie rien et n’écrit pas les preuves. Ses calculs utilisent les fichiers conservés et les validations pures partagées. Une qualification de charge locale n’est pas une démonstration du bénéfice propre à Coopace.
 
@@ -45,4 +45,4 @@ Les tests synthétiques couvrent les six phases, les altérations avec empreinte
 
 Validation locale du 3 novembre 2026 : 40 tests ciblés passent en 43,684 s, dont six nouveaux pour la relecture des phases, neuf de calcul, quatorze du dialogue de campagne, six du protocole à flux unique et cinq du verdict global. Le test des journaux réels utilise des processus Linux et un noyau réseau simulé. La suite complète n’a pas été relancée pour cet ajout autonome.
 
-Prochaine sous-étape : raccorder cette relecture aux preuves globales Go/IPv4 et au dossier figé, puis au lanceur natif dans un dossier neuf.
+Le [raccordement Go/IPv4 et au dossier figé](LAB_CAKE_GO_CAMPAIGN_GLOBAL_REVIEW.md) est livré. Prochaine sous-étape : lanceur des deux modes et nouvelle préparation avant les essais natifs.

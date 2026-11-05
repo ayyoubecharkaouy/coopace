@@ -63,4 +63,4 @@ Validation locale du 3 novembre 2026 : 47 tests ciblés passent en 93,895 s, don
 
 La [préparation des entrées](LAB_CAKE_GO_CAMPAIGN_PREPARE.md) est livrée. La prochaine sous-étape est la relecture indépendante avec lanceur, avant les essais natifs dans des dossiers neufs.
 
-La [relecture indépendante des phases](LAB_CAKE_GO_CAMPAIGN_PHASE_REVIEW.md) est maintenant livrée comme première sous-étape. Elle ne publie aucun certificat : le raccordement au contexte Go/IPv4 et au dossier figé, ainsi que le lanceur, restent à développer.
+La [relecture indépendante des phases](LAB_CAKE_GO_CAMPAIGN_PHASE_REVIEW.md) est maintenant livrée comme première sous-étape. Elle ne publie aucun certificat. Le [raccordement Go/IPv4 et au dossier figé](LAB_CAKE_GO_CAMPAIGN_GLOBAL_REVIEW.md) est maintenant livré ; le lanceur reste à développer.

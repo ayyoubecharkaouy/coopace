@@ -103,20 +103,23 @@ def events(folder, session):
     return result
 
 
-def validate_control(folder, report, expected_tools, expected_sources, expected_build, *, path_validator=None):
+def validate_control(folder, report, expected_tools, expected_sources, expected_build, *, path_validator=None, campaign_validator=None):
     """Recompute one control; caller independently verifies frozen inputs first."""
     fields = {"schema_version","kind","state","mode","reference","session_id","cleanup_verified","traffic_generated",
               "go_phase","traffic_group","topology","queue_samples","traffic_statistics_delta","flow","congestion",
               "traffic_coverage","environment","namespaces","workspace","groups","supervisor_journal"}
     if path_validator is not None:
         fields.add("path_check")
-    expected_kind = "lab_cake_go_path_check" if path_validator is not None else "lab_cake_go_active_check"
+    if campaign_validator is not None:
+        require(path_validator is not None, "Relecture IPv4 requise pour la campagne.")
+        fields |= {"technical_valid","load_scenario","connections","comparison","coopace_benefit","phases","assessment"}
+    expected_kind = "lab_cake_go_campaign" if campaign_validator is not None else "lab_cake_go_path_check" if path_validator is not None else "lab_cake_go_active_check"
     require(set(report) == fields and type(report["schema_version"]) is int and report["schema_version"] == 1
             and report["kind"] == expected_kind and report["state"] == "complete"
             and report["cleanup_verified"] is True and report["traffic_generated"] is True,
             "Contrôle incomplet, non nettoyé ou de type incompatible.")
     mode = report["mode"]
-    require(mode in ("check","check-crash") and folder.name == mode, "Mode ou dossier incompatible.")
+    require(mode in (("run","check-crash") if campaign_validator is not None else ("check","check-crash")) and folder.name == mode, "Mode ou dossier incompatible.")
     crash = mode == "check-crash"
     require(report["reference"] == go.protocol.REFERENCE and report["congestion"] == "not_assessed"
             and report["traffic_coverage"] == "synthetic_ipv4_only", "Portée du rapport incompatible.")
@@ -128,7 +131,7 @@ def validate_control(folder, report, expected_tools, expected_sources, expected_
     equal(environment, report["environment"], "Environnement et rapport différents.")
     equal(environment["tools"], expected_tools, "Exécutables différents des entrées figées.")
     equal(environment["source_sha256"], expected_sources, "Sources différentes des entrées figées.")
-    equal(environment["invocation"], {"mode":mode,"purpose":"cake_go_path_then_traffic" if path_validator is not None else "cake_go_then_traffic","reference":go.protocol.REFERENCE}, "Invocation différente.")
+    equal(environment["invocation"], {"mode":mode,"purpose":"cake_go_campaign_collection" if campaign_validator is not None else "cake_go_path_then_traffic" if path_validator is not None else "cake_go_then_traffic","reference":go.protocol.REFERENCE}, "Invocation différente.")
     require(environment["bootstrap_sha256"] == hashlib.sha256(go.BOOTSTRAP.encode()).hexdigest(), "Bootstrap Go différent.")
     phase, group = report["go_phase"], report["traffic_group"]
     require(type(phase['schema_version']) is int and phase["schema_version"] == 1 and phase["kind"] == "lab_cake_go_down_phase" and phase["state"] == "finished"
@@ -173,7 +176,7 @@ def validate_control(folder, report, expected_tools, expected_sources, expected_
     equal(queue["down_statistics_delta"], phase["queue"]["statistics_delta"], "Différence DOWN modifiée.")
     equal(queue["activation_statistics_delta"], collect.cake.queue.statistics_delta(reading(queue["after_go_exit"]), reading(queue["after_activation"])),
           "Différence d’activation non figée.")
-    journal_raw = raw(folder/"supervisor.jsonl",4*1024*1024)
+    journal_raw = raw(folder/"supervisor.jsonl",(16 if campaign_validator is not None else 4)*1024*1024)
     require(journal_raw.endswith(b"\n"), "Journal superviseur tronqué.")
     rows = [go.protocol.document(line,LIMIT) for line in journal_raw.splitlines()]
     elapsed = -1
@@ -188,10 +191,15 @@ def validate_control(folder, report, expected_tools, expected_sources, expected_
         values=[(i,d) for i,d in enumerate(data) if d.get("event") == event]
         require(len(values) == 1, "Transition absente ou répétée : " + event)
         return values[0]
-    order = [one(e)[0] for e in ("environment_verified","resources_owned","go_phase_finished","activation_begin","activation_verified",
-                                  "traffic_launch_intent","traffic_launched","traffic_ready",
-                                  "traffic_kill_intent" if crash else "traffic_continue_intent","traffic_group_stopped",
-                                  "combined_evidence_verified","control_complete")]
+    if campaign_validator is not None:
+        stages=("environment_verified","resources_owned","go_phase_finished","activation_begin","activation_verified",
+                "traffic_launch_intent","traffic_launched","traffic_group_stopped","combined_evidence_verified","control_complete")
+        order=[one(e)[0] for e in stages]
+    else:
+        order = [one(e)[0] for e in ("environment_verified","resources_owned","go_phase_finished","activation_begin","activation_verified",
+                                      "traffic_launch_intent","traffic_launched","traffic_ready",
+                                      "traffic_kill_intent" if crash else "traffic_continue_intent","traffic_group_stopped",
+                                      "combined_evidence_verified","control_complete")]
     require(order == sorted(set(order)), "Phases hors ordre.")
     require(rows[-1]['elapsed_ns']<190_000_000_000,'Durée globale du superviseur incompatible.')
     require(not any(d.get("event") == "control_failed" for d in data), "Échec dans le journal.")
@@ -240,9 +248,10 @@ def validate_control(folder, report, expected_tools, expected_sources, expected_
             if qdiscs:require(collect.cake.queue.statistics_delta(qdiscs[-1],stats)["available"],"Compteur CAKE en baisse.")
             qdiscs.append(stats)
             normalized.append(latest_reading)
-        elif name == "traffic_sample":
+        elif name == ("campaign_sample" if campaign_validator is not None else "traffic_sample"):
             value=event["reading"]
-            equal({k:v for k,v in value.items() if k!="phase"},latest_reading,"Échantillon sans lecture brute correspondante.")
+            extra=("phase","pair","condition","read_started_monotonic_ns","read_finished_monotonic_ns") if campaign_validator is not None else ("phase",)
+            equal({k:v for k,v in value.items() if k not in extra},latest_reading,"Échantillon sans lecture brute correspondante.")
             samples.append(value)
     equal(mutations,activation_arguments(names,expected_tools),"Les quinze changements d’activation ne concordent pas.")
     for label in ("before_activation","after_activation","before_traffic","after_traffic_stop"):
@@ -251,13 +260,26 @@ def validate_control(folder, report, expected_tools, expected_sources, expected_
     validate_topology(queue["topology"],names,down_links,topologies[-1],True)
     equal(samples,report["queue_samples"],"Échantillons du rapport différents du journal.")
     equal(samples,group["queue_samples"],"Échantillons du groupe différents.")
-    require(1<len(samples)<=240 and sum(len(json.dumps(s,ensure_ascii=False,allow_nan=False).encode()) for s in samples)<=1024*1024
+    require(1<len(samples)<=(720 if campaign_validator is not None else 240) and sum(len(json.dumps(s,ensure_ascii=False,allow_nan=False).encode()) for s in samples)<=(4 if campaign_validator is not None else 1)*1024*1024
             and samples[0]["phase"]=="before_driver" and samples[-1]["phase"]==("after_crash_stop" if crash else "after_normal_stop"),
             "Bornes ou étiquettes de collecte incompatibles.")
     delta=collect.cake.queue.statistics_delta(reading(samples[0]),reading(samples[-1]))
     require(delta["available"] and (crash or delta["counters"]["bytes"]>0),"Progression de trafic non confirmée.")
     equal(delta,report["traffic_statistics_delta"],"Différence de trafic incompatible.")
     equal(delta,group["traffic_statistics_delta"],"Différence du groupe incompatible.")
+    if campaign_validator is not None:
+        require(one("control_complete")[1]["cleanup_verified"] is True, "Nettoyage non attesté.")
+        equal(one("traffic_group_stopped")[1], {"event":"traffic_group_stopped","driver_pid":group["driver_pid"],
+              "driver_exit_code":group["driver_exit_code"],"reaped_descendants":group["reaped_descendants"]}, "Arrêt du groupe incohérent.")
+        require(one("traffic_launched")[1]["driver_pid"] == group["driver_pid"], "Leader de lancement différent.")
+        path_facts=path_validator(folder,report,rows,normalized,expected_tools)
+        campaign_facts=campaign_validator(folder,report,expected_tools,owned,expected_build)
+        return {"session_id":session,"namespaces":names,"workspace":report["workspace"],
+                "recorded_pids":[phase["worker_pid"],group["driver_pid"],*summary["tool_pids"],
+                                 *path_facts.pop("recorded_pids"),*campaign_facts.pop("recorded_helper_pids")],
+                "go_worker_exit_code":0,"go_tool_calls":14,"go_journal_records":36,
+                "traffic_driver_exit_code":group["driver_exit_code"],"reaped_traffic_helpers":group["reaped_descendants"],
+                "queue_samples":len(samples),"traffic_statistics_delta":delta,"path_check":path_facts,"campaign":campaign_facts}
     running=[v for v in samples if v["phase"]=="running"]
     require(all(b["elapsed_since_start_ms"]-a["elapsed_since_start_ms"]>=250 for a,b in zip(running,running[1:])),"Cadence de collecte trop rapide.")
     output=raw(folder/"driver.stdout.bin",collect.traffic.OUTPUT_LIMIT)

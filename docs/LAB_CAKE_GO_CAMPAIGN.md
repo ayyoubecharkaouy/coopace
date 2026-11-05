@@ -119,4 +119,4 @@ Les quatorze tests des lecteurs et de l’automate couvrent limites, fragments, 
 
 La comparaison future avec une référence devra notamment harmoniser les contrôles ICMP, la préparation et les observations avant trafic ; des campagnes historiques réalisées à d’autres révisions ne sont pas des bras appariés. Couverture du foyer, IPv6/DNS, restauration réelle, équité, coût système et bénéfice du contrôleur Coopace restent ouverts.
 
-La [relecture indépendante des phases](LAB_CAKE_GO_CAMPAIGN_PHASE_REVIEW.md) est maintenant livrée comme première sous-étape. Elle ne publie aucun certificat : le raccordement au contexte Go/IPv4 et au dossier figé, ainsi que le lanceur, restent à développer.
+La [relecture indépendante des phases](LAB_CAKE_GO_CAMPAIGN_PHASE_REVIEW.md) est maintenant livrée comme première sous-étape. Elle ne publie aucun certificat. Le [raccordement Go/IPv4 et au dossier figé](LAB_CAKE_GO_CAMPAIGN_GLOBAL_REVIEW.md) est maintenant livré ; le lanceur reste à développer.
