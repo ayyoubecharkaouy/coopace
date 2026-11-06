@@ -11,12 +11,15 @@ import (
 	"time"
 
 	"github.com/ayyoubecharkaouy/coopace/apps/gateway/internal/diagnostic"
+	"github.com/ayyoubecharkaouy/coopace/apps/gateway/internal/snapshot"
 	"github.com/ayyoubecharkaouy/coopace/packages/core"
 )
 
-const usage = `Utilisation : coopace-gateway <inspect|plan|help>
+const usage = `Utilisation : coopace-gateway <inspect|snapshot|plan|help>
   inspect  Inventorier interfaces, forwarding, droits et files visibles (Linux).
            --json : émettre un inventaire local JSON v1 sur stdout.
+  snapshot Capturer les options de files de --interface NOM en lecture seule.
+           --json : émettre les lectures détaillées locales ; restauration non implémentée.
   plan     Simuler la planification CAKE depuis --scenario FICHIER, sans collecte.
            --json : émettre la recommandation, ses motifs et sa provenance.
   help     Afficher cette aide.
@@ -29,7 +32,7 @@ func RunContext(ctx context.Context, args []string, version string, stdout, stde
 }
 
 func run(ctx context.Context, args []string, version string, stdout, stderr io.Writer, collect func(context.Context, string) (diagnostic.Report, error)) int {
-	if len(args) == 0 || (len(args) == 1 && (args[0] == "help" || args[0] == "--help" || args[0] == "-h")) || (len(args) == 2 && (args[0] == "inspect" || args[0] == "plan") && (args[1] == "--help" || args[1] == "-h")) {
+	if len(args) == 0 || (len(args) == 1 && (args[0] == "help" || args[0] == "--help" || args[0] == "-h")) || (len(args) == 2 && (args[0] == "inspect" || args[0] == "plan" || args[0] == "snapshot") && (args[1] == "--help" || args[1] == "-h")) {
 		if _, err := io.WriteString(stdout, usage); err != nil {
 			return 1
 		}
@@ -37,6 +40,9 @@ func run(ctx context.Context, args []string, version string, stdout, stderr io.W
 	}
 	if args[0] == "plan" {
 		return runPlan(ctx, args[1:], version, stdout, stderr)
+	}
+	if args[0] == "snapshot" {
+		return runSnapshot(ctx, args[1:], version, stdout, stderr, snapshot.Local)
 	}
 	if args[0] != "inspect" {
 		fmt.Fprintln(stderr, "Commande ou arguments non reconnus ; utiliser coopace-gateway help.")

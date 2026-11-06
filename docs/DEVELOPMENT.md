@@ -2,6 +2,8 @@
 
 ## État des étapes 2.2 à 4.2
 
+La [capture locale des files](GATEWAY_SNAPSHOT.md) ajoute `coopace-gateway snapshot --interface NOM [--json]` en lecture seule : détails du lien, qdisc, classes et trois sélections de filtres, avec validation d'identité et lectures indisponibles explicites. Elle est testée avec sources simulées ; la collecte native du foyer et la restauration restent à réaliser.
+
 L'étape 2.2 est validée sous Linux x86_64 avec Go 1.27.3, installé localement à partir de l'archive officielle vérifiée. Le module Go et les premiers modèles métier sont présents, avec leurs tests.
 
 L'étape 2.3 ajoute le premier agent local. Les commandes de formatage, de test et d'analyse statique réussissent, ainsi que la compilation du binaire et son lancement sous Linux. À l'étape 2.4, la compilation et l'analyse statique pour Windows amd64 sont également validées. L'exécution native Windows reste à effectuer selon [WINDOWS_VALIDATION.md](WINDOWS_VALIDATION.md) ; l'application Android sera développée ultérieurement.

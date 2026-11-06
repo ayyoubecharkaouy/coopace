@@ -76,6 +76,8 @@ L'expérience distinguera la configuration initiale, le moteur configuré manuel
 
 Avant une modification de passerelle réelle, la restauration doit couvrir les objets qui seront réellement modifiés, fonctionner indépendamment du processus de pilotage et être testée lors de son interruption, avec IPv4, IPv6 et DNS. Le modèle demande de consigner ces preuves ; cette restauration de configuration existante n'est pas encore implémentée ou validée.
 
+La commande [`snapshot --interface NOM [--json]`](GATEWAY_SNAPSHOT.md) prépare ce travail avec six lectures détaillées du lien et des files d'une interface explicitement choisie. Elle conserve les options et distingue une liste vide d'une lecture impossible. Sa portée reste partielle et non atomique ; ce rapport ne permet pas de restaurer une configuration.
+
 Pour le laboratoire jetable, les [deux contrôles natifs du superviseur](VALIDATION_LAB_GUARD_2026-10-29.md) valident la récupération de ses processus et la suppression des espaces qu'il crée. Cette preuve limitée ne remplace pas la restauration ci-dessus. Son intégration aux campagnes avec file est [validée en natif](VALIDATION_CAKE_COMPARISON_2026-10-30.md) dans ce périmètre jetable.
 
 Les prochaines décisions dépendent de l'inventaire réel et du choix de la plateforme. Cette préparation ne remplace pas une expérience exécutée et n'autorise aucune intervention automatique.

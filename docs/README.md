@@ -11,6 +11,7 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 | [ROADMAP.md](ROADMAP.md) | Progression par étapes et validations restantes. |
 | [STATIC_CAKE_PLANNING.md](STATIC_CAKE_PLANNING.md) | Première règle Go de planification hors ligne : périmètre, prérequis, décisions et limites avant intégration. |
 | [GATEWAY_PLANNING.md](GATEWAY_PLANNING.md) | Commande `plan`, scénario JSON local strict, motifs, provenance et exemples de simulation. |
+| [GATEWAY_SNAPSHOT.md](GATEWAY_SNAPSHOT.md) | Capture détaillée des files d'une interface Linux explicitement choisie, en lecture seule ; préparation de la restauration. |
 | [LAB_CAKE_EXECUTOR.md](LAB_CAKE_EXECUTOR.md) | Contrat de l’exécuteur Go de laboratoire : profil, session, lien DOWN, supervision, preuves et tests requis. |
 | [CAKE_GO_VALIDATION.md](CAKE_GO_VALIDATION.md) | Catalogue et validateurs CAKE Go purs, unités, fixtures natives, bornes et concordance avec la référence Python. |
 | [LAB_CAKE_CONTEXT.md](LAB_CAKE_CONTEXT.md) | Trames internes, contexte de session, transitions, échéances et vérification en lecture seule des descripteurs Linux. |

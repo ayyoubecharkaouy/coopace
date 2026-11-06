@@ -1,36 +1,40 @@
 # Application passerelle
 
-État : diagnostic en lecture seule implémenté sous Linux et commande de simulation CAKE statique disponible sans collecte réseau. L'environnement isolé produit un rapport partiel, Netlink étant interdit ; un [inventaire complet dans la passerelle virtuelle](../../docs/VALIDATION_VIRTUAL_LAB_2026-10-29.md) est validé sur le PC utilisateur. L'inventaire du réseau du foyer reste à consigner. Le backend du contrôle CAKE DOWN est assemblé en privé et testé avec des outils simulés ; un [processus interne avec journal durable](../../docs/LAB_CAKE_ENTRY.md) est disponible pour le futur lanceur supervisé. La gestion du trafic du foyer, le routage, l’activation et la restauration ne sont pas implémentés.
+État : diagnostic Linux `inspect`, capture détaillée `snapshot` et simulation CAKE statique `plan` disponibles. La gestion du trafic du foyer, son routage et la restauration de sa configuration ne sont pas implémentés. Le laboratoire possède son propre superviseur et ses validations natives ; il reste distinct de ces commandes publiques.
 
-Cette application Go fournit d'abord l'inventaire local. Elle accueillera le pilotage de l'observation et de la gestion du trafic qui traverse réellement la passerelle, avec les règles du noyau et l'adaptation du système pour appliquer des politiques autorisées, en évaluer les effets et restaurer la configuration.
+Cette application Go assemble l'observation locale et les adaptations du système. Elle accueillera les interventions autorisées sur le trafic qui traverse réellement la passerelle, leur évaluation et le retour à la configuration précédente.
 
 ```text
 gateway/
 ├── cmd/
-│   ├── coopace-gateway/     # Commandes publiques inspect/plan
-│   └── coopace-cake-worker/ # Processus interne du contrôle DOWN
+│   ├── coopace-gateway/     # Commandes publiques inspect/snapshot/plan
+│   └── coopace-cake-worker/ # Processus interne Go sur lien DOWN
 └── internal/
-    ├── cli/                # Commandes inspect/plan et affichage
-    ├── diagnostic/         # Inventaire et adaptation système
+    ├── cli/                # Arguments et affichage des commandes publiques
+    ├── diagnostic/         # Inventaire réduit et adaptation système
+    ├── snapshot/           # Capture détaillée locale des files et export
     ├── planning/           # Scénario local et simulation sans collecte
-    ├── labcontrol/         # Session, transport et assemblage du backend DOWN
-    └── buildinfo/          # Provenance du binaire, partagée sans inventaire
+    ├── labcontrol/         # Session, transport, journal et backend DOWN
+    └── buildinfo/          # Provenance du binaire, sans inventaire
 ```
 
 Depuis la racine du dépôt :
 
 ```sh
 sh scripts/go.sh run ./apps/gateway/cmd/coopace-gateway inspect
+sh scripts/go.sh run ./apps/gateway/cmd/coopace-gateway inspect --json
+sh scripts/go.sh run ./apps/gateway/cmd/coopace-gateway snapshot --help
+sh scripts/go.sh run ./apps/gateway/cmd/coopace-gateway plan --scenario docs/examples/cake-plan-propose.json
 ```
 
-Cette commande ne démarre aucun service et ne modifie aucune configuration. Les données indisponibles restent explicites ; aucun outil trouvé ni réglage actif ne suffit à déclarer la passerelle prête. Le [diagnostic, les sources et le protocole préalable aux interventions](../../docs/GATEWAY_DIAGNOSTIC.md) décrivent les limites et les prochaines validations.
+`inspect` inventorie les interfaces visibles, le forwarding, les permissions, les outils, les routes par défaut et les types de files. `inspect --json` émet l'inventaire local v1 réduit, avec valeurs inconnues à `null` et provenance disponible. L'[inventaire complet du laboratoire virtuel](../../docs/VALIDATION_VIRTUAL_LAB_2026-10-29.md) est validé ; celui du foyer reste à consigner. Les sources et limites figurent dans [GATEWAY_DIAGNOSTIC.md](../../docs/GATEWAY_DIAGNOSTIC.md).
 
-`inspect --json` émet un inventaire local v1 sur stdout, avec valeurs inconnues à `null`, horodatage UTC et provenance de compilation disponible. Les types d’export restent dans `internal/diagnostic`, séparés des modèles du noyau et du protocole réseau. La lecture de provenance est partagée via `internal/buildinfo`. Le [protocole de référence initiale](../../docs/GATEWAY_BASELINE.md) et son modèle préparent l’étape 4.2 ; la plateforme du foyer et les références WAN restent à confirmer.
+[`snapshot --interface NOM [--json]`](../../docs/GATEWAY_SNAPSHOT.md) observe explicitement une interface Linux : détails du lien, qdisc, classes et filtres racine/ingress/egress. Les options JSON restent locales et peuvent contenir des adresses et identifiants. Les lectures sont successives, bornées et non exhaustives ; elles ne constituent pas une sauvegarde restaurable. Les tests utilisent des sources simulées ; la collecte complète sur l'interface du foyer reste à effectuer.
 
-Les outils de `scripts/` ont leur propre cycle de vie : connectivité, transfert, séries synthétiques et [supervision indépendante](../../docs/LAB_GUARD.md). Leurs validations ne changent pas les capacités de cette application et ne constituent pas une restauration de passerelle réelle.
+[`plan --scenario FICHIER [--json]`](../../docs/GATEWAY_PLANNING.md) applique la [règle Go de planification statique](../../docs/STATIC_CAKE_PLANNING.md) à un scénario déclaré strict, de 16 Kio maximum. Elle propose le profil du laboratoire, conserve la référence ou s'abstient. Elle n'effectue aucune collecte ni application réseau.
 
-Le moteur réseau dépendra du système : CAKE/SQM est envisagé sous Linux ; une passerelle Windows exige une intégration et une validation spécifiques. Les privilèges et leur séparation restent à définir.
+Ces commandes ne démarrent aucun service et n'enregistrent pas de rapport automatiquement. Aucune interface WAN, couverture du trafic ou autorisation d'intervention n'est déduite d'un inventaire. Le [protocole de référence initiale](../../docs/GATEWAY_BASELINE.md) définit les preuves restant à recueillir avant une intervention réelle.
 
-La [première planification CAKE statique hors ligne](../../docs/STATIC_CAKE_PLANNING.md) est implémentée et testée dans le noyau Go. La [commande `plan --scenario FICHIER [--json]`](../../docs/GATEWAY_PLANNING.md) réalise maintenant ce raccordement : scénario local de 16 Kio maximum, validation stricte, motifs et provenance sur stdout. Elle ne réalise aucune collecte ni application réseau. Le [contrat de l’exécuteur supervisé](../../docs/LAB_CAKE_EXECUTOR.md) est maintenant défini pour un premier contrôle CAKE sur lien DOWN ; le [catalogue et les validateurs purs côté Go](../../docs/CAKE_GO_VALIDATION.md) sont maintenant implémentés dans l’adaptation Linux. Le [contexte de session interne](../../docs/LAB_CAKE_CONTEXT.md) est maintenant implémenté et testé dans `internal/labcontrol`. Le [transport hérité et le pilote privé](../../docs/LAB_CAKE_TRANSPORT.md) sont testés avec de vrais processus et outils simulés. Le [backend natif borné](../../docs/LAB_CAKE_BACKEND.md) est maintenant implémenté dans `platforms/linux` et assemblé en privé par `internal/labcontrol/native_linux.go`, avec tests utilisant des outils simulés. L’[entrée interne et le journal durable](../../docs/LAB_CAKE_ENTRY.md) sont maintenant livrés dans `cmd/coopace-cake-worker` et `internal/labcontrol`. Le [raccordement au superviseur](../../docs/LAB_CAKE_GO_GUARD.md) est maintenant testé avec des opérations simulées ; les [contrôles natifs DOWN sont validés](../../docs/VALIDATION_CAKE_GO_DOWN_2026-11-01.md) en fin normale et après SIGKILL ; la CLI publique conserve `inspect` et `plan`.
+Le processus privé `coopace-cake-worker` appartient au [contrôle supervisé CAKE](../../docs/LAB_CAKE_GO_GUARD.md), avec session, outils épinglés et journal durable. Ses [contrôles natifs DOWN](../../docs/VALIDATION_CAKE_GO_DOWN_2026-11-01.md), le [passage IPv4 puis trafic](../../docs/VALIDATION_CAKE_GO_PATH_2026-11-01.md) et la [campagne répétée Go](../../docs/VALIDATION_CAKE_GO_CAMPAIGN_2026-11-05.md) sont validés. Le superviseur Python active les ressources après la fin du processus Go, mesure le trafic et nettoie ses propres espaces jetables, y compris après panne du pilote. Ce nettoyage ne restaure pas la configuration d'une passerelle existante.
 
-Le [contrat Go puis trafic](../../docs/LAB_CAKE_GO_ACTIVE.md) conserve le processus Go DOWN actuel : il termine avant activation des mêmes ressources par le superviseur. La [phase Go et la gestion des groupes](../../docs/LAB_CAKE_GO_PHASE.md) sont maintenant extraites et testées avec ressources simulées ; [activation et relectures de continuité](../../docs/LAB_CAKE_GO_TOPOLOGY.md) implémentées et testées en simulation ; pilote de trafic et collecte combinée restent à développer ; les commandes publiques `inspect` et `plan` gardent leur périmètre.
+CAKE/SQM est envisagé sous Linux ; une passerelle Windows exige une intégration et une validation spécifiques. OpenWrt n'est pas validé. Les privilèges et leur séparation pour les interventions du produit restent à définir.
