@@ -31,6 +31,8 @@ sh scripts/go.sh run ./apps/gateway/cmd/coopace-gateway plan --scenario docs/exa
 
 [`snapshot --interface NOM [--json]`](../../docs/GATEWAY_SNAPSHOT.md) observe explicitement une interface Linux : détails du lien, qdisc, classes et filtres racine/ingress/egress. Les options JSON restent locales et peuvent contenir des adresses et identifiants. Les lectures sont successives, bornées et non exhaustives ; elles ne constituent pas une sauvegarde restaurable. Les tests utilisent des sources simulées ; la collecte complète sur l'interface du foyer reste à effectuer.
 
+La compatibilité avec les anciennes sorties de classes est bornée : une première sortie vide doit être confirmée par une seconde lecture texte réussie et vide avant de devenir `[]`. Les preuves de cette conversion restent dans le rapport ; les configurations de classes non JSON demeurent indisponibles.
+
 [`plan --scenario FICHIER [--json]`](../../docs/GATEWAY_PLANNING.md) applique la [règle Go de planification statique](../../docs/STATIC_CAKE_PLANNING.md) à un scénario déclaré strict, de 16 Kio maximum. Elle propose le profil du laboratoire, conserve la référence ou s'abstient. Elle n'effectue aucune collecte ni application réseau.
 
 Ces commandes ne démarrent aucun service et n'enregistrent pas de rapport automatiquement. Aucune interface WAN, couverture du trafic ou autorisation d'intervention n'est déduite d'un inventaire. Le [protocole de référence initiale](../../docs/GATEWAY_BASELINE.md) définit les preuves restant à recueillir avant une intervention réelle.

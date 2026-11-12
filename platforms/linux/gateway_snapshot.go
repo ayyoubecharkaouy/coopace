@@ -1,6 +1,7 @@
 package linux
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -30,6 +31,23 @@ type GatewaySnapshotReading struct {
 	Available  bool            `json:"available"`
 	Value      json.RawMessage `json:"value"`
 	Reason     string          `json:"reason,omitempty"`
+	// A legacy tc class dump may succeed without emitting JSON. Normalization
+	// is allowed only after a second successful, empty, plain-text class dump.
+	Normalization       string                        `json:"normalization,omitempty"`
+	SourceOutput        *string                       `json:"source_output,omitempty"`
+	ClassesTextFallback *GatewaySnapshotClassFallback `json:"classes_text_fallback,omitempty"`
+}
+
+// GatewaySnapshotClassFallback preserves the extra read-only command used for
+// legacy tc compatibility. StdoutBase64 is exact stdout, even if it is not UTF-8;
+// null means no retained output, while an empty base64 string means zero bytes.
+type GatewaySnapshotClassFallback struct {
+	Arguments    []string  `json:"arguments"`
+	StartedAt    time.Time `json:"started_at"`
+	FinishedAt   time.Time `json:"finished_at"`
+	Succeeded    bool      `json:"succeeded"`
+	StdoutBase64 []byte    `json:"stdout_base64"`
+	Reason       string    `json:"reason,omitempty"`
 }
 
 type GatewayQueueSnapshot struct {
@@ -127,8 +145,23 @@ func collectGatewayQueueSnapshot(ctx context.Context, name string, sources gatew
 		if err == nil {
 			data, err = sources.run(ctx, tool.path, query.args...)
 		}
+		if err == nil && query.section == "classes" && emptyGatewaySnapshotOutput(data) {
+			if err := ctx.Err(); err != nil {
+				return GatewayQueueSnapshot{}, err
+			}
+			original := string(data)
+			reading.SourceOutput = &original
+			reading.ClassesTextFallback, err = confirmGatewaySnapshotEmptyClasses(ctx, name, tool.path, sources.run)
+			if err == nil {
+				data = []byte("[]")
+				reading.Normalization = "empty_classes_confirmed_by_text"
+			}
+		}
 		if err == nil {
 			err = validateGatewaySnapshotArray(data, query.section, result.Interface)
+			if err != nil && query.section == "classes" {
+				err = fmt.Errorf("sortie de classes non JSON ou invalide (compatibilité tc à vérifier) : %w", err)
+			}
 		}
 		reading.FinishedAt = time.Now().UTC()
 		if err != nil {
@@ -150,5 +183,34 @@ func collectGatewayQueueSnapshot(ctx context.Context, name string, sources gatew
 		return GatewayQueueSnapshot{}, err
 	}
 	result.FinishedAt = time.Now().UTC()
+	return result, nil
+}
+
+// Only bounded ASCII JSON whitespace qualifies for the compatibility path.
+// Invalid UTF-8, nonempty text, oversized output and other sections stay unknown.
+func emptyGatewaySnapshotOutput(data []byte) bool {
+	return len(data) <= gatewayOutputLimit && len(bytes.Trim(data, " \t\r\n")) == 0
+}
+
+func confirmGatewaySnapshotEmptyClasses(ctx context.Context, name, path string, run func(context.Context, string, ...string) ([]byte, error)) (*GatewaySnapshotClassFallback, error) {
+	result := &GatewaySnapshotClassFallback{Arguments: []string{"-s", "-d", "class", "show", "dev", name}, StartedAt: time.Now().UTC()}
+	data, err := run(ctx, path, result.Arguments...)
+	result.FinishedAt = time.Now().UTC()
+	if err != nil {
+		result.Reason = err.Error()
+		return result, fmt.Errorf("confirmation texte des classes indisponible : %w", err)
+	}
+	result.Succeeded = true
+	// The native runner already enforces this limit; keep the pure collector
+	// bounded too and never publish oversized fallback evidence.
+	if len(data) > gatewayOutputLimit {
+		result.Reason = "sortie de confirmation des classes trop volumineuse"
+		return result, fmt.Errorf("%s", result.Reason)
+	}
+	result.StdoutBase64 = append([]byte{}, data...)
+	if !emptyGatewaySnapshotOutput(data) {
+		result.Reason = "sortie texte des classes non vide ; absence de classes non confirmée"
+		return result, fmt.Errorf("%s", result.Reason)
+	}
 	return result, nil
 }
