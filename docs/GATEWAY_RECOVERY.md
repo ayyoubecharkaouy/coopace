@@ -1,6 +1,6 @@
 # Préparer et contrôler le retour aux files initiales
 
-État : enregistrement de captures, import strict, évaluation du profil `noqueue-root-v1` et comparaison de deux observations implémentés. Les commandes sont utilisables depuis la CLI publique. Elles ne modifient pas le réseau ; l'exécuteur de restauration et sa supervision indépendante restent à implémenter et à valider en natif.
+État : enregistrement de captures, import strict, évaluation du profil `noqueue-root-v1` et comparaison de deux observations implémentés. Les commandes sont utilisables depuis la CLI publique et ne modifient pas le réseau. Le [moteur supervisé de laboratoire](LAB_QUEUE_RECOVERY.md) est maintenant implémenté et testé avec réseau simulé ; ses essais réseau natifs restent à réaliser. L'exécuteur de restauration du foyer reste à développer.
 
 Cette étape exploite la [capture locale confirmée sur `wlp3s0`](VALIDATION_GATEWAY_SNAPSHOT_2026-11-12.md). Le logiciel sait maintenant reconnaître un premier état initial, refuser les dépendances non prises en charge et vérifier si une observation ultérieure correspond aux champs sélectionnés de cet état.
 
@@ -64,7 +64,7 @@ L'import accepte des fichiers ordinaires sans lien symbolique, limités à 8 Mio
 
 Les codes du binaire sont `0` pour un candidat ou une correspondance des champs sélectionnés, `3` pour un refus/écart/résultat indéterminé valide, `2` pour les arguments invalides, `1` pour une erreur de fichier, de collecte ou d'écriture, et `130` pour une annulation. L'aide retourne `0`. `go run` peut traduire les codes du binaire en son propre code ; lire aussi sa ligne `exit status`.
 
-Les tests couvrent import/export, preuves incohérentes, limites, compteurs élevés, refus de dépendances, différences de configuration, observations identiques, chronologie, annulation, erreurs de fichiers et sorties, enregistrement exclusif et parcours CLI hors ligne ou avec collecteur simulé. La prochaine étape est l'exécuteur de laboratoire sous supervision : installation possédée, retrait ciblé, nouvelle capture et contrôle de l'état initial après fin normale puis panne. L'étape 4.2 reste ouverte pour le réseau réel.
+Les tests couvrent import/export, preuves incohérentes, limites, compteurs élevés, refus de dépendances, différences de configuration, observations identiques, chronologie, annulation, erreurs de fichiers et sorties, enregistrement exclusif et parcours CLI hors ligne ou avec collecteur simulé. L'[exécuteur de laboratoire](LAB_QUEUE_RECOVERY.md) implémente maintenant l'installation possédée, le retrait ciblé, la nouvelle capture et le contrôle de l'état initial après fin normale puis panne du pilote. Ses tests utilisent du réseau simulé et de vrais processus ; son lanceur natif est disponible. L'étape 4.2 reste ouverte pour le réseau réel.
 
 Vérification du 12 novembre 2026 : tests ciblés sans cache, suite Go complète, `go vet ./...` et compilation Windows amd64 réussis. Cinq parcours du binaire Linux sur des captures synthétiques confirment les décisions candidat/correspondance/écart/indéterminé/refus et leurs codes de sortie. Le parcours capture → enregistrement → plan → comparaison est testé avec un collecteur simulé ; aucun essai natif de restauration n’est déclaré par ces contrôles.
 

@@ -2,7 +2,9 @@
 
 ## État des étapes 2.2 à 4.2
 
-La [préparation de restauration](GATEWAY_RECOVERY.md) est utilisable : `snapshot --output`, `restore-plan` et `restore-check`, avec import strict, premier profil noqueue et comparaison avant/après. Les tests couvrent les refus, la provenance des fichiers, l'enregistrement sans écrasement et le parcours CLI. L'application de la restauration sous supervision reste à implémenter.
+Le [cycle supervisé de restauration](LAB_QUEUE_RECOVERY.md) est implémenté dans le laboratoire : installation CAKE possédée, arrêt normal/forcé du pilote, retrait ciblé, puis comparaison Go à la référence noqueue avant nettoyage. Les tests utilisent réseau simulé et vrais processus. `prepare-queue-recovery.py` compile et fige le lanceur natif ; l'application publique sur le foyer reste à développer.
+
+La [préparation de restauration](GATEWAY_RECOVERY.md) est utilisable : `snapshot --output`, `restore-plan` et `restore-check`, avec import strict, premier profil noqueue et comparaison avant/après. Les tests couvrent les refus, la provenance des fichiers, l'enregistrement sans écrasement et le parcours CLI. L'application de la restauration sous supervision sur le foyer reste à implémenter ; son premier cycle de laboratoire est livré séparément.
 
 La [capture locale des files](GATEWAY_SNAPSHOT.md) ajoute `coopace-gateway snapshot --interface NOM [--json]` en lecture seule : détails du lien, qdisc, classes et trois sélections de filtres, avec validation d'identité et lectures indisponibles explicites. Elle est testée avec sources simulées ; les [six sections sont confirmées sur `wlp3s0`](VALIDATION_GATEWAY_SNAPSHOT_2026-11-12.md) dans le rapport utilisateur. Les références WAN, la couverture du trafic du foyer et la restauration restent à réaliser.
 
