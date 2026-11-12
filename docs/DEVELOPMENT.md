@@ -2,7 +2,7 @@
 
 ## État des étapes 2.2 à 4.2
 
-La [capture locale des files](GATEWAY_SNAPSHOT.md) ajoute `coopace-gateway snapshot --interface NOM [--json]` en lecture seule : détails du lien, qdisc, classes et trois sélections de filtres, avec validation d'identité et lectures indisponibles explicites. Elle est testée avec sources simulées ; la collecte native du foyer et la restauration restent à réaliser.
+La [capture locale des files](GATEWAY_SNAPSHOT.md) ajoute `coopace-gateway snapshot --interface NOM [--json]` en lecture seule : détails du lien, qdisc, classes et trois sélections de filtres, avec validation d'identité et lectures indisponibles explicites. Elle est testée avec sources simulées ; les [six sections sont confirmées sur `wlp3s0`](VALIDATION_GATEWAY_SNAPSHOT_2026-11-12.md) dans le rapport utilisateur. Les références WAN, la couverture du trafic du foyer et la restauration restent à réaliser.
 
 L'étape 2.2 est validée sous Linux x86_64 avec Go 1.27.3, installé localement à partir de l'archive officielle vérifiée. Le module Go et les premiers modèles métier sont présents, avec leurs tests.
 
