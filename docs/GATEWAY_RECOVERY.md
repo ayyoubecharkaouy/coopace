@@ -4,6 +4,8 @@
 
 Cette étape exploite la [capture locale confirmée sur `wlp3s0`](VALIDATION_GATEWAY_SNAPSHOT_2026-11-12.md). Le logiciel sait maintenant reconnaître un premier état initial, refuser les dépendances non prises en charge et vérifier si une observation ultérieure correspond aux champs sélectionnés de cet état.
 
+La commande directe `restore-plan --interface wlp3s0` est également confirmée par le retour utilisateur du 12 novembre 2026 : profil `noqueue-root-v1` reconnu, candidat aux essais de restauration. La collecte et l'évaluation en lecture seule fonctionnent ensemble sur ce PC ; l'enregistrement avec `--output`, la comparaison native et l'exécution de restauration restent à confirmer séparément.
+
 ## Utilisation sur le PC utilisateur
 
 Évaluation immédiate, sans fichier et sans `sudo` :
@@ -65,3 +67,5 @@ Les codes du binaire sont `0` pour un candidat ou une correspondance des champs 
 Les tests couvrent import/export, preuves incohérentes, limites, compteurs élevés, refus de dépendances, différences de configuration, observations identiques, chronologie, annulation, erreurs de fichiers et sorties, enregistrement exclusif et parcours CLI hors ligne ou avec collecteur simulé. La prochaine étape est l'exécuteur de laboratoire sous supervision : installation possédée, retrait ciblé, nouvelle capture et contrôle de l'état initial après fin normale puis panne. L'étape 4.2 reste ouverte pour le réseau réel.
 
 Vérification du 12 novembre 2026 : tests ciblés sans cache, suite Go complète, `go vet ./...` et compilation Windows amd64 réussis. Cinq parcours du binaire Linux sur des captures synthétiques confirment les décisions candidat/correspondance/écart/indéterminé/refus et leurs codes de sortie. Le parcours capture → enregistrement → plan → comparaison est testé avec un collecteur simulé ; aucun essai natif de restauration n’est déclaré par ces contrôles.
+
+Le retour terminal utilisateur de `restore-plan --interface wlp3s0`, reçu ensuite, affiche le candidat attendu et l'empreinte de référence `cab95fdbe13a538b15568bef4a99cbb4c7e42b5294e6ad9260fe3901076069e4`. Il conserve les limites « restauration réseau non implémentée » et « continuité de l'espace réseau et couverture du foyer non établies ». La capture complète correspondant à cette empreinte et le code de sortie ne sont pas fournis dans ce retour ; l'empreinte est transcrite, sans relecture indépendante de son fichier source. Le commit du dépôt au moment de la consignation est `31f0740`, sans attestation de révision du programme par cette sortie texte.
