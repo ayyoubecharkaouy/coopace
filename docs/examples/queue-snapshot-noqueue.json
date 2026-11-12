@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "kind": "gateway_queue_snapshot",
+  "coopace_version": "example-simulated",
+  "os": "linux",
+  "architecture": "amd64",
+  "build": {
+    "go_version": null,
+    "vcs": null,
+    "vcs_revision": null,
+    "vcs_modified": null
+  },
+  "scope": "process_network_namespace",
+  "mode": "read_only",
+  "partial": false,
+  "atomic": false,
+  "completeness": "selected_queries_only",
+  "traffic_coverage": "unverified",
+  "restoration": "not_implemented",
+  "snapshot": {
+    "interface": {
+      "name": "lab0",
+      "index": 2,
+      "mtu": 1500,
+      "flags": 51,
+      "hardware_address": "02:00:00:00:00:01"
+    },
+    "started_at": "2026-11-12T00:00:00Z",
+    "finished_at": "2026-11-12T00:00:01Z",
+    "readings": [
+      {
+        "section": "link",
+        "tool": "ip",
+        "path": "/usr/sbin/ip",
+        "arguments": [
+          "-j",
+          "-d",
+          "link",
+          "show",
+          "dev",
+          "lab0"
+        ],
+        "started_at": "2026-11-12T00:00:00.010000Z",
+        "finished_at": "2026-11-12T00:00:00.080000Z",
+        "available": true,
+        "value": [
+          {
+            "ifindex": 2,
+            "ifname": "lab0",
+            "mtu": 1500,
+            "qdisc": "noqueue",
+            "address": "02:00:00:00:00:01",
+            "link_type": "ether",
+            "operstate": "UP"
+          }
+        ]
+      },
+      {
+        "section": "qdiscs",
+        "tool": "tc",
+        "path": "/usr/sbin/tc",
+        "arguments": [
+          "-j",
+          "-s",
+          "-d",
+          "qdisc",
+          "show",
+          "dev",
+          "lab0"
+        ],
+        "started_at": "2026-11-12T00:00:00.110000Z",
+        "finished_at": "2026-11-12T00:00:00.180000Z",
+        "available": true,
+        "value": [
+          {
+            "kind": "noqueue",
+            "handle": "0:",
+            "root": true,
+            "refcnt": 2,
+            "options": {},
+            "bytes": 0,
+            "packets": 0,
+            "drops": 0,
+            "overlimits": 0,
+            "requeues": 0,
+            "backlog": 0,
+            "qlen": 0
+          }
+        ]
+      },
+      {
+        "section": "classes",
+        "tool": "tc",
+        "path": "/usr/sbin/tc",
+        "arguments": [
+          "-j",
+          "-s",
+          "-d",
+          "class",
+          "show",
+          "dev",
+          "lab0"
+        ],
+        "started_at": "2026-11-12T00:00:00.210000Z",
+        "finished_at": "2026-11-12T00:00:00.280000Z",
+        "available": true,
+        "value": [],
+        "normalization": "empty_classes_confirmed_by_text",
+        "source_output": "",
+        "classes_text_fallback": {
+          "arguments": [
+            "-s",
+            "-d",
+            "class",
+            "show",
+            "dev",
+            "lab0"
+          ],
+          "started_at": "2026-11-12T00:00:00.240000Z",
+          "finished_at": "2026-11-12T00:00:00.260000Z",
+          "succeeded": true,
+          "stdout_base64": ""
+        }
+      },
+      {
+        "section": "filters_root",
+        "tool": "tc",
+        "path": "/usr/sbin/tc",
+        "arguments": [
+          "-j",
+          "-s",
+          "-d",
+          "filter",
+          "show",
+          "dev",
+          "lab0",
+          "root"
+        ],
+        "started_at": "2026-11-12T00:00:00.310000Z",
+        "finished_at": "2026-11-12T00:00:00.380000Z",
+        "available": true,
+        "value": []
+      },
+      {
+        "section": "filters_ingress",
+        "tool": "tc",
+        "path": "/usr/sbin/tc",
+        "arguments": [
+          "-j",
+          "-s",
+          "-d",
+          "filter",
+          "show",
+          "dev",
+          "lab0",
+          "ingress"
+        ],
+        "started_at": "2026-11-12T00:00:00.410000Z",
+        "finished_at": "2026-11-12T00:00:00.480000Z",
+        "available": true,
+        "value": []
+      },
+      {
+        "section": "filters_egress",
+        "tool": "tc",
+        "path": "/usr/sbin/tc",
+        "arguments": [
+          "-j",
+          "-s",
+          "-d",
+          "filter",
+          "show",
+          "dev",
+          "lab0",
+          "egress"
+        ],
+        "started_at": "2026-11-12T00:00:00.510000Z",
+        "finished_at": "2026-11-12T00:00:00.580000Z",
+        "available": true,
+        "value": []
+      }
+    ]
+  }
+}

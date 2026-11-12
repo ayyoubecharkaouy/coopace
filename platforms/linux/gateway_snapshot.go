@@ -91,6 +91,22 @@ type gatewaySnapshotSources struct {
 	run             func(context.Context, string, ...string) ([]byte, error)
 }
 
+type gatewaySnapshotQuery struct {
+	section, tool string
+	args          []string
+}
+
+func gatewaySnapshotQueries(name string) []gatewaySnapshotQuery {
+	return []gatewaySnapshotQuery{
+		{"link", "ip", []string{"-j", "-d", "link", "show", "dev", name}},
+		{"qdiscs", "tc", []string{"-j", "-s", "-d", "qdisc", "show", "dev", name}},
+		{"classes", "tc", []string{"-j", "-s", "-d", "class", "show", "dev", name}},
+		{"filters_root", "tc", []string{"-j", "-s", "-d", "filter", "show", "dev", name, "root"}},
+		{"filters_ingress", "tc", []string{"-j", "-s", "-d", "filter", "show", "dev", name, "ingress"}},
+		{"filters_egress", "tc", []string{"-j", "-s", "-d", "filter", "show", "dev", name, "egress"}},
+	}
+}
+
 func snapshotIdentity(item *net.Interface) GatewaySnapshotInterface {
 	return GatewaySnapshotInterface{Name: item.Name, Index: item.Index, MTU: item.MTU, Flags: uint(item.Flags), HardwareAddress: item.HardwareAddr.String()}
 }
@@ -123,18 +139,7 @@ func collectGatewayQueueSnapshot(ctx context.Context, name string, sources gatew
 		}
 		tools[tool] = resolvedTool{path, err}
 	}
-	queries := []struct {
-		section, tool string
-		args          []string
-	}{
-		{"link", "ip", []string{"-j", "-d", "link", "show", "dev", name}},
-		{"qdiscs", "tc", []string{"-j", "-s", "-d", "qdisc", "show", "dev", name}},
-		{"classes", "tc", []string{"-j", "-s", "-d", "class", "show", "dev", name}},
-		{"filters_root", "tc", []string{"-j", "-s", "-d", "filter", "show", "dev", name, "root"}},
-		{"filters_ingress", "tc", []string{"-j", "-s", "-d", "filter", "show", "dev", name, "ingress"}},
-		{"filters_egress", "tc", []string{"-j", "-s", "-d", "filter", "show", "dev", name, "egress"}},
-	}
-	for _, query := range queries {
+	for _, query := range gatewaySnapshotQueries(name) {
 		if err := ctx.Err(); err != nil {
 			return GatewayQueueSnapshot{}, err
 		}

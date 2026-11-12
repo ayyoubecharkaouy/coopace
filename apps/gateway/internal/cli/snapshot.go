@@ -16,6 +16,7 @@ func runSnapshot(ctx context.Context, args []string, version string, stdout, std
 	flags.SetOutput(stderr)
 	name := flags.String("interface", "", "interface Linux à observer explicitement")
 	asJSON := flags.Bool("json", false, "émettre les options détaillées en JSON local v1")
+	outputPath := flags.String("output", "", "enregistrer un nouveau fichier JSON local, sans écraser un fichier existant")
 	if err := flags.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			return 0
@@ -31,11 +32,17 @@ func runSnapshot(ctx context.Context, args []string, version string, stdout, std
 		return 2
 	}
 	report, err := collect(ctx, version, *name)
+	if err == nil && *outputPath != "" {
+		err = snapshot.SaveExclusive(ctx, *outputPath, report)
+	}
 	if err == nil {
 		if *asJSON {
 			err = snapshot.WriteJSON(stdout, report)
 		} else {
 			err = printSnapshot(stdout, report)
+			if err == nil && *outputPath != "" {
+				_, err = fmt.Fprintf(stdout, "Capture JSON enregistrée dans %q\n", *outputPath)
+			}
 		}
 	}
 	if err != nil {

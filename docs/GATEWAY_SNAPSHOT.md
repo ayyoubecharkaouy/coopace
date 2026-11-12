@@ -16,7 +16,7 @@ sh scripts/go.sh run ./apps/gateway/cmd/coopace-gateway snapshot --interface enp
 
 Ces commandes ne demandent pas `sudo`. Les permissions et les versions locales des outils peuvent rendre certaines lectures indisponibles ; leur échec est conservé dans le rapport. Aucun WAN n'est choisi automatiquement. Les interfaces de boucle locale sont refusées ; une interface désactivée peut être observée. Les noms acceptés comportent 1 à 15 caractères ASCII parmi lettres, chiffres, `_`, `-`, `.`, `:`, sans tiret initial ; `.` et `..` sont refusés.
 
-La sortie texte donne l'état des lectures. `--json` conserve leurs options détaillées dans un document JSON local v1 de type `gateway_queue_snapshot`, sur stdout. Aucun fichier n'est créé automatiquement. Le fichier éventuellement obtenu par redirection reste sous le contrôle de l'utilisateur.
+La sortie texte donne l'état des lectures. `--json` conserve leurs options détaillées dans un document JSON local v1 de type `gateway_queue_snapshot`, sur stdout. L'option explicite `--output FICHIER` peut maintenant enregistrer cette capture JSON dans un nouveau fichier privé, sans écraser un fichier existant ; voir [GATEWAY_RECOVERY.md](GATEWAY_RECOVERY.md). Sans cette option, aucun fichier n'est créé automatiquement.
 
 ## Sources et bornes
 
@@ -57,7 +57,7 @@ La capture est séquentielle (`atomic: false`) et limitée aux requêtes listée
 
 Le JSON détaillé peut contenir l'adresse MAC, des adresses de filtres et d'autres identifiants locaux. Il reste distinct de l'export réduit `inspect`, du protocole de groupe et des données ML. Aucun partage n'est réalisé par cette commande.
 
-`restoration: not_implemented` et `traffic_coverage: unverified` restent explicites. Un dump JSON de `tc` ne constitue pas un script de restauration. Le prochain incrément devra définir les configurations prises en charge, refuser les dépendances non maîtrisées, puis préparer et tester une restauration indépendante avant toute intervention sur le foyer, conformément à [GATEWAY_BASELINE.md](GATEWAY_BASELINE.md).
+`restoration: not_implemented` et `traffic_coverage: unverified` restent explicites. Un dump JSON de `tc` ne constitue pas un script de restauration. L'[évaluation et la comparaison de restauration](GATEWAY_RECOVERY.md) sont maintenant implémentées pour un premier profil noqueue : import strict, candidat/refus et comparaison avec une observation ultérieure. L'exécution de la restauration sous supervision indépendante et sa validation restent à réaliser avant toute intervention sur le foyer, conformément à [GATEWAY_BASELINE.md](GATEWAY_BASELINE.md).
 
 ## Code et vérification
 

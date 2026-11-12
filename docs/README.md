@@ -12,6 +12,7 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 | [STATIC_CAKE_PLANNING.md](STATIC_CAKE_PLANNING.md) | Première règle Go de planification hors ligne : périmètre, prérequis, décisions et limites avant intégration. |
 | [GATEWAY_PLANNING.md](GATEWAY_PLANNING.md) | Commande `plan`, scénario JSON local strict, motifs, provenance et exemples de simulation. |
 | [GATEWAY_SNAPSHOT.md](GATEWAY_SNAPSHOT.md) | Capture détaillée des files d'une interface Linux explicitement choisie, en lecture seule ; préparation de la restauration. |
+| [GATEWAY_RECOVERY.md](GATEWAY_RECOVERY.md) | Enregistrement exclusif, import des captures, commandes `restore-plan` et `restore-check`, premier profil noqueue et comparaison avant/après. |
 | [VALIDATION_GATEWAY_SNAPSHOT_2026-11-12.md](VALIDATION_GATEWAY_SNAPSHOT_2026-11-12.md) | Rapport utilisateur sur `wlp3s0` : six sections disponibles et classes vides confirmées en texte ; portée locale, restauration non implémentée. |
 | [LAB_CAKE_EXECUTOR.md](LAB_CAKE_EXECUTOR.md) | Contrat de l’exécuteur Go de laboratoire : profil, session, lien DOWN, supervision, preuves et tests requis. |
 | [CAKE_GO_VALIDATION.md](CAKE_GO_VALIDATION.md) | Catalogue et validateurs CAKE Go purs, unités, fixtures natives, bornes et concordance avec la référence Python. |
