@@ -14,6 +14,7 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 | [GATEWAY_SNAPSHOT.md](GATEWAY_SNAPSHOT.md) | Capture détaillée des files d'une interface Linux explicitement choisie, en lecture seule ; préparation de la restauration. |
 | [GATEWAY_RECOVERY.md](GATEWAY_RECOVERY.md) | Enregistrement exclusif, import des captures, commandes `restore-plan` et `restore-check`, premier profil noqueue et comparaison avant/après. |
 | [LAB_QUEUE_RECOVERY.md](LAB_QUEUE_RECOVERY.md) | Cycle supervisé noqueue → CAKE → noqueue avec comparaison Go avant suppression des espaces ; tests simulés et lanceur natif. |
+| [VALIDATION_QUEUE_RECOVERY_2026-11-12.md](VALIDATION_QUEUE_RECOVERY_2026-11-12.md) | Deux cycles natifs validés : retour à noqueue avant nettoyage, en fin normale et après SIGKILL du pilote ; 105 pièces par mode relues indépendamment. |
 | [VALIDATION_GATEWAY_SNAPSHOT_2026-11-12.md](VALIDATION_GATEWAY_SNAPSHOT_2026-11-12.md) | Rapport utilisateur sur `wlp3s0` : six sections disponibles et classes vides confirmées en texte ; portée locale, restauration non implémentée. |
 | [LAB_CAKE_EXECUTOR.md](LAB_CAKE_EXECUTOR.md) | Contrat de l’exécuteur Go de laboratoire : profil, session, lien DOWN, supervision, preuves et tests requis. |
 | [CAKE_GO_VALIDATION.md](CAKE_GO_VALIDATION.md) | Catalogue et validateurs CAKE Go purs, unités, fixtures natives, bornes et concordance avec la référence Python. |

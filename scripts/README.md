@@ -7,7 +7,7 @@ Exécuter les commandes ci-dessous depuis la racine du dépôt ; les scripts `.s
 | `setup-go.sh` | Installer le SDK Go vérifié dans le projet, sous Linux x86_64. |
 | `go.sh` | Utiliser le SDK et les caches locaux pour développer et compiler. |
 | `lab-queue-recovery.py plan` | Prévisualiser le retour noqueue → CAKE → noqueue sur un veth neuf, sans privilèges. |
-| `lab-queue-recovery.py check` / `check-crash` | Retirer la CAKE possédée après arrêt du pilote et comparer les captures Go avant suppression des espaces ; essais natifs à confirmer. |
+| `lab-queue-recovery.py check` / `check-crash` | Retirer la CAKE possédée après arrêt du pilote et comparer les captures Go avant suppression des espaces ; [deux modes natifs validés](../docs/VALIDATION_QUEUE_RECOVERY_2026-11-12.md). |
 | `lab-queue-recovery.py review` | Relire empreintes, événements et comparaison des captures sans opération réseau ni certificat natif. |
 | `prepare-queue-recovery.py` | Compiler depuis un arbre propre et figer un lanceur des deux cycles de restauration et de leurs relectures. |
 | `lab-network.sh plan` | Prévisualiser le laboratoire virtuel, sans privilèges ni opération réseau. |

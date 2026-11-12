@@ -1,6 +1,6 @@
 # Cycle de restauration de file dans le laboratoire
 
-État : moteur de laboratoire, lanceur figé et relecture implémentés ; tests avec réseau simulé, vrai binaire Go et vrais processus réussis. Les deux essais réseau natifs restent à exécuter sur le PC utilisateur. La restauration du réseau du foyer n'est pas validée.
+État : moteur de laboratoire, lanceur figé et relecture implémentés ; tests avec réseau simulé, vrai binaire Go et vrais processus réussis. Les [deux essais réseau natifs sont validés](VALIDATION_QUEUE_RECOVERY_2026-11-12.md) : retour à noqueue après fin normale ou SIGKILL du pilote, puis nettoyage. La restauration du réseau du foyer n'est pas validée.
 
 Le contrôle réalise `noqueue → CAKE possédé → noqueue` et vérifie l'état final **avant** de supprimer ses namespaces. Il exploite les [captures et comparaisons Go](GATEWAY_RECOVERY.md) ; la suppression finale des ressources jetables n'est donc plus utilisée comme preuve suffisante du retour à la file initiale.
 
@@ -63,4 +63,4 @@ Ce moteur est une intégration de laboratoire Python ; la passerelle Go publique
 
 La panne forcée porte sur le pilote, pas sur la mort du superviseur ni la coupure machine. La synchronisation des preuves n'est pas une garantie générale de récupération après panne matérielle. Les adresses, routes, DNS, IPv6 du foyer, équité et bénéfice sous trafic ne sont pas évalués. `real_gateway_restoration_validated` reste faux. Les anciennes campagnes et leurs preuves figées restent distinctes et inchangées.
 
-Vérification locale : 64 tests Python ciblés réussis (superviseur, TBF/CAKE, nouveau cycle, processus bornés et préparation), ainsi que la suite Go complète. Les nouveaux tests de cycle utilisent des namespaces simulés et de vrais processus/binaire Go ; les vérifications de descripteurs réseau en lecture seule et du relancement Python épinglé passent également. Le contrôle natif est refusé ici avant création de ressources, faute de privilèges de laboratoire. Aucune restauration réseau native n’est déclarée à cette étape.
+Vérification locale avant exécution : 64 tests Python ciblés réussis (superviseur, TBF/CAKE, nouveau cycle, processus bornés et préparation), ainsi que la suite Go complète. Les nouveaux tests de cycle utilisent des namespaces simulés et de vrais processus/binaire Go ; les vérifications de descripteurs réseau en lecture seule et du relancement Python épinglé passent également. Le contrôle privilégié a ensuite été exécuté depuis le terminal utilisateur ; sa [validation native](VALIDATION_QUEUE_RECOVERY_2026-11-12.md) confirme les deux modes avec relecture indépendante des preuves.

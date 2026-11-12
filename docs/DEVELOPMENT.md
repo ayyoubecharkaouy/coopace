@@ -2,7 +2,7 @@
 
 ## État des étapes 2.2 à 4.2
 
-Le [cycle supervisé de restauration](LAB_QUEUE_RECOVERY.md) est implémenté dans le laboratoire : installation CAKE possédée, arrêt normal/forcé du pilote, retrait ciblé, puis comparaison Go à la référence noqueue avant nettoyage. Les tests utilisent réseau simulé et vrais processus. `prepare-queue-recovery.py` compile et fige le lanceur natif ; l'application publique sur le foyer reste à développer.
+Le [cycle supervisé de restauration](LAB_QUEUE_RECOVERY.md) est implémenté dans le laboratoire : installation CAKE possédée, arrêt normal/forcé du pilote, retrait ciblé, puis comparaison Go à la référence noqueue avant nettoyage. Les [deux modes natifs sont validés](VALIDATION_QUEUE_RECOVERY_2026-11-12.md), en complément des tests simulés et des vrais processus. `prepare-queue-recovery.py` compile et fige le lanceur ; l'application publique sur le foyer reste à développer.
 
 La [préparation de restauration](GATEWAY_RECOVERY.md) est utilisable : `snapshot --output`, `restore-plan` et `restore-check`, avec import strict, premier profil noqueue et comparaison avant/après. Les tests couvrent les refus, la provenance des fichiers, l'enregistrement sans écrasement et le parcours CLI. L'application de la restauration sous supervision sur le foyer reste à implémenter ; son premier cycle de laboratoire est livré séparément.
 

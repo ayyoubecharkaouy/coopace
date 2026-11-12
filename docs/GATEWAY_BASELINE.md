@@ -80,4 +80,6 @@ La commande [`snapshot --interface NOM [--json]`](GATEWAY_SNAPSHOT.md) prépare 
 
 Pour le laboratoire jetable, les [deux contrôles natifs du superviseur](VALIDATION_LAB_GUARD_2026-10-29.md) valident la récupération de ses processus et la suppression des espaces qu'il crée. Cette preuve limitée ne remplace pas la restauration ci-dessus. Son intégration aux campagnes avec file est [validée en natif](VALIDATION_CAKE_COMPARISON_2026-10-30.md) dans ce périmètre jetable.
 
+Le [premier cycle natif de retour à noqueue](VALIDATION_QUEUE_RECOVERY_2026-11-12.md) complète cette preuve : la CAKE possédée est retirée et l'état initial sélectionné est comparé par Go avant suppression des espaces, après fin normale ou panne du pilote. Il reste limité à un veth neuf sans adresse ni charge ; la restauration de la configuration du foyer reste distincte.
+
 Les prochaines décisions dépendent de l'inventaire réel et du choix de la plateforme. Cette préparation ne remplace pas une expérience exécutée et n'autorise aucune intervention automatique.
