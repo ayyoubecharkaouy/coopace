@@ -117,3 +117,5 @@ Le projet ne prévoit ni interception TLS, ni déchiffrement des contenus, ni r�
 Voir l'[architecture](ARCHITECTURE.md), les [choix techniques](TECH_STACK.md), la [feuille de route](ROADMAP.md) et les [instructions de développement](DEVELOPMENT.md).
 
 Le [premier essai de campagne Go refusé](REVIEW_CAKE_GO_CAMPAIGN_FAILURE_2026-11-05.md) a collecté les six phases et nettoyé les ressources, puis révélé une confusion entre dernier octet et EOF dans le calcul du débit reçu. La correction conserve les seuils et demande un nouveau dossier pour les deux modes.
+
+Le [premier pilotage de session Go](GATEWAY_SESSION.md) est raccordé au moteur de restauration : référence liée à la capture initiale, accord local explicite, pilote sans privilèges et récupération indépendante après sortie/panne. Les tests emploient des observations réseau simulées et de vrais processus ; les essais natifs de ce nouveau raccordement restent à exécuter. Ce livrable prépare le pilotage du produit et ne démontre pas encore un gain sur le réseau du foyer.

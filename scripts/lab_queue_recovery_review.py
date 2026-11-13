@@ -11,10 +11,10 @@ spec.loader.exec_module(model)
 runtime, require = model.runtime, model.require
 
 
-def review(folder, gateway):
+def review(folder, gateway, *, session=False, sources=None):
     folder = Path(folder).resolve(strict=True)
     report = runtime.document(runtime.read(folder / "report.json"))
-    require(type(report.get("schema_version")) is int and report.get("schema_version") == 1 and report.get("kind") == "lab_queue_recovery"
+    require(type(report.get("schema_version")) is int and report.get("schema_version") == 1 and report.get("kind") == ("lab_gateway_session" if session else "lab_queue_recovery")
             and report.get("mode") in ("check", "check-crash") and report.get("state") == "complete",
             "Contrôle complet de restauration requis.")
     for field in ("applied_verified", "root_removed", "restoration_verified", "cleanup_verified"):
@@ -23,7 +23,7 @@ def review(folder, gateway):
             "Portée du laboratoire incohérente.")
     expected = -9 if report["mode"] == "check-crash" else 0
     require(type(report.get("driver_exit_code")) is int and report["driver_exit_code"] == expected
-            and type(report.get("reaped_descendants")) is int and report.get("reaped_descendants") == 1
+            and type(report.get("reaped_descendants")) is int and report.get("reaped_descendants") == (0 if session else 1)
             and type(report.get("interruption_code")) is int and report.get("interruption_code") == 0,
             "Fin du pilote non conforme.")
     files = report.get("artifacts_sha256")
@@ -37,15 +37,16 @@ def review(folder, gateway):
                  "applied.json", "pre-restore.json", "after.json", "comparison.json"):
         require(name in files, "Preuve requise absente : " + name)
     environment = runtime.document(runtime.read(folder / "environment.json"))
-    require(environment.get("source_sha256") == model.source_hashes(), "Sources du contrôle modifiées.")
+    require(environment.get("source_sha256") == (sources if sources is not None else model.source_hashes()), "Sources du contrôle modifiées.")
     tool = environment["tools"]["gateway"]
     gateway = Path(gateway).resolve(strict=True)
     require(str(gateway) == tool["path"] and runtime.digest(runtime.read(gateway, 64 * 1024 * 1024)) == tool["sha256"],
             "Binaire Go différent de celui du contrôle.")
     events = [runtime.document(line) for line in runtime.read(folder / "events.jsonl").splitlines()]
     require([event.get("sequence") for event in events] == list(range(1, len(events)+1)), "Séquence du journal incohérente.")
+    driver_states = () if session else ("driver_starting", "driver_namespace_verified")
     states = ("namespace_bindings_retained", "baseline_verified", "add_intent", "owned_cake_verified",
-        "driver_starting", "driver_namespace_verified", "driver_group_stopped", "remove_intent",
+        *driver_states, "driver_group_stopped", "remove_intent",
         "owned_root_removed", "selected_initial_state_verified", "namespace_bindings_closed")
     ordered = []
     for state in states:
@@ -66,9 +67,11 @@ def review(folder, gateway):
         and all(type(v) is int and v > 0 for v in identity) for identity in identities)
         and len({tuple(identity) for identity in identities}) == 3
         and retained.get("origin_identity") not in identities, "Identités de namespaces non distinctes.")
-    require(events[ordered[5]].get("identity") == identities[1], "Namespace du pilote non confirmé.")
-    stopped = events[ordered[6]]
-    require(stopped.get("exit_code") == expected and stopped.get("reaped_descendants") == 1,
+    position = {state: index for state,index in zip(states,ordered)}
+    if not session:
+        require(events[position["driver_namespace_verified"]].get("identity") == identities[1], "Namespace du pilote non confirmé.")
+    stopped = events[position["driver_group_stopped"]]
+    require(stopped.get("exit_code") == expected and stopped.get("reaped_descendants") == (0 if session else 1),
             "Récupération du groupe non confirmée.")
     intents = [event for event in events if event.get("state") == "command_intent"]
     results = [event for event in events if event.get("state") == "command_result"]
@@ -83,8 +86,8 @@ def review(folder, gateway):
     require([event["arguments"] for event in mutations] == [
         [*prefix,"add","dev","wan","root","handle","10:",*model.cake.ARGUMENTS],
         [*prefix,"del","dev","wan","root","handle","10:"]], "Mutations de file non conformes.")
-    require(events[ordered[2]]["sequence"] < mutations[0]["sequence"] < events[ordered[3]]["sequence"]
-            and events[ordered[7]]["sequence"] < mutations[1]["sequence"] < events[ordered[8]]["sequence"],
+    require(events[position["add_intent"]]["sequence"] < mutations[0]["sequence"] < events[position["owned_cake_verified"]]["sequence"]
+            and events[position["remove_intent"]]["sequence"] < mutations[1]["sequence"] < events[position["owned_root_removed"]]["sequence"],
             "Intention non antérieure à sa mutation.")
     root_args = ["netns","exec",names[1],tc,"-j","-s","-r","qdisc","show","dev","wan"]
     root_reads = [event for event in intents if event.get("tool") == "ip" and event.get("arguments") == root_args]
@@ -100,7 +103,7 @@ def review(folder, gateway):
         require(not (Path("/run/netns") / name).exists() and not (Path("/var/run/netns") / name).exists(), "Namespace encore visible.")
     workspace = Path(report["workspace"])
     require(workspace.is_absolute() and workspace.name == "coopace-guard."+token and not workspace.exists(), "Réservation encore visible ou incohérente.")
-    pids = [report.get("driver_pid"), report.get("descendant_pid"), *[event.get("pid") for event in results]]
+    pids = [report.get("driver_pid"), *([] if session else [report.get("descendant_pid")]), *[event.get("pid") for event in results]]
     require(all(type(pid) is int and pid > 1 and not Path("/proc",str(pid)).exists() for pid in pids), "PID enregistré encore visible.")
     completed = subprocess.run([str(gateway), "restore-check", "--before", str(folder/"before.json"),
         "--after", str(folder/"after.json"), "--json"], stdin=subprocess.DEVNULL,

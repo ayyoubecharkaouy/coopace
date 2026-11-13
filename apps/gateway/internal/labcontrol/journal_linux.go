@@ -26,6 +26,7 @@ type workerJournal struct {
 	file       *os.File
 	identity   syscall.Stat_t
 	session    string
+	kind       string
 	started    time.Time
 	sequence   uint64
 	written    int64
@@ -84,10 +85,18 @@ func (j *workerJournal) Record(event string, data any) error {
 	if j.closed || j.file == nil {
 		return j.fail(fmt.Errorf("worker journal is closed"))
 	}
-	switch event {
-	case "launch", "context_accepted", "tool_intent", "tool_result", "ready", "apply_received", "applied", "finish_received", "final_verified", "worker_exit":
-	default:
-		return j.fail(fmt.Errorf("unknown worker journal event"))
+	if j.kind == "gateway_session_worker_journal" {
+		switch event {
+		case "launch", "ready", "apply_requested", "applied", "release_requested", "worker_exit":
+		default:
+			return j.fail(fmt.Errorf("unknown session journal event"))
+		}
+	} else {
+		switch event {
+		case "launch", "context_accepted", "tool_intent", "tool_result", "ready", "apply_received", "applied", "finish_received", "final_verified", "worker_exit":
+		default:
+			return j.fail(fmt.Errorf("unknown worker journal event"))
+		}
 	}
 	info, err := j.file.Stat()
 	if err != nil {
@@ -99,6 +108,10 @@ func (j *workerJournal) Record(event string, data any) error {
 		return j.fail(fmt.Errorf("worker journal identity, permissions or size changed"))
 	}
 	now := time.Now()
+	kind := j.kind
+	if kind == "" {
+		kind = "lab_cake_worker_journal"
+	}
 	value := struct {
 		Schema     int       `json:"schema_version"`
 		Kind       string    `json:"kind"`
@@ -108,7 +121,7 @@ func (j *workerJournal) Record(event string, data any) error {
 		RecordedAt time.Time `json:"recorded_at"`
 		ElapsedNS  int64     `json:"elapsed_ns"`
 		Data       any       `json:"data"`
-	}{1, "lab_cake_worker_journal", j.session, j.sequence + 1, event, now.UTC(), now.Sub(j.started).Nanoseconds(), data}
+	}{1, kind, j.session, j.sequence + 1, event, now.UTC(), now.Sub(j.started).Nanoseconds(), data}
 	encoded, err := json.Marshal(value)
 	if err != nil {
 		return j.fail(err)

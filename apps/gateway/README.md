@@ -8,14 +8,15 @@ Cette application Go assemble l'observation locale et les adaptations du systèm
 gateway/
 ├── cmd/
 │   ├── coopace-gateway/     # Diagnostic et préparation de restauration
-│   └── coopace-cake-worker/ # Processus interne Go sur lien DOWN
+│   ├── coopace-cake-worker/ # Processus interne Go sur lien DOWN
+│   └── coopace-session-worker/ # Pilote de décision Go sans privilèges
 └── internal/
     ├── cli/                # Arguments et affichage des commandes publiques
     ├── diagnostic/         # Inventaire réduit et adaptation système
     ├── snapshot/           # Capture détaillée locale des files et export
     ├── recovery/           # Préparation et comparaison avant/après, sans exécution
     ├── planning/           # Scénario local et simulation sans collecte
-    ├── labcontrol/         # Session, transport, journal et backend DOWN
+    ├── labcontrol/         # Transport/journal, backend DOWN et pilote de session
     └── buildinfo/          # Provenance du binaire, sans inventaire
 ```
 
@@ -45,3 +46,5 @@ Le processus privé `coopace-cake-worker` appartient au [contrôle supervisé CA
 Le [contrôle de restauration du laboratoire](../../docs/LAB_QUEUE_RECOVERY.md) raccorde ces commandes Go à un superviseur Python : état initial noqueue, installation CAKE possédée, retrait ciblé après fin normale/panne du pilote, puis comparaison avant suppression des espaces. Les [deux essais réseau natifs sont validés](../../docs/VALIDATION_QUEUE_RECOVERY_2026-11-12.md), avec relecture de 105 pièces par mode. Ce moteur ne fournit aucune commande publique d'application sur une interface du foyer.
 
 CAKE/SQM est envisagé sous Linux ; une passerelle Windows exige une intégration et une validation spécifiques. OpenWrt n'est pas validé. Les privilèges et leur séparation pour les interventions du produit restent à définir.
+
+Le [pilote privé de session](../../docs/GATEWAY_SESSION.md) raccorde maintenant un automate Go au moteur de restauration du laboratoire. Il importe la référence initiale et son empreinte, exige l’accord local, demande l’application au superviseur et vérifie la capture CAKE. Le superviseur restaure après la sortie ou la panne du pilote sans privilèges. Tests en simulation réussis ; essais natifs de ce raccordement à exécuter.

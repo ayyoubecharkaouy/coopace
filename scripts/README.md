@@ -9,6 +9,8 @@ Exécuter les commandes ci-dessous depuis la racine du dépôt ; les scripts `.s
 | `lab-queue-recovery.py plan` | Prévisualiser le retour noqueue → CAKE → noqueue sur un veth neuf, sans privilèges. |
 | `lab-queue-recovery.py check` / `check-crash` | Retirer la CAKE possédée après arrêt du pilote et comparer les captures Go avant suppression des espaces ; [deux modes natifs validés](../docs/VALIDATION_QUEUE_RECOVERY_2026-11-12.md). |
 | `lab-queue-recovery.py review` | Relire empreintes, événements et comparaison des captures sans opération réseau ni certificat natif. |
+| `lab-gateway-session.py` | Pilotage Go sans privilèges avec restauration supervisée ; plan sans action, contrôles jetables et relecture hors ligne. |
+| `prepare-gateway-session.py` | Figer les deux binaires et le lanceur des sessions normale/panne ; essais natifs à exécuter. |
 | `prepare-queue-recovery.py` | Compiler depuis un arbre propre et figer un lanceur des deux cycles de restauration et de leurs relectures. |
 | `lab-network.sh plan` | Prévisualiser le laboratoire virtuel, sans privilèges ni opération réseau. |
 | `lab-network.sh run` | Créer, sonder et nettoyer explicitement des espaces réseau neufs sur un hôte Linux autorisé. |
