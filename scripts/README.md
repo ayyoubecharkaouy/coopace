@@ -10,7 +10,7 @@ Exécuter les commandes ci-dessous depuis la racine du dépôt ; les scripts `.s
 | `lab-queue-recovery.py check` / `check-crash` | Retirer la CAKE possédée après arrêt du pilote et comparer les captures Go avant suppression des espaces ; [deux modes natifs validés](../docs/VALIDATION_QUEUE_RECOVERY_2026-11-12.md). |
 | `lab-queue-recovery.py review` | Relire empreintes, événements et comparaison des captures sans opération réseau ni certificat natif. |
 | `lab-gateway-session-active.py` | Session Go appliquée pendant 4 Mio, réception mesurée, panne pendant le flux et restauration ; plan et relecture disponibles. |
-| `prepare-gateway-session-active.py` | Compiler et figer trois binaires et les deux contrôles avec trafic ; essais natifs à exécuter. |
+| `prepare-gateway-session-active.py` | Compiler et figer trois binaires et les deux contrôles avec trafic ; [deux modes natifs validés](../docs/VALIDATION_GATEWAY_SESSION_ACTIVE_2026-11-14.md). |
 | `lab-gateway-session.py` | Pilotage Go sans privilèges avec restauration supervisée ; plan sans action, contrôles jetables et relecture hors ligne. |
 | `prepare-gateway-session.py` | Figer les deux binaires et le lanceur des sessions normale/panne ; [deux modes natifs validés](../docs/VALIDATION_GATEWAY_SESSION_2026-11-14.md). |
 | `prepare-queue-recovery.py` | Compiler depuis un arbre propre et figer un lanceur des deux cycles de restauration et de leurs relectures. |

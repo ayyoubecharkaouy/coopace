@@ -1,6 +1,6 @@
 # Session Go pendant un transfert mesuré
 
-État : contrôle, transfert borné, prise en compte des classes CAKE internes, préparation figée et relecture implémentés. Les tests simulent le réseau et le pair Go, avec de vrais groupes de processus et SIGKILL. Les essais natifs de cette variante restent à exécuter. Le [pilotage sans transfert est déjà validé en natif](VALIDATION_GATEWAY_SESSION_2026-11-14.md).
+État : contrôle, transfert borné, prise en compte des classes CAKE internes, préparation figée et relecture implémentés. Les tests simulent le réseau et le pair Go, avec de vrais groupes de processus et SIGKILL. Les [deux essais natifs de cette variante sont validés](VALIDATION_GATEWAY_SESSION_ACTIVE_2026-11-14.md) : 4 Mio reçus en fin normale, puis panne de Go pendant le flux, retour à noqueue et nettoyage dans les deux modes. Le [pilotage sans transfert est déjà validé en natif](VALIDATION_GATEWAY_SESSION_2026-11-14.md).
 
 Ce contrôle garde le pilote Go en état `applied` pendant un transfert de **4 Mio**. Il mesure les octets reçus, la durée et le débit utile de réception, ainsi que les compteurs de la CAKE possédée. Il vérifie ensuite le retour à noqueue, après fin normale ou mort forcée du pilote Go pendant le transfert.
 
@@ -40,7 +40,7 @@ La capture publique conserve son comportement : des classes non vides non JSON r
 
 Le lecteur borné accepte uniquement des lignes `class cake 10:IDENTIFIANT parent 10:`, avec identifiants hexadécimaux uniques de 1 à 1024, correspondant au profil à un seul tin. Autre type, parent, handle, option, feuille, doublon, encodage ou format inconnu : refus. La racine CAKE et ses options sont vérifiées séparément ; les filtres doivent rester disponibles et vides. Toute autre section indisponible interdit le retrait. La capture finale noqueue doit redevenir complète pour les sélections observées et réussir la comparaison Go.
 
-Ces observations restent séquentielles. Le format de classes est testé sur des exemples contrôlés ; sa concordance avec les classes réellement exposées sur cet hôte sera vérifiée par l'essai natif. Le noyau du dossier préparé est figé dans son manifeste.
+Ces observations restent séquentielles. Le format de classes est testé sur des exemples contrôlés ; les [essais natifs](VALIDATION_GATEWAY_SESSION_ACTIVE_2026-11-14.md) confirment aussi la lecture des flux `10:d3` et `10:1e0` sur cet hôte. Le noyau du dossier préparé est figé dans son manifeste.
 
 ## Bornes, preuves et exécution
 
@@ -64,4 +64,6 @@ Les 16 tests de cette variante couvrent parsing/refus des classes, rapports inco
 
 Ce palier ne mesure pas la latence, l'équité ni un gain causal face à une référence sans Coopace. Il ne valide pas le trafic routé des appareils du foyer, IPv6/DNS ou la restauration d'une configuration existante. Ces travaux restent distincts de la première preuve de transfert et de retour initial avec le pilote Go vivant pendant le flux.
 
-Vérification de cette tranche : suite Go complète réussie ; 90 tests Python ciblés exécutés, dont 89 réussis et un ignoré explicitement pour l'interdiction des sockets. La relecture du contrôle natif sans transfert reste conforme à ses 109 pièces, sans modifier ses preuves. Aucun essai natif du nouveau transfert n'est déclaré à ce stade.
+Vérification de cette tranche : suite Go complète réussie ; 90 tests Python ciblés exécutés, dont 89 réussis et un ignoré explicitement pour l'interdiction des sockets. La relecture du contrôle natif sans transfert reste conforme à ses 109 pièces, sans modifier ses preuves. Les [deux essais natifs](VALIDATION_GATEWAY_SESSION_ACTIVE_2026-11-14.md) ont ensuite confirmé le transfert et le retour initial ; leurs relectures indépendantes vérifient 164 et 161 pièces.
+
+La suite est d’étendre cette session au trafic routé d’un client et d’y associer les mesures de latence au repos/sous charge, selon un protocole distinct.
