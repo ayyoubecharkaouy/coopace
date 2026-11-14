@@ -46,4 +46,29 @@ class SessionPreparationTests(unittest.TestCase):
                 with self.assertRaises(Exception):prepare.prepare(target)
             self.assertFalse(target.exists())
 
+    def test_environment_mismatch_names_expected_and_current_values_before_inputs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            folder=Path(directory)
+            manifest={'schema_version':1,'kind':'prepared_gateway_session_lab','revision':'revision',
+                'kernel':'prepared-kernel','python_version':'prepared-python'}
+            # No input/tool fields: a mismatch must fail before those reads.
+            raw=json.dumps(manifest).encode();(folder/'prepared.json').write_bytes(raw)
+            (folder/'prepared.sha256').write_text(prepare.runtime.digest(raw)+'\n')
+            for kernel,python,labels in (
+                ('current-kernel','prepared-python',('noyau',)),
+                ('prepared-kernel','current-python',('Python',)),
+                ('current-kernel','current-python',('noyau','Python')),
+            ):
+                with self.subTest(kernel=kernel,python=python):
+                    with patch.object(prepare,'command',return_value='revision'), \
+                         patch.object(prepare.platform,'release',return_value=kernel), \
+                         patch.object(prepare.platform,'python_version',return_value=python):
+                        with self.assertRaises(prepare.runtime.Error) as caught:prepare.verify(folder)
+                    message=str(caught.exception)
+                    self.assertIn('nouveau dossier',message)
+                    for label,expected,current in (('noyau','prepared-kernel',kernel),('Python','prepared-python',python)):
+                        if label in labels:
+                            self.assertIn(f"{label} : préparé {expected!r}, actuel {current!r}",message)
+                        else:self.assertNotIn(label+' :',message)
+
 if __name__=='__main__':unittest.main()

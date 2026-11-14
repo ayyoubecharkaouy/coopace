@@ -36,7 +36,11 @@ def verify(folder):
     manifest=runtime.document(raw)
     require(manifest.get('schema_version')==1 and manifest.get('kind')=='prepared_gateway_session_lab','Manifeste incompatible.')
     require(command(['git','rev-parse','HEAD'])==manifest['revision'],'Révision du dépôt modifiée.')
-    require(platform.release()==manifest['kernel'] and platform.python_version()==manifest['python_version'],'Environnement natif modifié.')
+    differences=[]
+    for label,key,current in (('noyau','kernel',platform.release()),('Python','python_version',platform.python_version())):
+        if current!=manifest[key]:
+            differences.append(f"{label} : préparé {manifest[key]!r}, actuel {current!r}")
+    require(not differences,'Environnement natif modifié : '+ '; '.join(differences)+'. Préparer un nouveau dossier d’essai.')
     for path,expected in manifest['inputs_sha256'].items():
         require(runtime.digest(runtime.read(path,64*1024*1024))==expected,'Entrée figée modifiée : '+path)
     for tool in manifest['tools'].values():
