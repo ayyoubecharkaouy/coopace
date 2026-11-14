@@ -12,6 +12,7 @@ Ce dossier rassemble les décisions, les procédures et les limites du projet. L
 | [STATIC_CAKE_PLANNING.md](STATIC_CAKE_PLANNING.md) | Première règle Go de planification hors ligne : périmètre, prérequis, décisions et limites avant intégration. |
 | [GATEWAY_PLANNING.md](GATEWAY_PLANNING.md) | Commande `plan`, scénario JSON local strict, motifs, provenance et exemples de simulation. |
 | [GATEWAY_SESSION.md](GATEWAY_SESSION.md) | Pilote Go sans privilèges, décision liée à une capture initiale, consentement local et restauration indépendante ; essais natifs validés. |
+| [GATEWAY_SESSION_ACTIVE.md](GATEWAY_SESSION_ACTIVE.md) | Session Go pendant un transfert borné de 4 Mio, observation CAKE et retour initial après fin normale/panne ; essais natifs à exécuter. |
 | [VALIDATION_GATEWAY_SESSION_2026-11-14.md](VALIDATION_GATEWAY_SESSION_2026-11-14.md) | Deux sessions natives Go, retour à noqueue après fin normale/SIGKILL et 109 pièces vérifiées par mode. |
 | [GATEWAY_SNAPSHOT.md](GATEWAY_SNAPSHOT.md) | Capture détaillée des files d'une interface Linux explicitement choisie, en lecture seule ; préparation de la restauration. |
 | [GATEWAY_RECOVERY.md](GATEWAY_RECOVERY.md) | Enregistrement exclusif, import des captures, commandes `restore-plan` et `restore-check`, premier profil noqueue et comparaison avant/après. |
