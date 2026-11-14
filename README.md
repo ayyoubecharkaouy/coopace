@@ -17,7 +17,7 @@ Le [périmètre produit](docs/PRODUCT.md) décrit le résultat visé, l'état r�
 | Agent Linux | État local, compteurs, mesure d'établissement TCP, export/comparaison, identité et consentement persistés. |
 | Groupe à deux pairs | Échange TLS mutuel testé en mémoire ; [essai TCP réel du groupe](docs/GROUP_EXCHANGE.md) encore à confirmer. |
 | Diagnostic passerelle | Lecture seule ; [inventaire complet dans la passerelle virtuelle](docs/VALIDATION_VIRTUAL_LAB_2026-10-29.md), sans validation du réseau du foyer. |
-| Pilotage de session Go | [Dialogue et restauration supervisée](docs/GATEWAY_SESSION.md) implémentés et testés en simulation ; deux essais natifs du nouveau raccordement à exécuter. |
+| Pilotage de session Go | [Dialogue et restauration supervisée](docs/GATEWAY_SESSION.md) [validés en natif](docs/VALIDATION_GATEWAY_SESSION_2026-11-14.md) après fin normale et SIGKILL, sans trafic de test. |
 | Planification statique | [Règle Go hors ligne](docs/STATIC_CAKE_PLANNING.md) : proposition du profil de laboratoire, conservation ou abstention ; [commande `plan` de simulation](docs/GATEWAY_PLANNING.md) disponible. |
 | Transfert et séries synthétiques | [8 Mio transférés](docs/VALIDATION_VIRTUAL_LOAD_2026-10-29.md), puis [trois paires de séries et 60 connexions réussies](docs/VALIDATION_VIRTUAL_SERIES_2026-10-29.md), sans goulot configuré. |
 | Files virtuelles TBF/CAKE | [Goulot TBF qualifié](docs/VALIDATION_VIRTUAL_BOTTLENECK_2026-10-30.md) ; [comparaison native des six campagnes validée](docs/VALIDATION_CAKE_COMPARISON_2026-10-30.md), amélioration CAKE selon v1 dans les trois blocs. |
